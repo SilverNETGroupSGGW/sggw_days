@@ -47,6 +47,8 @@
   "skip": "Pomiń",
   "locationPermission": "Lokalizacja",
   "cameraPermission": "Kamera",
+  "grantPermissions": "Przyznaj uprawnienia",
+  "permissionsGranted": "Uprawnienia przyznane",
   "viewOnboarding": "Pokaż wprowadzenie",
   "viewOnboardingDesc": "Zobacz ponownie wprowadzenie do aplikacji"
 }

@@ -112,7 +112,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'The app needs access to your location for Treasure Hunt and camera for QR code scanning.';
 
   @override
-  String get getStarted => 'Finish';
+  String get getStarted => 'Get Started';
 
   @override
   String get next => 'Next';
@@ -125,6 +125,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cameraPermission => 'Camera';
+
+  @override
+  String get grantPermissions => 'Grant Permissions';
+
+  @override
+  String get permissionsGranted => 'Permissions Granted';
 
   @override
   String get viewOnboarding => 'View Onboarding';

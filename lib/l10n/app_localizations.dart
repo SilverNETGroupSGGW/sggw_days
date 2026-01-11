@@ -320,6 +320,18 @@ abstract class AppLocalizations {
   /// **'Kamera'**
   String get cameraPermission;
 
+  /// No description provided for @grantPermissions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przyznaj uprawnienia'**
+  String get grantPermissions;
+
+  /// No description provided for @permissionsGranted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uprawnienia przyznane'**
+  String get permissionsGranted;
+
   /// No description provided for @viewOnboarding.
   ///
   /// In pl, this message translates to:

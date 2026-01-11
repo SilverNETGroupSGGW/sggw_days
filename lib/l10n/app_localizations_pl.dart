@@ -127,6 +127,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get cameraPermission => 'Kamera';
 
   @override
+  String get grantPermissions => 'Przyznaj uprawnienia';
+
+  @override
+  String get permissionsGranted => 'Uprawnienia przyznane';
+
+  @override
   String get viewOnboarding => 'Pokaż wprowadzenie';
 
   @override
