@@ -57,4 +57,68 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get cancel => 'Anuluj';
+
+  @override
+  String get online => 'Online';
+
+  @override
+  String get offline => 'Offline';
+
+  @override
+  String get noConnection => 'Brak połączenia z internetem';
+
+  @override
+  String get colorScheme => 'Schemat kolorów';
+
+  @override
+  String get sggwColors => 'Kolory SGGW';
+
+  @override
+  String get dynamicColors => 'Kolory systemowe';
+
+  @override
+  String get welcome => 'Witaj w Dniach SGGW!';
+
+  @override
+  String get onboardingTitle1 => 'Gra Terenowa';
+
+  @override
+  String get onboardingDesc1 =>
+      'Znajdź ukryte punkty na terenie uczelni, skanuj kody QR i zdobywaj punkty. Musisz być blisko punktu, aby zeskanować kod.';
+
+  @override
+  String get onboardingTitle2 => 'Wiedza o SGGW';
+
+  @override
+  String get onboardingDesc2 =>
+      'Dowiedz się więcej o historii, wykładowcach i ciekawostkach związanych z uczelnią.';
+
+  @override
+  String get onboardingTitle3 => 'Harmonogram Wydarzeń';
+
+  @override
+  String get onboardingDesc3 =>
+      'Sprawdź pełny program Dni SGGW i nie przegap żadnego wydarzenia.';
+
+  @override
+  String get onboardingTitle4 => 'Uprawnienia';
+
+  @override
+  String get onboardingDesc4 =>
+      'Aplikacja potrzebuje dostępu do lokalizacji (gra terenowa) i kamery (skanowanie QR).';
+
+  @override
+  String get getStarted => 'Rozpocznij';
+
+  @override
+  String get next => 'Dalej';
+
+  @override
+  String get skip => 'Pomiń';
+
+  @override
+  String get locationPermission => 'Lokalizacja';
+
+  @override
+  String get cameraPermission => 'Kamera';
 }

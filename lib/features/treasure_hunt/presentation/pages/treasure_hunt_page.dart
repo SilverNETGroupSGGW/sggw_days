@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
+import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_state.dart';
@@ -151,36 +153,105 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     );
   }
 
-  void _openQRScanner(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => _QRScannerPage(
-          onCodeScanned: (code) {
-            context.read<TreasureHuntBloc>().add(ScanQRCode(code));
-            Navigator.pop(context);
-          },
+  void _openQRScanner(BuildContext context) async {
+    // Get current location
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        await Geolocator.requestPermission();
+      }
+      final position = await Geolocator.getCurrentPosition();
+
+      if (!context.mounted) return;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => _QRScannerPage(
+            currentPosition: position,
+            treasurePoints: context.read<TreasureHuntBloc>().state.points,
+            onCodeScanned: (code) {
+              context.read<TreasureHuntBloc>().add(ScanQRCode(code));
+              Navigator.pop(context);
+            },
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Unable to get location: $e'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
   }
 }
 
 class _QRScannerPage extends StatelessWidget {
+  final Position currentPosition;
+  final List<TreasurePoint> treasurePoints;
   final Function(String) onCodeScanned;
 
-  const _QRScannerPage({required this.onCodeScanned});
+  const _QRScannerPage({
+    required this.currentPosition,
+    required this.treasurePoints,
+    required this.onCodeScanned,
+  });
+
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
+    return Geolocator.distanceBetween(lat1, lon1, lat2, lon2);
+  }
+
+  bool _isNearTreasurePoint(String qrCode) {
+    const double maxDistance = 50.0; // meters
+
+    for (final point in treasurePoints) {
+      if (point.qrCode == qrCode) {
+        final distance = _calculateDistance(
+          currentPosition.latitude,
+          currentPosition.longitude,
+          point.latitude,
+          point.longitude,
+        );
+        return distance <= maxDistance;
+      }
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.scanQr)),
+      appBar: AppBar(title: Text(l10n.scanQr)),
       body: MobileScanner(
         onDetect: (capture) {
           final List<Barcode> barcodes = capture.barcodes;
           for (final barcode in barcodes) {
             if (barcode.rawValue != null) {
-              onCodeScanned(barcode.rawValue!);
+              final code = barcode.rawValue!;
+
+              if (_isNearTreasurePoint(code)) {
+                onCodeScanned(code);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text(
+                      'You must be closer to the treasure point!',
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                );
+              }
               break;
             }
           }

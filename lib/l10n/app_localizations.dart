@@ -193,6 +193,126 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Anuluj'**
   String get cancel;
+
+  /// No description provided for @online.
+  ///
+  /// In pl, this message translates to:
+  /// **'Online'**
+  String get online;
+
+  /// No description provided for @offline.
+  ///
+  /// In pl, this message translates to:
+  /// **'Offline'**
+  String get offline;
+
+  /// No description provided for @noConnection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak połączenia z internetem'**
+  String get noConnection;
+
+  /// No description provided for @colorScheme.
+  ///
+  /// In pl, this message translates to:
+  /// **'Schemat kolorów'**
+  String get colorScheme;
+
+  /// No description provided for @sggwColors.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kolory SGGW'**
+  String get sggwColors;
+
+  /// No description provided for @dynamicColors.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kolory systemowe'**
+  String get dynamicColors;
+
+  /// No description provided for @welcome.
+  ///
+  /// In pl, this message translates to:
+  /// **'Witaj w Dniach SGGW!'**
+  String get welcome;
+
+  /// No description provided for @onboardingTitle1.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gra Terenowa'**
+  String get onboardingTitle1;
+
+  /// No description provided for @onboardingDesc1.
+  ///
+  /// In pl, this message translates to:
+  /// **'Znajdź ukryte punkty na terenie uczelni, skanuj kody QR i zdobywaj punkty. Musisz być blisko punktu, aby zeskanować kod.'**
+  String get onboardingDesc1;
+
+  /// No description provided for @onboardingTitle2.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wiedza o SGGW'**
+  String get onboardingTitle2;
+
+  /// No description provided for @onboardingDesc2.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dowiedz się więcej o historii, wykładowcach i ciekawostkach związanych z uczelnią.'**
+  String get onboardingDesc2;
+
+  /// No description provided for @onboardingTitle3.
+  ///
+  /// In pl, this message translates to:
+  /// **'Harmonogram Wydarzeń'**
+  String get onboardingTitle3;
+
+  /// No description provided for @onboardingDesc3.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź pełny program Dni SGGW i nie przegap żadnego wydarzenia.'**
+  String get onboardingDesc3;
+
+  /// No description provided for @onboardingTitle4.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uprawnienia'**
+  String get onboardingTitle4;
+
+  /// No description provided for @onboardingDesc4.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aplikacja potrzebuje dostępu do lokalizacji (gra terenowa) i kamery (skanowanie QR).'**
+  String get onboardingDesc4;
+
+  /// No description provided for @getStarted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozpocznij'**
+  String get getStarted;
+
+  /// No description provided for @next.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dalej'**
+  String get next;
+
+  /// No description provided for @skip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomiń'**
+  String get skip;
+
+  /// No description provided for @locationPermission.
+  ///
+  /// In pl, this message translates to:
+  /// **'Lokalizacja'**
+  String get locationPermission;
+
+  /// No description provided for @cameraPermission.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kamera'**
+  String get cameraPermission;
 }
 
 class _AppLocalizationsDelegate

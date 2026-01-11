@@ -7,7 +7,7 @@ class AppColors {
   static const Color yellow = Color(0xFFF0DC8C);
   static const Color red = Color(0xFFF01E32);
 
-  static const ColorScheme lightScheme = ColorScheme(
+  static const ColorScheme sggwLightScheme = ColorScheme(
     brightness: Brightness.light,
     primary: primaryGreen,
     onPrimary: Colors.white,
@@ -21,7 +21,7 @@ class AppColors {
     onTertiary: darkGreen,
   );
 
-  static const ColorScheme darkScheme = ColorScheme(
+  static const ColorScheme sggwDarkScheme = ColorScheme(
     brightness: Brightness.dark,
     primary: primaryGreen,
     onPrimary: darkGreen,
@@ -34,32 +34,78 @@ class AppColors {
     tertiary: yellow,
     onTertiary: darkGreen,
   );
+
+  static ColorScheme dynamicLightScheme = ColorScheme.fromSeed(
+    seedColor: primaryGreen,
+    brightness: Brightness.light,
+  );
+
+  static ColorScheme dynamicDarkScheme = ColorScheme.fromSeed(
+    seedColor: primaryGreen,
+    brightness: Brightness.dark,
+  );
 }
 
 class AppTheme {
-  static ThemeData get light => ThemeData(
+  static ThemeData light({bool useDynamicColors = false}) => ThemeData(
     useMaterial3: true,
-    colorScheme: AppColors.lightScheme,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.darkGreen,
-      foregroundColor: Colors.white,
+    colorScheme: useDynamicColors
+        ? AppColors.dynamicLightScheme
+        : AppColors.sggwLightScheme,
+    appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
+    navigationBarTheme: NavigationBarThemeData(
+      indicatorColor: AppColors.primaryGreen.withOpacity(0.3),
+      labelTextStyle: WidgetStateProperty.all(
+        const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+      ),
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      selectedItemColor: AppColors.primaryGreen,
-      unselectedItemColor: Colors.grey,
+    cardTheme: CardThemeData(
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
     ),
   );
 
-  static ThemeData get dark => ThemeData(
+  static ThemeData dark({bool useDynamicColors = false}) => ThemeData(
     useMaterial3: true,
-    colorScheme: AppColors.darkScheme,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.black,
-      foregroundColor: Colors.white,
+    colorScheme: useDynamicColors
+        ? AppColors.dynamicDarkScheme
+        : AppColors.sggwDarkScheme,
+    appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
+    navigationBarTheme: NavigationBarThemeData(
+      indicatorColor: AppColors.primaryGreen.withOpacity(0.3),
+      labelTextStyle: WidgetStateProperty.all(
+        const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+      ),
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      selectedItemColor: AppColors.primaryGreen,
-      unselectedItemColor: Colors.grey,
+    cardTheme: CardThemeData(
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
     ),
   );
 }

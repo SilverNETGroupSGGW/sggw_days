@@ -18,6 +18,11 @@ class WikiRepository {
       return data
           .map((json) => WikiArticle.fromJson(json as Map<String, dynamic>))
           .toList();
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return [];
+      }
+      throw Exception('Failed to load wiki articles: $e');
     } catch (e) {
       throw Exception('Failed to load wiki articles: $e');
     }

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+import 'package:sggw_days/core/connectivity/connectivity_cubit.dart';
 import 'package:sggw_days/core/router/app_router.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
+import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/data/repositories/treasure_hunt_repository.dart';
@@ -17,17 +20,67 @@ void main() async {
 
   await Hive.initFlutter();
   final progressBox = await Hive.openBox<List<String>>('progress');
+  final settingsBox = await Hive.openBox('settings');
 
-  runApp(MyApp(progressBox: progressBox));
+  runApp(MyApp(progressBox: progressBox, settingsBox: settingsBox));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final Box<List<String>> progressBox;
+  final Box settingsBox;
 
-  const MyApp({super.key, required this.progressBox});
+  const MyApp({
+    super.key,
+    required this.progressBox,
+    required this.settingsBox,
+  });
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _onboardingCompleted = false;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkOnboarding();
+  }
+
+  Future<void> _checkOnboarding() async {
+    setState(() {
+      _onboardingCompleted =
+          widget.settingsBox.get('onboarding_completed', defaultValue: false)
+              as bool;
+      _loading = false;
+    });
+  }
+
+  void _completeOnboarding() {
+    setState(() {
+      _onboardingCompleted = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return const MaterialApp(
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
+      );
+    }
+
+    if (!_onboardingCompleted) {
+      return MaterialApp(
+        home: OnboardingPage(
+          onComplete: _completeOnboarding,
+          settingsBox: widget.settingsBox,
+        ),
+      );
+    }
+
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => TreasureHuntRepository()),
@@ -36,10 +89,12 @@ class MyApp extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(create: (context) => SettingsCubit()),
+          BlocProvider(create: (context) => ConnectivityCubit()),
           BlocProvider(
             create: (context) => TreasureHuntBloc(
               repository: context.read<TreasureHuntRepository>(),
-              progressBox: progressBox,
+              progressBox: widget.progressBox,
             ),
           ),
           BlocProvider(
@@ -51,20 +106,28 @@ class MyApp extends StatelessWidget {
                 TimetableBloc(repository: context.read<TimetableRepository>()),
           ),
         ],
-        child: MaterialApp.router(
-          title: 'Dni SGGW',
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          themeMode: ThemeMode.system,
-          localizationsDelegates: [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [Locale('pl'), Locale('en')],
-          locale: const Locale('pl'),
-          routerConfig: appRouter,
+        child: BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, settings) {
+            return MaterialApp.router(
+              title: 'Dni SGGW',
+              theme: AppTheme.light(
+                useDynamicColors: settings.useDynamicColors,
+              ),
+              darkTheme: AppTheme.dark(
+                useDynamicColors: settings.useDynamicColors,
+              ),
+              themeMode: settings.themeMode,
+              localizationsDelegates: [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [Locale('pl'), Locale('en')],
+              locale: settings.locale,
+              routerConfig: appRouter,
+            );
+          },
         ),
       ),
     );

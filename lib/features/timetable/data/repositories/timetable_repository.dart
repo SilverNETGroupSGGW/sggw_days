@@ -18,6 +18,11 @@ class TimetableRepository {
       return data
           .map((json) => TimetableEvent.fromJson(json as Map<String, dynamic>))
           .toList();
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return [];
+      }
+      throw Exception('Failed to load timetable events: $e');
     } catch (e) {
       throw Exception('Failed to load timetable events: $e');
     }

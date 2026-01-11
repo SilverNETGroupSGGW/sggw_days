@@ -18,6 +18,11 @@ class TreasureHuntRepository {
       return data
           .map((json) => TreasurePoint.fromJson(json as Map<String, dynamic>))
           .toList();
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return [];
+      }
+      throw Exception('Failed to load treasure points: $e');
     } catch (e) {
       throw Exception('Failed to load treasure points: $e');
     }
