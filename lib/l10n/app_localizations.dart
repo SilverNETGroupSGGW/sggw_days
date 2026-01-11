@@ -236,53 +236,59 @@ abstract class AppLocalizations {
   /// **'Witaj w Dniach SGGW!'**
   String get welcome;
 
-  /// No description provided for @onboardingTitle1.
+  /// No description provided for @onboardingWelcomeDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odkryj kampus SGGW, poznaj uczelnię i ciesz się wydarzeniami Dni SGGW!'**
+  String get onboardingWelcomeDesc;
+
+  /// No description provided for @onboardingTreasureHuntTitle.
   ///
   /// In pl, this message translates to:
   /// **'Gra Terenowa'**
-  String get onboardingTitle1;
+  String get onboardingTreasureHuntTitle;
 
-  /// No description provided for @onboardingDesc1.
+  /// No description provided for @onboardingTreasureHuntDesc.
   ///
   /// In pl, this message translates to:
   /// **'Znajdź ukryte punkty na terenie uczelni, skanuj kody QR i zdobywaj punkty. Musisz być blisko punktu, aby zeskanować kod.'**
-  String get onboardingDesc1;
+  String get onboardingTreasureHuntDesc;
 
-  /// No description provided for @onboardingTitle2.
+  /// No description provided for @onboardingWikiTitle.
   ///
   /// In pl, this message translates to:
   /// **'Wiedza o SGGW'**
-  String get onboardingTitle2;
+  String get onboardingWikiTitle;
 
-  /// No description provided for @onboardingDesc2.
+  /// No description provided for @onboardingWikiDesc.
   ///
   /// In pl, this message translates to:
   /// **'Dowiedz się więcej o historii, wykładowcach i ciekawostkach związanych z uczelnią.'**
-  String get onboardingDesc2;
+  String get onboardingWikiDesc;
 
-  /// No description provided for @onboardingTitle3.
+  /// No description provided for @onboardingTimetableTitle.
   ///
   /// In pl, this message translates to:
   /// **'Harmonogram Wydarzeń'**
-  String get onboardingTitle3;
+  String get onboardingTimetableTitle;
 
-  /// No description provided for @onboardingDesc3.
+  /// No description provided for @onboardingTimetableDesc.
   ///
   /// In pl, this message translates to:
   /// **'Sprawdź pełny program Dni SGGW i nie przegap żadnego wydarzenia.'**
-  String get onboardingDesc3;
+  String get onboardingTimetableDesc;
 
-  /// No description provided for @onboardingTitle4.
+  /// No description provided for @onboardingPermissionsTitle.
   ///
   /// In pl, this message translates to:
   /// **'Uprawnienia'**
-  String get onboardingTitle4;
+  String get onboardingPermissionsTitle;
 
-  /// No description provided for @onboardingDesc4.
+  /// No description provided for @onboardingPermissionsDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Aplikacja potrzebuje dostępu do lokalizacji (gra terenowa) i kamery (skanowanie QR).'**
-  String get onboardingDesc4;
+  /// **'Aplikacja potrzebuje dostępu do lokalizacji do Gra Terenowej i kamery do skanowania kodów QR.'**
+  String get onboardingPermissionsDesc;
 
   /// No description provided for @getStarted.
   ///
@@ -313,6 +319,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Kamera'**
   String get cameraPermission;
+
+  /// No description provided for @viewOnboarding.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokaż wprowadzenie'**
+  String get viewOnboarding;
+
+  /// No description provided for @viewOnboardingDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zobacz ponownie wprowadzenie do aplikacji'**
+  String get viewOnboardingDesc;
 }
 
 class _AppLocalizationsDelegate

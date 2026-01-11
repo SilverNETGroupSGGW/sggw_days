@@ -80,35 +80,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome => 'Welcome to SGGW Days!';
 
   @override
-  String get onboardingTitle1 => 'Treasure Hunt';
+  String get onboardingWelcomeDesc =>
+      'Discover SGGW campus, learn about the university, and enjoy the SGGW Days events!';
 
   @override
-  String get onboardingDesc1 =>
+  String get onboardingTreasureHuntTitle => 'Treasure Hunt';
+
+  @override
+  String get onboardingTreasureHuntDesc =>
       'Find hidden points on campus, scan QR codes and earn points. You must be close to a point to scan its code.';
 
   @override
-  String get onboardingTitle2 => 'SGGW Knowledge';
+  String get onboardingWikiTitle => 'SGGW Knowledge';
 
   @override
-  String get onboardingDesc2 =>
+  String get onboardingWikiDesc =>
       'Learn more about the university\'s history, lecturers and interesting facts.';
 
   @override
-  String get onboardingTitle3 => 'Event Schedule';
+  String get onboardingTimetableTitle => 'Event Schedule';
 
   @override
-  String get onboardingDesc3 =>
+  String get onboardingTimetableDesc =>
       'Check the full SGGW Days program and don\'t miss any event.';
 
   @override
-  String get onboardingTitle4 => 'Permissions';
+  String get onboardingPermissionsTitle => 'Permissions';
 
   @override
-  String get onboardingDesc4 =>
-      'The app needs access to your location (treasure hunt) and camera (QR scanning).';
+  String get onboardingPermissionsDesc =>
+      'The app needs access to your location for Treasure Hunt and camera for QR code scanning.';
 
   @override
-  String get getStarted => 'Get Started';
+  String get getStarted => 'Finish';
 
   @override
   String get next => 'Next';
@@ -121,4 +125,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cameraPermission => 'Camera';
+
+  @override
+  String get viewOnboarding => 'View Onboarding';
+
+  @override
+  String get viewOnboardingDesc => 'See the introduction again';
 }

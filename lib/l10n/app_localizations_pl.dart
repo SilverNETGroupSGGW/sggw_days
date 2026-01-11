@@ -80,32 +80,36 @@ class AppLocalizationsPl extends AppLocalizations {
   String get welcome => 'Witaj w Dniach SGGW!';
 
   @override
-  String get onboardingTitle1 => 'Gra Terenowa';
+  String get onboardingWelcomeDesc =>
+      'Odkryj kampus SGGW, poznaj uczelnię i ciesz się wydarzeniami Dni SGGW!';
 
   @override
-  String get onboardingDesc1 =>
+  String get onboardingTreasureHuntTitle => 'Gra Terenowa';
+
+  @override
+  String get onboardingTreasureHuntDesc =>
       'Znajdź ukryte punkty na terenie uczelni, skanuj kody QR i zdobywaj punkty. Musisz być blisko punktu, aby zeskanować kod.';
 
   @override
-  String get onboardingTitle2 => 'Wiedza o SGGW';
+  String get onboardingWikiTitle => 'Wiedza o SGGW';
 
   @override
-  String get onboardingDesc2 =>
+  String get onboardingWikiDesc =>
       'Dowiedz się więcej o historii, wykładowcach i ciekawostkach związanych z uczelnią.';
 
   @override
-  String get onboardingTitle3 => 'Harmonogram Wydarzeń';
+  String get onboardingTimetableTitle => 'Harmonogram Wydarzeń';
 
   @override
-  String get onboardingDesc3 =>
+  String get onboardingTimetableDesc =>
       'Sprawdź pełny program Dni SGGW i nie przegap żadnego wydarzenia.';
 
   @override
-  String get onboardingTitle4 => 'Uprawnienia';
+  String get onboardingPermissionsTitle => 'Uprawnienia';
 
   @override
-  String get onboardingDesc4 =>
-      'Aplikacja potrzebuje dostępu do lokalizacji (gra terenowa) i kamery (skanowanie QR).';
+  String get onboardingPermissionsDesc =>
+      'Aplikacja potrzebuje dostępu do lokalizacji do Gra Terenowej i kamery do skanowania kodów QR.';
 
   @override
   String get getStarted => 'Rozpocznij';
@@ -121,4 +125,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get cameraPermission => 'Kamera';
+
+  @override
+  String get viewOnboarding => 'Pokaż wprowadzenie';
+
+  @override
+  String get viewOnboardingDesc => 'Zobacz ponownie wprowadzenie do aplikacji';
 }

@@ -4,7 +4,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
-class OnboardingPage extends StatelessWidget {
+class OnboardingPage extends StatefulWidget {
   final VoidCallback onComplete;
   final Box settingsBox;
 
@@ -14,14 +14,36 @@ class OnboardingPage extends StatelessWidget {
     required this.settingsBox,
   });
 
+  @override
+  State<OnboardingPage> createState() => _OnboardingPageState();
+}
+
+class _OnboardingPageState extends State<OnboardingPage> {
+  bool _permissionsGranted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPermissions();
+  }
+
+  Future<void> _checkPermissions() async {
+    final cameraStatus = await Permission.camera.status;
+    final locationStatus = await Permission.location.status;
+    setState(() {
+      _permissionsGranted = cameraStatus.isGranted && locationStatus.isGranted;
+    });
+  }
+
   Future<void> _requestPermissions() async {
     await Permission.camera.request();
     await Permission.location.request();
+    await _checkPermissions();
   }
 
   Future<void> _completeOnboarding() async {
-    await settingsBox.put('onboarding_completed', true);
-    onComplete();
+    await widget.settingsBox.put('onboarding_completed', true);
+    widget.onComplete();
   }
 
   @override
@@ -33,7 +55,7 @@ class OnboardingPage extends StatelessWidget {
       pages: [
         PageViewModel(
           title: l10n.welcome,
-          body: l10n.onboardingTitle1,
+          body: l10n.onboardingWelcomeDesc,
           image: Center(
             child: Icon(Icons.map, size: 120, color: colorScheme.primary),
           ),
@@ -50,8 +72,8 @@ class OnboardingPage extends StatelessWidget {
           ),
         ),
         PageViewModel(
-          title: l10n.onboardingTitle1,
-          body: l10n.onboardingDesc1,
+          title: l10n.onboardingTreasureHuntTitle,
+          body: l10n.onboardingTreasureHuntDesc,
           image: Center(
             child: Icon(
               Icons.qr_code_scanner,
@@ -72,8 +94,8 @@ class OnboardingPage extends StatelessWidget {
           ),
         ),
         PageViewModel(
-          title: l10n.onboardingTitle2,
-          body: l10n.onboardingDesc2,
+          title: l10n.onboardingWikiTitle,
+          body: l10n.onboardingWikiDesc,
           image: Center(
             child: Icon(Icons.info, size: 120, color: colorScheme.primary),
           ),
@@ -90,8 +112,8 @@ class OnboardingPage extends StatelessWidget {
           ),
         ),
         PageViewModel(
-          title: l10n.onboardingTitle3,
-          body: l10n.onboardingDesc3,
+          title: l10n.onboardingTimetableTitle,
+          body: l10n.onboardingTimetableDesc,
           image: Center(
             child: Icon(
               Icons.calendar_today,
@@ -112,15 +134,15 @@ class OnboardingPage extends StatelessWidget {
           ),
         ),
         PageViewModel(
-          title: l10n.onboardingTitle4,
-          body: l10n.onboardingDesc4,
+          title: l10n.onboardingPermissionsTitle,
+          body: l10n.onboardingPermissionsDesc,
           image: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Icon(Icons.location_on, size: 60, color: colorScheme.primary),
-                const SizedBox(height: 16),
-                Icon(Icons.camera_alt, size: 60, color: colorScheme.primary),
+                Icon(Icons.location_on, size: 100, color: colorScheme.primary),
+                Icon(Icons.camera_alt, size: 100, color: colorScheme.primary),
               ],
             ),
           ),
@@ -134,11 +156,26 @@ class OnboardingPage extends StatelessWidget {
               fontSize: 16,
               color: colorScheme.onSurface.withValues(alpha: 0.7),
             ),
+            footerFlex: 0,
           ),
-          footer: FilledButton.icon(
-            onPressed: _requestPermissions,
-            icon: const Icon(Icons.check),
-            label: Text(l10n.getStarted),
+          footer: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: SizedBox(
+              height: 48,
+              child: FilledButton.icon(
+                onPressed: _permissionsGranted ? null : _requestPermissions,
+                icon: Icon(
+                  _permissionsGranted
+                      ? Icons.check_box
+                      : Icons.check_box_outline_blank,
+                ),
+                label: Text(
+                  _permissionsGranted
+                      ? l10n.permissionsGranted
+                      : l10n.grantPermissions,
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -158,6 +195,7 @@ class OnboardingPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(25.0),
         ),
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
@@ -129,6 +131,27 @@ class SettingsPage extends StatelessWidget {
                 value: state.useDynamicColors,
                 onChanged: (value) {
                   context.read<SettingsCubit>().toggleDynamicColors(value);
+                },
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.info_outline),
+                title: Text(l10n.viewOnboarding),
+                subtitle: Text(l10n.viewOnboardingDesc),
+                onTap: () async {
+                  final settingsBox = await Hive.openBox('settings');
+                  if (context.mounted) {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => OnboardingPage(
+                          onComplete: () {
+                            Navigator.of(context).pop();
+                          },
+                          settingsBox: settingsBox,
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
             ],

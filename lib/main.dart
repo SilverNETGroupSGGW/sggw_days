@@ -74,6 +74,15 @@ class _MyAppState extends State<MyApp> {
 
     if (!_onboardingCompleted) {
       return MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('en'), Locale('pl')],
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
         home: OnboardingPage(
           onComplete: _completeOnboarding,
           settingsBox: widget.settingsBox,
