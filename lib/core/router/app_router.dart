@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sggw_days/features/home/presentation/pages/home_page.dart';
+import 'package:sggw_days/features/settings/presentation/pages/settings_page.dart';
+import 'package:sggw_days/features/timetable/presentation/pages/timetable_page.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/pages/treasure_hunt_page.dart';
 import 'package:sggw_days/features/wiki/presentation/pages/wiki_page.dart';
-import 'package:sggw_days/features/timetable/presentation/pages/timetable_page.dart';
-import 'package:sggw_days/features/settings/presentation/pages/settings_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellNavigatorKey = GlobalKey<NavigatorState>();

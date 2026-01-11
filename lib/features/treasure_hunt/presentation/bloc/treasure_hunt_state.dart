@@ -35,5 +35,11 @@ class TreasureHuntState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, points, foundPointIds, errorMessage, totalScore];
+  List<Object?> get props => [
+    status,
+    points,
+    foundPointIds,
+    errorMessage,
+    totalScore,
+  ];
 }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:sggw_days/features/timetable/data/models/timetable_event.dart' as model;
+import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
+    as model;
 
 enum TimetableStatus { initial, loading, success, error }
 
@@ -40,11 +41,11 @@ class TimetableState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        events,
-        filteredEvents,
-        selectedDate,
-        selectedTag,
-        errorMessage,
-      ];
+    status,
+    events,
+    filteredEvents,
+    selectedDate,
+    selectedTag,
+    errorMessage,
+  ];
 }

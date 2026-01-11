@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:sggw_days/l10n/app_localizations.dart';
 import 'package:sggw_days/features/wiki/presentation/bloc/wiki_bloc.dart';
 import 'package:sggw_days/features/wiki/presentation/bloc/wiki_event.dart';
 import 'package:sggw_days/features/wiki/presentation/bloc/wiki_state.dart';
+import 'package:sggw_days/l10n/app_localizations.dart';
 
 class WikiPage extends StatefulWidget {
   const WikiPage({super.key});

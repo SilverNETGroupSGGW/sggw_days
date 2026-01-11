@@ -40,11 +40,11 @@ class WikiState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        articles,
-        filteredArticles,
-        selectedCategory,
-        searchQuery,
-        errorMessage,
-      ];
+    status,
+    articles,
+    filteredArticles,
+    selectedCategory,
+    searchQuery,
+    errorMessage,
+  ];
 }

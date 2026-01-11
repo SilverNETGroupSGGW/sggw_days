@@ -8,8 +8,8 @@ class TreasureHuntRepository {
   TreasureHuntRepository({
     Dio? dio,
     String baseUrl = 'https://raw.githubusercontent.com/sggw-days/api/main',
-  })  : _dio = dio ?? Dio(),
-        _baseUrl = baseUrl;
+  }) : _dio = dio ?? Dio(),
+       _baseUrl = baseUrl;
 
   Future<List<TreasurePoint>> getTreasurePoints() async {
     try {

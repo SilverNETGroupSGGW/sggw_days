@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sggw_days/features/timetable/data/models/timetable_event.dart' as model;
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_event.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_state.dart';
-import 'package:sggw_days/features/timetable/data/models/timetable_event.dart' as model;
 
 class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   final TimetableRepository _repository;
@@ -23,7 +23,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     try {
       final events = await _repository.getEvents();
       final filtered = _filterEvents(events, state.selectedDate, state.selectedTag);
-      
+
       emit(state.copyWith(
         status: TimetableStatus.success,
         events: events,

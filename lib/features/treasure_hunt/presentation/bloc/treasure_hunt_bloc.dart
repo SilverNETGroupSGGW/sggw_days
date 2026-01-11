@@ -11,9 +11,9 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
   TreasureHuntBloc({
     required TreasureHuntRepository repository,
     required Box<List<String>> progressBox,
-  })  : _repository = repository,
-        _progressBox = progressBox,
-        super(const TreasureHuntState()) {
+  }) : _repository = repository,
+       _progressBox = progressBox,
+       super(const TreasureHuntState()) {
     on<LoadTreasurePoints>(_onLoadTreasurePoints);
     on<MarkPointAsFound>(_onMarkPointAsFound);
     on<ScanQRCode>(_onScanQRCode);
@@ -26,22 +26,28 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
     emit(state.copyWith(status: TreasureHuntStatus.loading));
     try {
       final points = await _repository.getTreasurePoints();
-      final foundIds = _progressBox.get('found_points', defaultValue: <String>[]) ?? <String>[];
+      final foundIds =
+          _progressBox.get('found_points', defaultValue: <String>[]) ??
+          <String>[];
       final score = points
           .where((point) => foundIds.contains(point.id))
           .fold(0, (sum, point) => sum + point.points);
 
-      emit(state.copyWith(
-        status: TreasureHuntStatus.success,
-        points: points,
-        foundPointIds: foundIds,
-        totalScore: score,
-      ));
+      emit(
+        state.copyWith(
+          status: TreasureHuntStatus.success,
+          points: points,
+          foundPointIds: foundIds,
+          totalScore: score,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        status: TreasureHuntStatus.error,
-        errorMessage: e.toString(),
-      ));
+      emit(
+        state.copyWith(
+          status: TreasureHuntStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
@@ -61,18 +67,22 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
       orElse: () => state.points.first,
     );
 
-    emit(state.copyWith(
-      foundPointIds: updatedFoundIds,
-      totalScore: state.totalScore + foundPoint.points,
-    ));
+    emit(
+      state.copyWith(
+        foundPointIds: updatedFoundIds,
+        totalScore: state.totalScore + foundPoint.points,
+      ),
+    );
   }
 
   Future<void> _onScanQRCode(
     ScanQRCode event,
     Emitter<TreasureHuntState> emit,
   ) async {
-    final point = state.points.where((p) => p.qrCode == event.qrCode).firstOrNull;
-    
+    final point = state.points
+        .where((p) => p.qrCode == event.qrCode)
+        .firstOrNull;
+
     if (point != null) {
       add(MarkPointAsFound(point.id));
     }

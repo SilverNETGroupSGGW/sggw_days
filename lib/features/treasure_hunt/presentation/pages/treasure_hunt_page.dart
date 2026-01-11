@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:sggw_days/l10n/app_localizations.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_state.dart';
+import 'package:sggw_days/l10n/app_localizations.dart';
 
 class TreasureHuntPage extends StatefulWidget {
   const TreasureHuntPage({super.key});
@@ -18,7 +18,7 @@ class TreasureHuntPage extends StatefulWidget {
 
 class _TreasureHuntPageState extends State<TreasureHuntPage> {
   final MapController _mapController = MapController();
-  
+
   // SGGW coordinates
   static const LatLng sggwCenter = LatLng(52.1598, 21.0463);
 

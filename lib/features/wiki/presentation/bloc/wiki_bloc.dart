@@ -7,8 +7,8 @@ class WikiBloc extends Bloc<WikiEvent, WikiState> {
   final WikiRepository _repository;
 
   WikiBloc({required WikiRepository repository})
-      : _repository = repository,
-        super(const WikiState()) {
+    : _repository = repository,
+      super(const WikiState()) {
     on<LoadWikiArticles>(_onLoadWikiArticles);
     on<FilterArticlesByCategory>(_onFilterArticlesByCategory);
     on<SearchArticles>(_onSearchArticles);
@@ -21,16 +21,17 @@ class WikiBloc extends Bloc<WikiEvent, WikiState> {
     emit(state.copyWith(status: WikiStatus.loading));
     try {
       final articles = await _repository.getArticles();
-      emit(state.copyWith(
-        status: WikiStatus.success,
-        articles: articles,
-        filteredArticles: articles,
-      ));
+      emit(
+        state.copyWith(
+          status: WikiStatus.success,
+          articles: articles,
+          filteredArticles: articles,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        status: WikiStatus.error,
-        errorMessage: e.toString(),
-      ));
+      emit(
+        state.copyWith(status: WikiStatus.error, errorMessage: e.toString()),
+      );
     }
   }
 
@@ -39,30 +40,28 @@ class WikiBloc extends Bloc<WikiEvent, WikiState> {
     Emitter<WikiState> emit,
   ) {
     if (event.category == null) {
-      emit(state.copyWith(
-        filteredArticles: state.articles,
-        selectedCategory: null,
-      ));
+      emit(
+        state.copyWith(
+          filteredArticles: state.articles,
+          selectedCategory: null,
+        ),
+      );
     } else {
       final filtered = state.articles
           .where((article) => article.category == event.category)
           .toList();
-      emit(state.copyWith(
-        filteredArticles: filtered,
-        selectedCategory: event.category,
-      ));
+      emit(
+        state.copyWith(
+          filteredArticles: filtered,
+          selectedCategory: event.category,
+        ),
+      );
     }
   }
 
-  void _onSearchArticles(
-    SearchArticles event,
-    Emitter<WikiState> emit,
-  ) {
+  void _onSearchArticles(SearchArticles event, Emitter<WikiState> emit) {
     if (event.query.isEmpty) {
-      emit(state.copyWith(
-        filteredArticles: state.articles,
-        searchQuery: null,
-      ));
+      emit(state.copyWith(filteredArticles: state.articles, searchQuery: null));
     } else {
       final query = event.query.toLowerCase();
       final filtered = state.articles.where((article) {
@@ -70,10 +69,9 @@ class WikiBloc extends Bloc<WikiEvent, WikiState> {
             article.content.toLowerCase().contains(query) ||
             article.tags.any((tag) => tag.toLowerCase().contains(query));
       }).toList();
-      emit(state.copyWith(
-        filteredArticles: filtered,
-        searchQuery: event.query,
-      ));
+      emit(
+        state.copyWith(filteredArticles: filtered, searchQuery: event.query),
+      );
     }
   }
 }

@@ -8,8 +8,8 @@ class TimetableRepository {
   TimetableRepository({
     Dio? dio,
     String baseUrl = 'https://raw.githubusercontent.com/sggw-days/api/main',
-  })  : _dio = dio ?? Dio(),
-        _baseUrl = baseUrl;
+  }) : _dio = dio ?? Dio(),
+       _baseUrl = baseUrl;
 
   Future<List<TimetableEvent>> getEvents() async {
     try {

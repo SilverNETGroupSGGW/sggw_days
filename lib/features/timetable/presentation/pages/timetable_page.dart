@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sggw_days/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_event.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_state.dart';
+import 'package:sggw_days/l10n/app_localizations.dart';
 
 class TimetablePage extends StatefulWidget {
   const TimetablePage({super.key});
