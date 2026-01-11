@@ -38,28 +38,28 @@ class AppColors {
 
 class AppTheme {
   static ThemeData get light => ThemeData(
-        useMaterial3: true,
-        colorScheme: AppColors.lightScheme,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.darkGreen,
-          foregroundColor: Colors.white,
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: AppColors.primaryGreen,
-          unselectedItemColor: Colors.grey,
-        ),
-      );
+    useMaterial3: true,
+    colorScheme: AppColors.lightScheme,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.darkGreen,
+      foregroundColor: Colors.white,
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      selectedItemColor: AppColors.primaryGreen,
+      unselectedItemColor: Colors.grey,
+    ),
+  );
 
   static ThemeData get dark => ThemeData(
-        useMaterial3: true,
-        colorScheme: AppColors.darkScheme,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.white,
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: AppColors.primaryGreen,
-          unselectedItemColor: Colors.grey,
-        ),
-      );
+    useMaterial3: true,
+    colorScheme: AppColors.darkScheme,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.black,
+      foregroundColor: Colors.white,
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      selectedItemColor: AppColors.primaryGreen,
+      unselectedItemColor: Colors.grey,
+    ),
+  );
 }

@@ -43,14 +43,12 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider(
-            create: (context) => WikiBloc(
-              repository: context.read<WikiRepository>(),
-            ),
+            create: (context) =>
+                WikiBloc(repository: context.read<WikiRepository>()),
           ),
           BlocProvider(
-            create: (context) => TimetableBloc(
-              repository: context.read<TimetableRepository>(),
-            ),
+            create: (context) =>
+                TimetableBloc(repository: context.read<TimetableRepository>()),
           ),
         ],
         child: MaterialApp.router(
@@ -64,10 +62,7 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('pl'),
-            Locale('en'),
-          ],
+          supportedLocales: const [Locale('pl'), Locale('en')],
           locale: const Locale('pl'),
           routerConfig: appRouter,
         ),

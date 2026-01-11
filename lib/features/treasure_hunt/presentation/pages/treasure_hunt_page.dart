@@ -92,9 +92,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                       onTap: () => _showPointDetails(context, point, isFound),
                       child: Icon(
                         isFound ? Icons.check_circle : Icons.location_on,
-                        color: isFound
-                            ? AppColors.primaryGreen
-                            : AppColors.red,
+                        color: isFound ? AppColors.primaryGreen : AppColors.red,
                         size: 40,
                       ),
                     ),
@@ -176,9 +174,7 @@ class _QRScannerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.scanQr),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.scanQr)),
       body: MobileScanner(
         onDetect: (capture) {
           final List<Barcode> barcodes = capture.barcodes;

@@ -125,9 +125,7 @@ class _ArticleDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(article.title as String),
-      ),
+      appBar: AppBar(title: Text(article.title as String)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -147,10 +145,7 @@ class _ArticleDetailsPage extends StatelessWidget {
               labelStyle: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 16),
-            MarkdownBody(
-              data: article.content as String,
-              selectable: true,
-            ),
+            MarkdownBody(data: article.content as String, selectable: true),
           ],
         ),
       ),
