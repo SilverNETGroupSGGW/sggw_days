@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "appTitle": "SGGW Days",
+  "treasureHunt": "Treasure Hunt",
+  "wiki": "Wiki",
+  "timetable": "Timetable",
+  "notifications": "Notifications",
+  "map": "Map",
+  "scanQr": "Scan QR",
+  "points": "Points",
+  "settings": "Settings",
+  "language": "Language",
+  "theme": "Theme",
+  "score": "Score: {value}",
+  "pointFound": "Point found!",
+  "congratulations": "Congratulations!",
+  "ok": "OK",
+  "cancel": "Cancel"
+}

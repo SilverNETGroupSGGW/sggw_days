@@ -1,0 +1,29 @@
+{
+  "@@locale": "pl",
+  "appTitle": "Dni SGGW",
+  "@appTitle": {
+    "description": "Tytuł aplikacji"
+  },
+  "treasureHunt": "Gra Terenowa",
+  "wiki": "Wiedza",
+  "timetable": "Harmonogram",
+  "notifications": "Powiadomienia",
+  "map": "Mapa",
+  "scanQr": "Skanuj QR",
+  "points": "Punkty",
+  "settings": "Ustawienia",
+  "language": "Język",
+  "theme": "Motyw",
+  "score": "Wynik: {value}",
+  "@score": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "pointFound": "Punkt odnaleziony!",
+  "congratulations": "Gratulacje!",
+  "ok": "OK",
+  "cancel": "Anuluj"
+}
