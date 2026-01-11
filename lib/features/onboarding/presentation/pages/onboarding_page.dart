@@ -45,7 +45,7 @@ class OnboardingPage extends StatelessWidget {
             ),
             bodyTextStyle: TextStyle(
               fontSize: 18,
-              color: colorScheme.onSurface.withOpacity(0.7),
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ),
@@ -67,7 +67,7 @@ class OnboardingPage extends StatelessWidget {
             ),
             bodyTextStyle: TextStyle(
               fontSize: 16,
-              color: colorScheme.onSurface.withOpacity(0.7),
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ),
@@ -85,7 +85,7 @@ class OnboardingPage extends StatelessWidget {
             ),
             bodyTextStyle: TextStyle(
               fontSize: 16,
-              color: colorScheme.onSurface.withOpacity(0.7),
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ),
@@ -107,7 +107,7 @@ class OnboardingPage extends StatelessWidget {
             ),
             bodyTextStyle: TextStyle(
               fontSize: 16,
-              color: colorScheme.onSurface.withOpacity(0.7),
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ),
@@ -132,7 +132,7 @@ class OnboardingPage extends StatelessWidget {
             ),
             bodyTextStyle: TextStyle(
               fontSize: 16,
-              color: colorScheme.onSurface.withOpacity(0.7),
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
           footer: FilledButton.icon(
@@ -152,7 +152,7 @@ class OnboardingPage extends StatelessWidget {
         size: const Size.square(10.0),
         activeSize: const Size(20.0, 10.0),
         activeColor: colorScheme.primary,
-        color: colorScheme.onSurface.withOpacity(0.3),
+        color: colorScheme.onSurface.withValues(alpha: 0.3),
         spacing: const EdgeInsets.symmetric(horizontal: 3.0),
         activeShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25.0),

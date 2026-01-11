@@ -54,7 +54,7 @@ class AppTheme {
         : AppColors.sggwLightScheme,
     appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
     navigationBarTheme: NavigationBarThemeData(
-      indicatorColor: AppColors.primaryGreen.withOpacity(0.3),
+      indicatorColor: AppColors.primaryGreen.withValues(alpha: 0.3),
       labelTextStyle: WidgetStateProperty.all(
         const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
       ),
@@ -85,7 +85,7 @@ class AppTheme {
         : AppColors.sggwDarkScheme,
     appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
     navigationBarTheme: NavigationBarThemeData(
-      indicatorColor: AppColors.primaryGreen.withOpacity(0.3),
+      indicatorColor: AppColors.primaryGreen.withValues(alpha: 0.3),
       labelTextStyle: WidgetStateProperty.all(
         const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
       ),

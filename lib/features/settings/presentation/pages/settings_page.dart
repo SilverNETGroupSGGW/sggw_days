@@ -31,49 +31,30 @@ class SettingsPage extends StatelessWidget {
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text(l10n.language),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            title: const Text('System'),
-                            leading: Radio<String?>(
+                      content: RadioGroup<String?>(
+                        groupValue: state.locale?.languageCode,
+                        onChanged: (value) {
+                          Navigator.of(
+                            context,
+                          ).pop(value == null ? null : Locale(value));
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RadioListTile<String?>(
+                              title: const Text('System'),
                               value: null,
-                              groupValue: state.locale?.languageCode,
-                              onChanged: (_) {
-                                Navigator.of(context).pop(null);
-                              },
                             ),
-                            onTap: () {
-                              Navigator.of(context).pop(null);
-                            },
-                          ),
-                          ListTile(
-                            title: const Text('Polski'),
-                            leading: Radio<String?>(
+                            RadioListTile<String?>(
+                              title: const Text('Polski'),
                               value: 'pl',
-                              groupValue: state.locale?.languageCode,
-                              onChanged: (_) {
-                                Navigator.of(context).pop(const Locale('pl'));
-                              },
                             ),
-                            onTap: () {
-                              Navigator.of(context).pop(const Locale('pl'));
-                            },
-                          ),
-                          ListTile(
-                            title: const Text('English'),
-                            leading: Radio<String?>(
+                            RadioListTile<String?>(
+                              title: const Text('English'),
                               value: 'en',
-                              groupValue: state.locale?.languageCode,
-                              onChanged: (_) {
-                                Navigator.of(context).pop(const Locale('en'));
-                              },
                             ),
-                            onTap: () {
-                              Navigator.of(context).pop(const Locale('en'));
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       actions: [
                         TextButton(
@@ -83,7 +64,9 @@ class SettingsPage extends StatelessWidget {
                       ],
                     ),
                   );
-                  context.read<SettingsCubit>().changeLocale(locale);
+                  if (context.mounted) {
+                    context.read<SettingsCubit>().changeLocale(locale);
+                  }
                 },
               ),
               ListTile(
@@ -101,49 +84,28 @@ class SettingsPage extends StatelessWidget {
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text(l10n.theme),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            title: const Text('Light'),
-                            leading: Radio<ThemeMode>(
+                      content: RadioGroup<ThemeMode>(
+                        groupValue: state.themeMode,
+                        onChanged: (value) {
+                          Navigator.of(context).pop(value);
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RadioListTile<ThemeMode>(
+                              title: const Text('Light'),
                               value: ThemeMode.light,
-                              groupValue: state.themeMode,
-                              onChanged: (_) {
-                                Navigator.of(context).pop(ThemeMode.light);
-                              },
                             ),
-                            onTap: () {
-                              Navigator.of(context).pop(ThemeMode.light);
-                            },
-                          ),
-                          ListTile(
-                            title: const Text('Dark'),
-                            leading: Radio<ThemeMode>(
+                            RadioListTile<ThemeMode>(
+                              title: const Text('Dark'),
                               value: ThemeMode.dark,
-                              groupValue: state.themeMode,
-                              onChanged: (_) {
-                                Navigator.of(context).pop(ThemeMode.dark);
-                              },
                             ),
-                            onTap: () {
-                              Navigator.of(context).pop(ThemeMode.dark);
-                            },
-                          ),
-                          ListTile(
-                            title: const Text('System'),
-                            leading: Radio<ThemeMode>(
+                            RadioListTile<ThemeMode>(
+                              title: const Text('System'),
                               value: ThemeMode.system,
-                              groupValue: state.themeMode,
-                              onChanged: (_) {
-                                Navigator.of(context).pop(ThemeMode.system);
-                              },
                             ),
-                            onTap: () {
-                              Navigator.of(context).pop(ThemeMode.system);
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       actions: [
                         TextButton(
@@ -153,7 +115,7 @@ class SettingsPage extends StatelessWidget {
                       ],
                     ),
                   );
-                  if (themeMode != null) {
+                  if (context.mounted && themeMode != null) {
                     context.read<SettingsCubit>().changeThemeMode(themeMode);
                   }
                 },
