@@ -54,22 +54,24 @@ const server = Bun.serve({
       }
 
       try {
+        console.log(`${method} ${apiPath}`);
+
         // GET endpoints
         if (method === "GET") {
           // Treasure Points
-          if (apiPath === "/treasure_points.json") {
+          if (apiPath === "/treasure_points") {
             const points = await db.select().from(treasurePoints);
             return jsonResponse(points);
           }
 
           // Wiki Articles
-          if (apiPath === "/wiki_articles.json") {
+          if (apiPath === "/wiki_articles") {
             const articles = await listWikiArticles();
             return jsonResponse(articles);
           }
 
           // Timetable Events
-          if (apiPath === "/timetable_events.json") {
+          if (apiPath === "/timetable_events") {
             const events = await db.select().from(timetableEvents);
             return jsonResponse(events);
           }
@@ -83,6 +85,7 @@ const server = Bun.serve({
           if (apiPath === "/treasure_points") {
             const data = body as CreateTreasurePointRequest;
             const id = crypto.randomUUID();
+            console.log(`Creating treasure point with id: ${id}`);
 
             await db.insert(treasurePoints).values({ id, ...data });
             return jsonResponse({ id, ...data }, 201);
@@ -129,11 +132,18 @@ const server = Bun.serve({
         if (method === "PUT") {
           const body = await req.json();
           const match = apiPath.match(
-            /\/(treasure_points|wiki_articles|timetable_events)\/(.+)/
+            /\/(treasure_points|wiki_articles|timetable_events)\/?(.*)/
           );
 
           if (match) {
-            const [, resource, id] = match;
+            const [, resource, idWithSlash] = match;
+            const id = idWithSlash ? idWithSlash.replace(/^\//, '').replace(/\/$/, '') : '';
+
+            if (!id) {
+                return errorResponse("Missing Resource ID", 400);
+            }
+
+            console.log(`Updating ${resource} with id: ${id}`);
 
             // Treasure Points
             if (resource === "treasure_points") {
@@ -197,11 +207,18 @@ const server = Bun.serve({
         // DELETE endpoints - remove items
         if (method === "DELETE") {
           const match = apiPath.match(
-            /\/(treasure_points|wiki_articles|timetable_events)\/(.+)/
+            /\/(treasure_points|wiki_articles|timetable_events)\/?(.*)/
           );
 
           if (match) {
-            const [, resource, id] = match;
+            const [, resource, idWithSlash] = match;
+            const id = idWithSlash ? idWithSlash.replace(/^\//, '').replace(/\/$/, '') : '';
+
+            if (!id) {
+                return errorResponse("Missing Resource ID", 400);
+            }
+
+            console.log(`Deleting ${resource} with id: ${id}`);
 
             // Treasure Points
             if (resource === "treasure_points") {

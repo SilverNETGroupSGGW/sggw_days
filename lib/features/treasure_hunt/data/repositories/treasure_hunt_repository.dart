@@ -12,7 +12,7 @@ class TreasureHuntRepository {
 
   Future<List<TreasurePoint>> getTreasurePoints() async {
     try {
-      final response = await _dio.get('$_baseUrl/treasure_points.json');
+      final response = await _dio.get('$_baseUrl/treasure_points');
       final List<dynamic> data = response.data as List<dynamic>;
       return data
           .map((json) => TreasurePoint.fromJson(json as Map<String, dynamic>))

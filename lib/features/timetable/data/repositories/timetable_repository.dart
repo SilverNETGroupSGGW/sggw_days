@@ -12,7 +12,7 @@ class TimetableRepository {
 
   Future<List<TimetableEvent>> getEvents() async {
     try {
-      final response = await _dio.get('$_baseUrl/timetable_events.json');
+      final response = await _dio.get('$_baseUrl/timetable_events');
       final List<dynamic> data = response.data as List<dynamic>;
       return data
           .map((json) => TimetableEvent.fromJson(json as Map<String, dynamic>))

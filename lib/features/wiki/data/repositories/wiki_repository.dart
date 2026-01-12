@@ -12,7 +12,7 @@ class WikiRepository {
 
   Future<List<WikiArticle>> getArticles() async {
     try {
-      final response = await _dio.get('$_baseUrl/wiki_articles.json');
+      final response = await _dio.get('$_baseUrl/wiki_articles');
       final List<dynamic> data = response.data as List<dynamic>;
       return data
           .map((json) => WikiArticle.fromJson(json as Map<String, dynamic>))
