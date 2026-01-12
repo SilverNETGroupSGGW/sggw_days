@@ -58,11 +58,7 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
     final updatedFoundIds = [...state.foundPointIds, event.pointId];
     await _progressBox.put('found_points', updatedFoundIds);
 
-    emit(
-      state.copyWith(
-        foundPointIds: updatedFoundIds,
-      ),
-    );
+    emit(state.copyWith(foundPointIds: updatedFoundIds));
   }
 
   Future<void> _onScanQRCode(

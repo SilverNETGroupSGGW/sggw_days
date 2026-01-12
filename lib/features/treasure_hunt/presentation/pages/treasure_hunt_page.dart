@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -64,18 +65,19 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     }
 
     // Listen for updates
-    _positionStreamSubscription = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((position) {
-      if (mounted) {
-        setState(() {
-          _currentPosition = LatLng(position.latitude, position.longitude);
+    _positionStreamSubscription =
+        Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 10,
+          ),
+        ).listen((position) {
+          if (mounted) {
+            setState(() {
+              _currentPosition = LatLng(position.latitude, position.longitude);
+            });
+          }
         });
-      }
-    });
   }
 
   @override
@@ -165,8 +167,9 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                         onTap: () => _showPointDetails(context, point, isFound),
                         child: Icon(
                           isFound ? Icons.check_circle : Icons.location_on,
-                          color:
-                              isFound ? AppColors.primaryGreen : AppColors.red,
+                          color: isFound
+                              ? AppColors.primaryGreen
+                              : AppColors.red,
                           size: 40,
                         ),
                       ),

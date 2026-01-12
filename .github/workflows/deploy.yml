@@ -31,7 +31,7 @@ jobs:
               run: flutter pub get
 
             - name: Build web
-              run: flutter build web --release --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL }}
+              run: flutter build web --release --base-href "/sggw_days/" --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL }}
 
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
