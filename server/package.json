@@ -5,7 +5,7 @@
   "scripts": {
     "start": "bun run index.ts",
     "dev": "bun --watch run index.ts",
-    "build": "cd .. && flutter build web --release --dart-define=API_BASE_URL=/api",
+    "build": "cd .. && flutter build web --release --dart-define=API_BASE_URL=/api --wasm",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
