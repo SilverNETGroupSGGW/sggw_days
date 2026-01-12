@@ -35,7 +35,7 @@ jobs:
               run: flutter build web --wasm --release --base-href "/sggw_days/" --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL }}
 
             - name: Upload artifact
-              uses: actions/upload-pages-artifact@v3
+              uses: actions/upload-pages-artifact@v4
               with:
                   path: "build/web"
 
