@@ -44,189 +44,213 @@ const server = Bun.serve({
     const path = url.pathname;
     const method = req.method;
 
-    // Handle CORS preflight
-    if (method === "OPTIONS") {
-      return emptyResponse(200);
-    }
+    // Handle API requests
+    if (path.startsWith("/api")) {
+      const apiPath = path.substring(4); // Remove "/api" prefix
 
-    try {
-      // GET endpoints
-      if (method === "GET") {
-        // Treasure Points
-        if (path === "/treasure_points.json") {
-          const points = await db.select().from(treasurePoints);
-          return jsonResponse(points);
-        }
-
-        // Wiki Articles
-        if (path === "/wiki_articles.json") {
-          const articles = await listWikiArticles();
-          return jsonResponse(articles);
-        }
-
-        // Timetable Events
-        if (path === "/timetable_events.json") {
-          const events = await db.select().from(timetableEvents);
-          return jsonResponse(events);
-        }
+      // Handle CORS preflight for API
+      if (method === "OPTIONS") {
+        return emptyResponse(200);
       }
 
-      // POST endpoints - create new items
-      if (method === "POST") {
-        const body = await req.json();
-
-        // Treasure Points
-        if (path === "/treasure_points") {
-          const data = body as CreateTreasurePointRequest;
-          const id = crypto.randomUUID();
-
-          await db.insert(treasurePoints).values({ id, ...data });
-          return jsonResponse({ id, ...data }, 201);
-        }
-
-        // Wiki Articles
-        if (path === "/wiki_articles") {
-          const data = body as CreateWikiArticleRequest;
-          const article = await createWikiArticle({
-            title: data.title,
-            content: data.content,
-            category: data.category,
-            imageUrl: data.imageUrl ?? null,
-            tags: data.tags ?? [],
-          });
-          return jsonResponse(article, 201);
-        }
-
-        // Timetable Events
-        if (path === "/timetable_events") {
-          const data = body as CreateTimetableEventRequest;
-          const id = crypto.randomUUID();
-
-          await db.insert(timetableEvents).values({
-            id,
-            ...data,
-            imageUrl: data.imageUrl ?? null,
-            tags: data.tags ?? [],
-          });
-
-          return jsonResponse(
-            {
-              id,
-              ...data,
-              imageUrl: data.imageUrl ?? null,
-              tags: data.tags ?? [],
-            },
-            201
-          );
-        }
-      }
-
-      // PUT endpoints - update existing items
-      if (method === "PUT") {
-        const body = await req.json();
-        const match = path.match(
-          /\/(treasure_points|wiki_articles|timetable_events)\/(.+)/
-        );
-
-        if (match) {
-          const [, resource, id] = match;
-
+      try {
+        // GET endpoints
+        if (method === "GET") {
           // Treasure Points
-          if (resource === "treasure_points") {
-            const data = body as CreateTreasurePointRequest;
-
-            await db
-              .update(treasurePoints)
-              .set(data)
-              .where(eq(treasurePoints.id, id));
-
-            return jsonResponse({ id, ...data });
+          if (apiPath === "/treasure_points.json") {
+            const points = await db.select().from(treasurePoints);
+            return jsonResponse(points);
           }
 
           // Wiki Articles
-          if (resource === "wiki_articles") {
-            const data = body as CreateWikiArticleRequest;
-            const existing = await getWikiArticle(id);
-
-            if (!existing) {
-              return errorResponse("Not found", 404);
-            }
-
-            await updateWikiArticle({
-              id,
-              ...data,
-              imageUrl: data.imageUrl ?? null,
-              tags: data.tags ?? [],
-            });
-
-            return jsonResponse({
-              id,
-              ...data,
-              imageUrl: data.imageUrl ?? null,
-              tags: data.tags ?? [],
-            });
+          if (apiPath === "/wiki_articles.json") {
+            const articles = await listWikiArticles();
+            return jsonResponse(articles);
           }
 
           // Timetable Events
-          if (resource === "timetable_events") {
-            const data = body as CreateTimetableEventRequest;
+          if (apiPath === "/timetable_events.json") {
+            const events = await db.select().from(timetableEvents);
+            return jsonResponse(events);
+          }
+        }
 
-            await db
-              .update(timetableEvents)
-              .set({
+        // POST endpoints - create new items
+        if (method === "POST") {
+          const body = await req.json();
+
+          // Treasure Points
+          if (apiPath === "/treasure_points") {
+            const data = body as CreateTreasurePointRequest;
+            const id = crypto.randomUUID();
+
+            await db.insert(treasurePoints).values({ id, ...data });
+            return jsonResponse({ id, ...data }, 201);
+          }
+
+          // Wiki Articles
+          if (apiPath === "/wiki_articles") {
+            const data = body as CreateWikiArticleRequest;
+            const article = await createWikiArticle({
+              title: data.title,
+              content: data.content,
+              category: data.category,
+              imageUrl: data.imageUrl ?? null,
+              tags: data.tags ?? [],
+            });
+            return jsonResponse(article, 201);
+          }
+
+          // Timetable Events
+          if (apiPath === "/timetable_events") {
+            const data = body as CreateTimetableEventRequest;
+            const id = crypto.randomUUID();
+
+            await db.insert(timetableEvents).values({
+              id,
+              ...data,
+              imageUrl: data.imageUrl ?? null,
+              tags: data.tags ?? [],
+            });
+
+            return jsonResponse(
+              {
+                id,
                 ...data,
                 imageUrl: data.imageUrl ?? null,
                 tags: data.tags ?? [],
-              })
-              .where(eq(timetableEvents.id, id));
-
-            return jsonResponse({
-              id,
-              ...data,
-              imageUrl: data.imageUrl ?? null,
-              tags: data.tags ?? [],
-            });
+              },
+              201
+            );
           }
         }
-      }
 
-      // DELETE endpoints - remove items
-      if (method === "DELETE") {
-        const match = path.match(
-          /\/(treasure_points|wiki_articles|timetable_events)\/(.+)/
-        );
+        // PUT endpoints - update existing items
+        if (method === "PUT") {
+          const body = await req.json();
+          const match = apiPath.match(
+            /\/(treasure_points|wiki_articles|timetable_events)\/(.+)/
+          );
 
-        if (match) {
-          const [, resource, id] = match;
+          if (match) {
+            const [, resource, id] = match;
 
-          // Treasure Points
-          if (resource === "treasure_points") {
-            await db.delete(treasurePoints).where(eq(treasurePoints.id, id));
-            return emptyResponse();
-          }
+            // Treasure Points
+            if (resource === "treasure_points") {
+              const data = body as CreateTreasurePointRequest;
 
-          // Wiki Articles
-          if (resource === "wiki_articles") {
-            const deleted = await deleteWikiArticle(id);
-            if (!deleted) {
-              return errorResponse("Not found", 404);
+              await db
+                .update(treasurePoints)
+                .set(data)
+                .where(eq(treasurePoints.id, id));
+
+              return jsonResponse({ id, ...data });
             }
-            return emptyResponse();
-          }
 
-          // Timetable Events
-          if (resource === "timetable_events") {
-            await db.delete(timetableEvents).where(eq(timetableEvents.id, id));
-            return emptyResponse();
+            // Wiki Articles
+            if (resource === "wiki_articles") {
+              const data = body as CreateWikiArticleRequest;
+              const existing = await getWikiArticle(id);
+
+              if (!existing) {
+                return errorResponse("Not found", 404);
+              }
+
+              await updateWikiArticle({
+                id,
+                ...data,
+                imageUrl: data.imageUrl ?? null,
+                tags: data.tags ?? [],
+              });
+
+              return jsonResponse({
+                id,
+                ...data,
+                imageUrl: data.imageUrl ?? null,
+                tags: data.tags ?? [],
+              });
+            }
+
+            // Timetable Events
+            if (resource === "timetable_events") {
+              const data = body as CreateTimetableEventRequest;
+
+              await db
+                .update(timetableEvents)
+                .set({
+                  ...data,
+                  imageUrl: data.imageUrl ?? null,
+                  tags: data.tags ?? [],
+                })
+                .where(eq(timetableEvents.id, id));
+
+              return jsonResponse({
+                id,
+                ...data,
+                imageUrl: data.imageUrl ?? null,
+                tags: data.tags ?? [],
+              });
+            }
           }
         }
+
+        // DELETE endpoints - remove items
+        if (method === "DELETE") {
+          const match = apiPath.match(
+            /\/(treasure_points|wiki_articles|timetable_events)\/(.+)/
+          );
+
+          if (match) {
+            const [, resource, id] = match;
+
+            // Treasure Points
+            if (resource === "treasure_points") {
+              await db.delete(treasurePoints).where(eq(treasurePoints.id, id));
+              return emptyResponse();
+            }
+
+            // Wiki Articles
+            if (resource === "wiki_articles") {
+              const deleted = await deleteWikiArticle(id);
+              if (!deleted) {
+                return errorResponse("Not found", 404);
+              }
+              return emptyResponse();
+            }
+
+            // Timetable Events
+            if (resource === "timetable_events") {
+              await db
+                .delete(timetableEvents)
+                .where(eq(timetableEvents.id, id));
+              return emptyResponse();
+            }
+          }
+        }
+
+        return errorResponse("Not found", 404);
+      } catch (error) {
+        console.error("Error:", error);
+        return errorResponse("Internal server error");
+      }
+    }
+
+    // Serve Static Files
+    if (method === "GET") {
+      const buildDir = "../build/web";
+      let filePath = path;
+      if (filePath === "/") filePath = "/index.html";
+
+      const file = Bun.file(`${buildDir}${filePath}`);
+      if (await file.exists()) {
+        return new Response(file);
       }
 
-      return errorResponse("Not found", 404);
-    } catch (error) {
-      console.error("Error:", error);
-      return errorResponse("Internal server error");
+      // SPA Fallback
+      return new Response(Bun.file(`${buildDir}/index.html`));
     }
+
+    return errorResponse("Method not allowed", 405);
   },
 });
 
