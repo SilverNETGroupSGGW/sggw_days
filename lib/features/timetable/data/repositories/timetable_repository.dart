@@ -1,15 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:sggw_days/core/config/api_config.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 
 class TimetableRepository {
   final Dio _dio;
   final String _baseUrl;
 
-  TimetableRepository({
-    Dio? dio,
-    String baseUrl = 'https://raw.githubusercontent.com/sggw-days/api/main',
-  }) : _dio = dio ?? Dio(),
-       _baseUrl = baseUrl;
+  TimetableRepository({Dio? dio, String? baseUrl})
+    : _dio = dio ?? Dio(),
+      _baseUrl = baseUrl ?? ApiConfig.defaultBaseUrl;
 
   Future<List<TimetableEvent>> getEvents() async {
     try {

@@ -30,9 +30,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get scanQr => 'Skanuj QR';
 
   @override
-  String get points => 'Punkty';
-
-  @override
   String get settings => 'Ustawienia';
 
   @override
@@ -40,11 +37,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get theme => 'Motyw';
-
-  @override
-  String score(int value) {
-    return 'Wynik: $value';
-  }
 
   @override
   String get pointFound => 'Punkt odnaleziony!';

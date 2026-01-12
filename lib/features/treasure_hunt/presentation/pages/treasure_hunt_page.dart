@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -20,6 +21,8 @@ class TreasureHuntPage extends StatefulWidget {
 
 class _TreasureHuntPageState extends State<TreasureHuntPage> {
   final MapController _mapController = MapController();
+  LatLng? _currentPosition;
+  StreamSubscription<Position>? _positionStreamSubscription;
 
   // SGGW coordinates
   static const LatLng sggwCenter = LatLng(52.1598, 21.0463);
@@ -28,6 +31,51 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   void initState() {
     super.initState();
     context.read<TreasureHuntBloc>().add(const LoadTreasurePoints());
+    _initLocationService();
+  }
+
+  @override
+  void dispose() {
+    _positionStreamSubscription?.cancel();
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initLocationService() async {
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      final requested = await Geolocator.requestPermission();
+      if (requested == LocationPermission.denied ||
+          requested == LocationPermission.deniedForever) {
+        return;
+      }
+    }
+
+    // Get initial position
+    try {
+      final position = await Geolocator.getCurrentPosition();
+      if (mounted) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+        });
+      }
+    } catch (_) {
+      // Ignore errors for now
+    }
+
+    // Listen for updates
+    _positionStreamSubscription = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      ),
+    ).listen((position) {
+      if (mounted) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+        });
+      }
+    });
   }
 
   @override
@@ -40,16 +88,38 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
         actions: [
           BlocBuilder<TreasureHuntBloc, TreasureHuntState>(
             builder: (context, state) {
+              final total = state.points.length;
+              final found = state.points
+                  .where((p) => state.foundPointIds.contains(p.id))
+                  .length;
+              final progress = total == 0 ? 0.0 : found / total;
+
               return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: Text(
-                    l10n.score(state.totalScore),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 60,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          minHeight: 8,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest,
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '$found/$total',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               );
             },
@@ -83,31 +153,56 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                 userAgentPackageName: 'com.sggw.days',
               ),
               MarkerLayer(
-                markers: state.points.map((point) {
-                  final isFound = state.foundPointIds.contains(point.id);
-                  final position = LatLng(point.latitude, point.longitude);
-                  return Marker(
-                    point: position,
-                    width: 40,
-                    height: 40,
-                    child: GestureDetector(
-                      onTap: () => _showPointDetails(context, point, isFound),
-                      child: Icon(
-                        isFound ? Icons.check_circle : Icons.location_on,
-                        color: isFound ? AppColors.primaryGreen : AppColors.red,
-                        size: 40,
+                markers: [
+                  ...state.points.map((point) {
+                    final isFound = state.foundPointIds.contains(point.id);
+                    final position = LatLng(point.latitude, point.longitude);
+                    return Marker(
+                      point: position,
+                      width: 40,
+                      height: 40,
+                      child: GestureDetector(
+                        onTap: () => _showPointDetails(context, point, isFound),
+                        child: Icon(
+                          isFound ? Icons.check_circle : Icons.location_on,
+                          color:
+                              isFound ? AppColors.primaryGreen : AppColors.red,
+                          size: 40,
+                        ),
                       ),
+                    );
+                  }),
+                  if (_currentPosition != null)
+                    Marker(
+                      point: _currentPosition!,
+                      width: 40,
+                      height: 40,
+                      child: const _UserLocationMarker(),
                     ),
-                  );
-                }).toList(),
+                ],
               ),
             ],
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openQRScanner(context),
-        child: const Icon(Icons.qr_code_scanner),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (_currentPosition != null)
+            FloatingActionButton.small(
+              heroTag: 'my_location_fab',
+              onPressed: () {
+                _mapController.move(_currentPosition!, 16.0);
+              },
+              child: const Icon(Icons.my_location),
+            ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            heroTag: 'qr_scanner_fab',
+            onPressed: () => _openQRScanner(context),
+            child: const Icon(Icons.qr_code_scanner),
+          ),
+        ],
       ),
     );
   }
@@ -122,8 +217,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(point.description as String),
-            const SizedBox(height: 16),
-            Text('${AppLocalizations.of(context)!.points}: ${point.points}'),
+            if (isFound) const SizedBox(height: 16),
             if (isFound)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
@@ -256,6 +350,38 @@ class _QRScannerPage extends StatelessWidget {
             }
           }
         },
+      ),
+    );
+  }
+}
+
+class _UserLocationMarker extends StatelessWidget {
+  const _UserLocationMarker();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.blue.withValues(alpha: 0.3),
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 3),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 5,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

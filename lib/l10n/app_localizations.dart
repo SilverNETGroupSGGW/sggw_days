@@ -140,12 +140,6 @@ abstract class AppLocalizations {
   /// **'Skanuj QR'**
   String get scanQr;
 
-  /// No description provided for @points.
-  ///
-  /// In pl, this message translates to:
-  /// **'Punkty'**
-  String get points;
-
   /// No description provided for @settings.
   ///
   /// In pl, this message translates to:
@@ -163,12 +157,6 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Motyw'**
   String get theme;
-
-  /// No description provided for @score.
-  ///
-  /// In pl, this message translates to:
-  /// **'Wynik: {value}'**
-  String score(int value);
 
   /// No description provided for @pointFound.
   ///

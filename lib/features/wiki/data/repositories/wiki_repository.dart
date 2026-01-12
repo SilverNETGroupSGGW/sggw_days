@@ -1,15 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:sggw_days/core/config/api_config.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
 
 class WikiRepository {
   final Dio _dio;
   final String _baseUrl;
 
-  WikiRepository({
-    Dio? dio,
-    String baseUrl = 'https://raw.githubusercontent.com/sggw-days/api/main',
-  }) : _dio = dio ?? Dio(),
-       _baseUrl = baseUrl;
+  WikiRepository({Dio? dio, String? baseUrl})
+    : _dio = dio ?? Dio(),
+      _baseUrl = baseUrl ?? ApiConfig.defaultBaseUrl;
 
   Future<List<WikiArticle>> getArticles() async {
     try {

@@ -10,18 +10,9 @@
   "notifications": "Powiadomienia",
   "map": "Mapa",
   "scanQr": "Skanuj QR",
-  "points": "Punkty",
   "settings": "Ustawienia",
   "language": "Język",
   "theme": "Motyw",
-  "score": "Wynik: {value}",
-  "@score": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
   "pointFound": "Punkt odnaleziony!",
   "congratulations": "Gratulacje!",
   "ok": "OK",

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import 'package:sggw_days/core/connectivity/connectivity_cubit.dart';
 import 'package:sggw_days/core/router/app_router.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
+import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
+import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
@@ -17,6 +20,7 @@ import 'package:sggw_days/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  usePathUrlStrategy();
 
   await Hive.initFlutter();
   final progressBox = await Hive.openBox<List<String>>('progress');
@@ -95,6 +99,7 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(create: (context) => TreasureHuntRepository()),
         RepositoryProvider(create: (context) => WikiRepository()),
         RepositoryProvider(create: (context) => TimetableRepository()),
+        RepositoryProvider(create: (context) => AdminRepository()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -113,6 +118,14 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(
             create: (context) =>
                 TimetableBloc(repository: context.read<TimetableRepository>()),
+          ),
+          BlocProvider(
+            create: (context) => AdminBloc(
+              adminRepository: context.read<AdminRepository>(),
+              treasureHuntRepository: context.read<TreasureHuntRepository>(),
+              wikiRepository: context.read<WikiRepository>(),
+              timetableRepository: context.read<TimetableRepository>(),
+            ),
           ),
         ],
         child: BlocBuilder<SettingsCubit, SettingsState>(

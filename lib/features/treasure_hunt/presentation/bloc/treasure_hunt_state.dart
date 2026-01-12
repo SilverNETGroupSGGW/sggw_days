@@ -8,14 +8,12 @@ class TreasureHuntState extends Equatable {
   final List<TreasurePoint> points;
   final List<String> foundPointIds;
   final String? errorMessage;
-  final int totalScore;
 
   const TreasureHuntState({
     this.status = TreasureHuntStatus.initial,
     this.points = const [],
     this.foundPointIds = const [],
     this.errorMessage,
-    this.totalScore = 0,
   });
 
   TreasureHuntState copyWith({
@@ -23,23 +21,15 @@ class TreasureHuntState extends Equatable {
     List<TreasurePoint>? points,
     List<String>? foundPointIds,
     String? errorMessage,
-    int? totalScore,
   }) {
     return TreasureHuntState(
       status: status ?? this.status,
       points: points ?? this.points,
       foundPointIds: foundPointIds ?? this.foundPointIds,
       errorMessage: errorMessage,
-      totalScore: totalScore ?? this.totalScore,
     );
   }
 
   @override
-  List<Object?> get props => [
-    status,
-    points,
-    foundPointIds,
-    errorMessage,
-    totalScore,
-  ];
+  List<Object?> get props => [status, points, foundPointIds, errorMessage];
 }

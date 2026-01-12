@@ -29,16 +29,12 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
       final foundIds =
           _progressBox.get('found_points', defaultValue: <String>[]) ??
           <String>[];
-      final score = points
-          .where((point) => foundIds.contains(point.id))
-          .fold(0, (sum, point) => sum + point.points);
 
       emit(
         state.copyWith(
           status: TreasureHuntStatus.success,
           points: points,
           foundPointIds: foundIds,
-          totalScore: score,
         ),
       );
     } catch (e) {
@@ -62,15 +58,9 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
     final updatedFoundIds = [...state.foundPointIds, event.pointId];
     await _progressBox.put('found_points', updatedFoundIds);
 
-    final foundPoint = state.points.firstWhere(
-      (point) => point.id == event.pointId,
-      orElse: () => state.points.first,
-    );
-
     emit(
       state.copyWith(
         foundPointIds: updatedFoundIds,
-        totalScore: state.totalScore + foundPoint.points,
       ),
     );
   }

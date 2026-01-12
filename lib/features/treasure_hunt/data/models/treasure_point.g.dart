@@ -15,7 +15,6 @@ _TreasurePoint _$TreasurePointFromJson(Map<String, dynamic> json) =>
       longitude: (json['longitude'] as num).toDouble(),
       qrCode: json['qrCode'] as String,
       isFound: json['isFound'] as bool? ?? false,
-      points: (json['points'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$TreasurePointToJson(_TreasurePoint instance) =>
@@ -27,5 +26,4 @@ Map<String, dynamic> _$TreasurePointToJson(_TreasurePoint instance) =>
       'longitude': instance.longitude,
       'qrCode': instance.qrCode,
       'isFound': instance.isFound,
-      'points': instance.points,
     };

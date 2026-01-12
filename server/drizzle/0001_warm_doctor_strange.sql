@@ -1,0 +1,1 @@
+ALTER TABLE `treasure_points` DROP COLUMN `points`;

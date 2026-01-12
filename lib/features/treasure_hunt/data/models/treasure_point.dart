@@ -13,7 +13,6 @@ abstract class TreasurePoint with _$TreasurePoint {
     required double longitude,
     required String qrCode,
     @Default(false) bool isFound,
-    @Default(0) int points,
   }) = _TreasurePoint;
 
   factory TreasurePoint.fromJson(Map<String, dynamic> json) =>
