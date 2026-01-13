@@ -87,7 +87,7 @@ const server = Bun.serve({
             const id = crypto.randomUUID();
             console.log(`Creating treasure point with id: ${id}`);
 
-            await db.insert(treasurePoints).values({ id, ...data });
+            await db.insert(treasurePoints).values({ ...data, id });
             return jsonResponse({ id, ...data }, 201);
           }
 
@@ -110,8 +110,8 @@ const server = Bun.serve({
             const id = crypto.randomUUID();
 
             await db.insert(timetableEvents).values({
-              id,
               ...data,
+              id,
               imageUrl: data.imageUrl ?? null,
               tags: data.tags ?? [],
             });
@@ -137,10 +137,12 @@ const server = Bun.serve({
 
           if (match) {
             const [, resource, idWithSlash] = match;
-            const id = idWithSlash ? idWithSlash.replace(/^\//, '').replace(/\/$/, '') : '';
+            const id = idWithSlash
+              ? idWithSlash.replace(/^\//, "").replace(/\/$/, "")
+              : "";
 
             if (!id) {
-                return errorResponse("Missing Resource ID", 400);
+              return errorResponse("Missing Resource ID", 400);
             }
 
             console.log(`Updating ${resource} with id: ${id}`);
@@ -212,10 +214,12 @@ const server = Bun.serve({
 
           if (match) {
             const [, resource, idWithSlash] = match;
-            const id = idWithSlash ? idWithSlash.replace(/^\//, '').replace(/\/$/, '') : '';
+            const id = idWithSlash
+              ? idWithSlash.replace(/^\//, "").replace(/\/$/, "")
+              : "";
 
             if (!id) {
-                return errorResponse("Missing Resource ID", 400);
+              return errorResponse("Missing Resource ID", 400);
             }
 
             console.log(`Deleting ${resource} with id: ${id}`);
