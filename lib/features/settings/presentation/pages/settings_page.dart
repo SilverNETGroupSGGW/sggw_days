@@ -154,6 +154,32 @@ class SettingsPage extends StatelessWidget {
                   }
                 },
               ),
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: Text(l10n.about),
+                subtitle: Text(l10n.aboutDesc),
+                onTap: () {
+                  showAboutDialog(
+                    context: context,
+                    applicationName: l10n.appTitle,
+                    applicationVersion: '1.0.0',
+                    applicationIcon: Icon(
+                      Icons.map,
+                      size: 48,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    children: [
+                      const SizedBox(height: 16),
+                      Text(l10n.aboutContent),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.developedBy,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  );
+                },
+              ),
             ],
           );
         },

@@ -343,6 +343,30 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Strona główna'**
   String get goHome;
+
+  /// No description provided for @about.
+  ///
+  /// In pl, this message translates to:
+  /// **'O aplikacji'**
+  String get about;
+
+  /// No description provided for @aboutDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Informacje o aplikacji i twórcach'**
+  String get aboutDesc;
+
+  /// No description provided for @aboutContent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dni SGGW to oficjalna aplikacja na dzień otwarty Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie. Poznaj kampus, weź udział w grze terenowej i odkryj wszystko, co SGGW ma do zaoferowania.'**
+  String get aboutContent;
+
+  /// No description provided for @developedBy.
+  ///
+  /// In pl, this message translates to:
+  /// **'Stworzone przez SilverNET Group SGGW'**
+  String get developedBy;
 }
 
 class _AppLocalizationsDelegate

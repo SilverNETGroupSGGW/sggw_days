@@ -135,4 +135,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goHome => 'Go Home';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get aboutDesc => 'App information and credits';
+
+  @override
+  String get aboutContent =>
+      'SGGW Days is the official app for the Warsaw University of Life Sciences open days event. Explore the campus, participate in the treasure hunt, and discover everything SGGW has to offer.';
+
+  @override
+  String get developedBy => 'Developed by SilverNET Group SGGW';
 }

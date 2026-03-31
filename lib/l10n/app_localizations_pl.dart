@@ -135,4 +135,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get goHome => 'Strona główna';
+
+  @override
+  String get about => 'O aplikacji';
+
+  @override
+  String get aboutDesc => 'Informacje o aplikacji i twórcach';
+
+  @override
+  String get aboutContent =>
+      'Dni SGGW to oficjalna aplikacja na dzień otwarty Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie. Poznaj kampus, weź udział w grze terenowej i odkryj wszystko, co SGGW ma do zaoferowania.';
+
+  @override
+  String get developedBy => 'Stworzone przez SilverNET Group SGGW';
 }
