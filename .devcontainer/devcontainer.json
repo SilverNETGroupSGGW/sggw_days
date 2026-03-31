@@ -8,6 +8,7 @@
 		// Update 'context' if your Dockerfile is not in the root of the repository.
 		"context": ".."
 	},
+	"postCreateCommand": "flutter pub get",
 	"customizations": {
 		"vscode": {
 			"extensions": [
