@@ -63,5 +63,7 @@
   "adminLogin": "Logowanie admina",
   "password": "Hasło",
   "login": "Zaloguj się",
-  "invalidPassword": "Nieprawidłowe hasło"
+  "invalidPassword": "Nieprawidłowe hasło",
+  "checkIn": "Zamelduj się",
+  "checkedIn": "Zameldowany"
 }

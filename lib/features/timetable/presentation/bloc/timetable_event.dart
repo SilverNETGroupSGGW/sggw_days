@@ -41,3 +41,12 @@ class ToggleFavorite extends TimetableEvent {
 class ToggleShowFavorites extends TimetableEvent {
   const ToggleShowFavorites();
 }
+
+class CheckInEvent extends TimetableEvent {
+  final String eventId;
+
+  const CheckInEvent(this.eventId);
+
+  @override
+  List<Object?> get props => [eventId];
+}

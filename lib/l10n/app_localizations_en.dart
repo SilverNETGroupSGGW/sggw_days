@@ -197,4 +197,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidPassword => 'Invalid password';
+
+  @override
+  String get checkIn => 'Check In';
+
+  @override
+  String get checkedIn => 'Checked in';
 }

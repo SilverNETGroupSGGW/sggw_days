@@ -463,6 +463,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Nieprawidłowe hasło'**
   String get invalidPassword;
+
+  /// No description provided for @checkIn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamelduj się'**
+  String get checkIn;
+
+  /// No description provided for @checkedIn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zameldowany'**
+  String get checkedIn;
 }
 
 class _AppLocalizationsDelegate

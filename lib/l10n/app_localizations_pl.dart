@@ -197,4 +197,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get invalidPassword => 'Nieprawidłowe hasło';
+
+  @override
+  String get checkIn => 'Zamelduj się';
+
+  @override
+  String get checkedIn => 'Zameldowany';
 }

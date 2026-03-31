@@ -17,6 +17,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     on<FilterEventsByTag>(_onFilterEventsByTag);
     on<ToggleFavorite>(_onToggleFavorite);
     on<ToggleShowFavorites>(_onToggleShowFavorites);
+    on<CheckInEvent>(_onCheckInEvent);
   }
 
   Future<void> _onLoadTimetableEvents(
@@ -30,6 +31,10 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
       // Load favorites from Hive
       final favBox = await Hive.openBox<List<String>>('favorites');
       final favoriteIds = favBox.get('timetable_favorites', defaultValue: <String>[]) ?? <String>[];
+
+      // Load check-ins from Hive
+      final checkInBox = await Hive.openBox<List<String>>('check_ins');
+      final checkedInIds = checkInBox.get('event_check_ins', defaultValue: <String>[]) ?? <String>[];
 
       final filtered = _filterEvents(
         events,
@@ -46,6 +51,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
           filteredEvents: filtered,
           selectedTag: state.selectedTag,
           favoriteIds: favoriteIds,
+          checkedInIds: checkedInIds,
         ),
       );
     } catch (e) {
@@ -146,5 +152,20 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     }
 
     return filtered;
+  }
+
+  Future<void> _onCheckInEvent(
+    CheckInEvent event,
+    Emitter<TimetableState> emit,
+  ) async {
+    final updatedCheckIns = List<String>.from(state.checkedInIds);
+    if (!updatedCheckIns.contains(event.eventId)) {
+      updatedCheckIns.add(event.eventId);
+
+      final checkInBox = await Hive.openBox<List<String>>('check_ins');
+      await checkInBox.put('event_check_ins', updatedCheckIns);
+
+      emit(state.copyWith(checkedInIds: updatedCheckIns));
+    }
   }
 }

@@ -60,5 +60,7 @@
   "adminLogin": "Admin Login",
   "password": "Password",
   "login": "Log In",
-  "invalidPassword": "Invalid password"
+  "invalidPassword": "Invalid password",
+  "checkIn": "Check In",
+  "checkedIn": "Checked in"
 }

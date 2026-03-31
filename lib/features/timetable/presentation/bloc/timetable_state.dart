@@ -12,6 +12,7 @@ class TimetableState extends Equatable {
   final String? selectedTag;
   final List<String> favoriteIds;
   final bool showFavoritesOnly;
+  final List<String> checkedInIds;
   final String? errorMessage;
 
   const TimetableState({
@@ -22,6 +23,7 @@ class TimetableState extends Equatable {
     this.selectedTag,
     this.favoriteIds = const [],
     this.showFavoritesOnly = false,
+    this.checkedInIds = const [],
     this.errorMessage,
   });
 
@@ -33,6 +35,7 @@ class TimetableState extends Equatable {
     String? selectedTag,
     List<String>? favoriteIds,
     bool? showFavoritesOnly,
+    List<String>? checkedInIds,
     String? errorMessage,
   }) {
     return TimetableState(
@@ -43,6 +46,7 @@ class TimetableState extends Equatable {
       selectedTag: selectedTag,
       favoriteIds: favoriteIds ?? this.favoriteIds,
       showFavoritesOnly: showFavoritesOnly ?? this.showFavoritesOnly,
+      checkedInIds: checkedInIds ?? this.checkedInIds,
       errorMessage: errorMessage,
     );
   }
@@ -56,6 +60,7 @@ class TimetableState extends Equatable {
     selectedTag,
     favoriteIds,
     showFavoritesOnly,
+    checkedInIds,
     errorMessage,
   ];
 }

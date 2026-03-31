@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_event.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_state.dart';
@@ -60,6 +61,11 @@ class _TimetablePageState extends State<TimetablePage> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _openCheckInScanner(context),
+        icon: const Icon(Icons.qr_code_scanner),
+        label: Text(l10n.checkIn),
+      ),
       body: BlocConsumer<TimetableBloc, TimetableState>(
         listener: (context, state) {
           if (state.status == TimetableStatus.error) {
@@ -105,14 +111,36 @@ class _TimetablePageState extends State<TimetablePage> {
       itemBuilder: (context, index) {
         final event = state.filteredEvents[index];
         final isFavorite = state.favoriteIds.contains(event.id);
+        final isCheckedIn = state.checkedInIds.contains(event.id);
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: ListTile(
-            leading: CircleAvatar(
-              child: Text(
-                DateFormat.Hm().format(event.startTime),
-                style: const TextStyle(fontSize: 10),
-              ),
+            leading: Stack(
+              children: [
+                CircleAvatar(
+                  child: Text(
+                    DateFormat.Hm().format(event.startTime),
+                    style: const TextStyle(fontSize: 10),
+                  ),
+                ),
+                if (isCheckedIn)
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.check,
+                        size: 10,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+              ],
             ),
             title: Text(event.title),
             subtitle: Column(
@@ -301,6 +329,10 @@ class _TimetablePageState extends State<TimetablePage> {
   }
 
   void _showEventDetails(BuildContext context, dynamic event) {
+    final l10n = AppLocalizations.of(context)!;
+    final isCheckedIn = context.read<TimetableBloc>().state.checkedInIds
+        .contains(event.id as String);
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -328,6 +360,23 @@ class _TimetablePageState extends State<TimetablePage> {
                 Expanded(child: Text(event.location as String)),
               ],
             ),
+            if (isCheckedIn) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(Icons.check_circle, size: 16,
+                      color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text(
+                    l10n.checkedIn,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
             if (event.imageUrl != null) ...[
               const SizedBox(height: 16),
               Image.network(
@@ -345,6 +394,44 @@ class _TimetablePageState extends State<TimetablePage> {
             child: Text(AppLocalizations.of(context)!.ok),
           ),
         ],
+      ),
+    );
+  }
+
+  void _openCheckInScanner(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final bloc = context.read<TimetableBloc>();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(title: Text(l10n.checkIn)),
+          body: MobileScanner(
+            onDetect: (capture) {
+              final barcode = capture.barcodes.firstOrNull;
+              if (barcode?.rawValue == null) return;
+              final code = barcode!.rawValue!;
+
+              // Check if code matches an event ID
+              final matchingEvent = bloc.state.events
+                  .where((e) => e.id == code)
+                  .firstOrNull;
+
+              if (matchingEvent != null) {
+                bloc.add(CheckInEvent(code));
+                Navigator.pop(context);
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${l10n.checkedIn}: ${matchingEvent.title}'),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  ),
+                );
+              }
+            },
+          ),
+        ),
       ),
     );
   }
