@@ -8,6 +8,7 @@ import 'package:sggw_days/core/router/app_router.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
 import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
+import 'package:sggw_days/features/admin/presentation/cubit/admin_auth_cubit.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
@@ -105,6 +106,7 @@ class _MyAppState extends State<MyApp> {
         providers: [
           BlocProvider(create: (context) => SettingsCubit()),
           BlocProvider(create: (context) => ConnectivityCubit()),
+          BlocProvider(create: (context) => AdminAuthCubit()),
           BlocProvider(
             create: (context) => TreasureHuntBloc(
               repository: context.read<TreasureHuntRepository>(),

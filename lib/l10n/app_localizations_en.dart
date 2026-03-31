@@ -185,4 +185,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get boldText => 'Bold Text';
+
+  @override
+  String get adminLogin => 'Admin Login';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get login => 'Log In';
+
+  @override
+  String get invalidPassword => 'Invalid password';
 }

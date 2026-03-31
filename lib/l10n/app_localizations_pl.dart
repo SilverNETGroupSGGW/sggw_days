@@ -185,4 +185,16 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get boldText => 'Pogrubiony tekst';
+
+  @override
+  String get adminLogin => 'Logowanie admina';
+
+  @override
+  String get password => 'Hasło';
+
+  @override
+  String get login => 'Zaloguj się';
+
+  @override
+  String get invalidPassword => 'Nieprawidłowe hasło';
 }

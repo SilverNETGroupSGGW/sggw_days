@@ -56,5 +56,9 @@
   "noEventsOn": "No events on",
   "campusBuildings": "Campus Buildings",
   "fontSize": "Font Size",
-  "boldText": "Bold Text"
+  "boldText": "Bold Text",
+  "adminLogin": "Admin Login",
+  "password": "Password",
+  "login": "Log In",
+  "invalidPassword": "Invalid password"
 }

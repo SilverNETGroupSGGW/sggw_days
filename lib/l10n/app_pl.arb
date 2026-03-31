@@ -59,5 +59,9 @@
   "noEventsOn": "Brak wydarzeń na",
   "campusBuildings": "Budynki kampusu",
   "fontSize": "Rozmiar czcionki",
-  "boldText": "Pogrubiony tekst"
+  "boldText": "Pogrubiony tekst",
+  "adminLogin": "Logowanie admina",
+  "password": "Hasło",
+  "login": "Zaloguj się",
+  "invalidPassword": "Nieprawidłowe hasło"
 }

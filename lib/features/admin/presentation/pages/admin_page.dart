@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
+import 'package:sggw_days/features/admin/presentation/cubit/admin_auth_cubit.dart';
 import 'package:sggw_days/features/admin/presentation/pages/timetable_events_tab.dart';
 import 'package:sggw_days/features/admin/presentation/pages/treasure_points_tab.dart';
 import 'package:sggw_days/features/admin/presentation/pages/wiki_articles_tab.dart';
@@ -40,6 +42,15 @@ class _AdminPageState extends State<AdminPage>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              context.read<AdminAuthCubit>().logout();
+              context.go('/');
+            },
+          ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: const [

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sggw_days/core/router/error_page.dart';
-import 'package:sggw_days/features/admin/presentation/pages/admin_page.dart';
+import 'package:sggw_days/features/admin/presentation/pages/admin_login_page.dart';
 import 'package:sggw_days/features/home/presentation/pages/home_page.dart';
 import 'package:sggw_days/features/settings/presentation/pages/settings_page.dart';
 import 'package:sggw_days/features/timetable/presentation/pages/timetable_page.dart';
@@ -16,7 +16,10 @@ final appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   errorBuilder: (context, state) => ErrorPage(error: state.error),
   routes: [
-    GoRoute(path: '/admin', builder: (context, state) => const AdminPage()),
+    GoRoute(
+      path: '/admin',
+      builder: (context, state) => const AdminLoginPage(),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return HomePage(navigationShell: navigationShell);

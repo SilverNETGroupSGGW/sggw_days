@@ -439,6 +439,30 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Pogrubiony tekst'**
   String get boldText;
+
+  /// No description provided for @adminLogin.
+  ///
+  /// In pl, this message translates to:
+  /// **'Logowanie admina'**
+  String get adminLogin;
+
+  /// No description provided for @password.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hasło'**
+  String get password;
+
+  /// No description provided for @login.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaloguj się'**
+  String get login;
+
+  /// No description provided for @invalidPassword.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieprawidłowe hasło'**
+  String get invalidPassword;
 }
 
 class _AppLocalizationsDelegate
