@@ -129,4 +129,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get viewOnboardingDesc => 'Zobacz ponownie wprowadzenie do aplikacji';
+
+  @override
+  String get pageNotFound => 'Strona nie znaleziona';
+
+  @override
+  String get goHome => 'Strona główna';
 }

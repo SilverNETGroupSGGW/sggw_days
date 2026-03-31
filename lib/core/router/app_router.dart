@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sggw_days/core/router/error_page.dart';
 import 'package:sggw_days/features/admin/presentation/pages/admin_page.dart';
 import 'package:sggw_days/features/home/presentation/pages/home_page.dart';
 import 'package:sggw_days/features/settings/presentation/pages/settings_page.dart';
@@ -13,6 +14,7 @@ final shellNavigatorKey = GlobalKey<NavigatorState>();
 final appRouter = GoRouter(
   initialLocation: '/',
   navigatorKey: rootNavigatorKey,
+  errorBuilder: (context, state) => ErrorPage(error: state.error),
   routes: [
     GoRoute(path: '/admin', builder: (context, state) => const AdminPage()),
     StatefulShellRoute.indexedStack(

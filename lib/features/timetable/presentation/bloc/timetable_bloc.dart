@@ -34,6 +34,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
           status: TimetableStatus.success,
           events: events,
           filteredEvents: filtered,
+          selectedTag: state.selectedTag,
         ),
       );
     } catch (e) {

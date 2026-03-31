@@ -38,5 +38,7 @@
   "grantPermissions": "Grant Permissions",
   "permissionsGranted": "Permissions Granted",
   "viewOnboarding": "View Onboarding",
-  "viewOnboardingDesc": "See the introduction again"
+  "viewOnboardingDesc": "See the introduction again",
+  "pageNotFound": "Page not found",
+  "goHome": "Go Home"
 }

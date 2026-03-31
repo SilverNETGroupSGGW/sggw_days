@@ -331,6 +331,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Zobacz ponownie wprowadzenie do aplikacji'**
   String get viewOnboardingDesc;
+
+  /// No description provided for @pageNotFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Strona nie znaleziona'**
+  String get pageNotFound;
+
+  /// No description provided for @goHome.
+  ///
+  /// In pl, this message translates to:
+  /// **'Strona główna'**
+  String get goHome;
 }
 
 class _AppLocalizationsDelegate

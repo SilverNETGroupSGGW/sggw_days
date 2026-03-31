@@ -48,7 +48,7 @@ class _WikiPageState extends State<WikiPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Theme.of(context).colorScheme.surface,
               ),
               onChanged: (query) {
                 context.read<WikiBloc>().add(SearchArticles(query));

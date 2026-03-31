@@ -41,5 +41,7 @@
   "grantPermissions": "Przyznaj uprawnienia",
   "permissionsGranted": "Uprawnienia przyznane",
   "viewOnboarding": "Pokaż wprowadzenie",
-  "viewOnboardingDesc": "Zobacz ponownie wprowadzenie do aplikacji"
+  "viewOnboardingDesc": "Zobacz ponownie wprowadzenie do aplikacji",
+  "pageNotFound": "Strona nie znaleziona",
+  "goHome": "Strona główna"
 }
