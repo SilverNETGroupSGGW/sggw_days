@@ -10,6 +10,8 @@ class TimetableState extends Equatable {
   final List<model.TimetableEvent> filteredEvents;
   final DateTime? selectedDate;
   final String? selectedTag;
+  final List<String> favoriteIds;
+  final bool showFavoritesOnly;
   final String? errorMessage;
 
   const TimetableState({
@@ -18,6 +20,8 @@ class TimetableState extends Equatable {
     this.filteredEvents = const [],
     this.selectedDate,
     this.selectedTag,
+    this.favoriteIds = const [],
+    this.showFavoritesOnly = false,
     this.errorMessage,
   });
 
@@ -27,6 +31,8 @@ class TimetableState extends Equatable {
     List<model.TimetableEvent>? filteredEvents,
     DateTime? selectedDate,
     String? selectedTag,
+    List<String>? favoriteIds,
+    bool? showFavoritesOnly,
     String? errorMessage,
   }) {
     return TimetableState(
@@ -35,6 +41,8 @@ class TimetableState extends Equatable {
       filteredEvents: filteredEvents ?? this.filteredEvents,
       selectedDate: selectedDate ?? this.selectedDate,
       selectedTag: selectedTag,
+      favoriteIds: favoriteIds ?? this.favoriteIds,
+      showFavoritesOnly: showFavoritesOnly ?? this.showFavoritesOnly,
       errorMessage: errorMessage,
     );
   }
@@ -46,6 +54,8 @@ class TimetableState extends Equatable {
     filteredEvents,
     selectedDate,
     selectedTag,
+    favoriteIds,
+    showFavoritesOnly,
     errorMessage,
   ];
 }

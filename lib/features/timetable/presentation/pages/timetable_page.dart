@@ -28,6 +28,22 @@ class _TimetablePageState extends State<TimetablePage> {
       appBar: AppBar(
         title: Text(l10n.timetable),
         actions: [
+          BlocBuilder<TimetableBloc, TimetableState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: Icon(
+                  state.showFavoritesOnly
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                ),
+                onPressed: () {
+                  context.read<TimetableBloc>().add(
+                    const ToggleShowFavorites(),
+                  );
+                },
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.calendar_today),
             onPressed: () => _selectDate(context),
@@ -67,6 +83,7 @@ class _TimetablePageState extends State<TimetablePage> {
             itemCount: state.filteredEvents.length,
             itemBuilder: (context, index) {
               final event = state.filteredEvents[index];
+              final isFavorite = state.favoriteIds.contains(event.id);
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
@@ -88,6 +105,19 @@ class _TimetablePageState extends State<TimetablePage> {
                         ),
                       ),
                     ],
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite
+                          ? Theme.of(context).colorScheme.error
+                          : null,
+                    ),
+                    onPressed: () {
+                      context.read<TimetableBloc>().add(
+                        ToggleFavorite(event.id),
+                      );
+                    },
                   ),
                   onTap: () => _showEventDetails(context, event),
                 ),

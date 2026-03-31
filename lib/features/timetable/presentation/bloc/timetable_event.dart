@@ -28,3 +28,16 @@ class FilterEventsByTag extends TimetableEvent {
   @override
   List<Object?> get props => [tag];
 }
+
+class ToggleFavorite extends TimetableEvent {
+  final String eventId;
+
+  const ToggleFavorite(this.eventId);
+
+  @override
+  List<Object?> get props => [eventId];
+}
+
+class ToggleShowFavorites extends TimetableEvent {
+  const ToggleShowFavorites();
+}

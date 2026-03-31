@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
     as model;
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
@@ -14,6 +15,8 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     on<LoadTimetableEvents>(_onLoadTimetableEvents);
     on<FilterEventsByDate>(_onFilterEventsByDate);
     on<FilterEventsByTag>(_onFilterEventsByTag);
+    on<ToggleFavorite>(_onToggleFavorite);
+    on<ToggleShowFavorites>(_onToggleShowFavorites);
   }
 
   Future<void> _onLoadTimetableEvents(
@@ -23,10 +26,17 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     emit(state.copyWith(status: TimetableStatus.loading));
     try {
       final events = await _repository.getEvents();
+
+      // Load favorites from Hive
+      final favBox = await Hive.openBox<List<String>>('favorites');
+      final favoriteIds = favBox.get('timetable_favorites', defaultValue: <String>[]) ?? <String>[];
+
       final filtered = _filterEvents(
         events,
         state.selectedDate,
         state.selectedTag,
+        favoriteIds,
+        state.showFavoritesOnly,
       );
 
       emit(
@@ -35,6 +45,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
           events: events,
           filteredEvents: filtered,
           selectedTag: state.selectedTag,
+          favoriteIds: favoriteIds,
         ),
       );
     } catch (e) {
@@ -51,7 +62,10 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     FilterEventsByDate event,
     Emitter<TimetableState> emit,
   ) {
-    final filtered = _filterEvents(state.events, event.date, state.selectedTag);
+    final filtered = _filterEvents(
+      state.events, event.date, state.selectedTag,
+      state.favoriteIds, state.showFavoritesOnly,
+    );
     emit(state.copyWith(filteredEvents: filtered, selectedDate: event.date));
   }
 
@@ -59,14 +73,59 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     FilterEventsByTag event,
     Emitter<TimetableState> emit,
   ) {
-    final filtered = _filterEvents(state.events, state.selectedDate, event.tag);
+    final filtered = _filterEvents(
+      state.events, state.selectedDate, event.tag,
+      state.favoriteIds, state.showFavoritesOnly,
+    );
     emit(state.copyWith(filteredEvents: filtered, selectedTag: event.tag));
+  }
+
+  Future<void> _onToggleFavorite(
+    ToggleFavorite event,
+    Emitter<TimetableState> emit,
+  ) async {
+    final updatedFavorites = List<String>.from(state.favoriteIds);
+    if (updatedFavorites.contains(event.eventId)) {
+      updatedFavorites.remove(event.eventId);
+    } else {
+      updatedFavorites.add(event.eventId);
+    }
+
+    final favBox = await Hive.openBox<List<String>>('favorites');
+    await favBox.put('timetable_favorites', updatedFavorites);
+
+    final filtered = _filterEvents(
+      state.events, state.selectedDate, state.selectedTag,
+      updatedFavorites, state.showFavoritesOnly,
+    );
+
+    emit(state.copyWith(
+      favoriteIds: updatedFavorites,
+      filteredEvents: filtered,
+    ));
+  }
+
+  void _onToggleShowFavorites(
+    ToggleShowFavorites event,
+    Emitter<TimetableState> emit,
+  ) {
+    final newShowFavorites = !state.showFavoritesOnly;
+    final filtered = _filterEvents(
+      state.events, state.selectedDate, state.selectedTag,
+      state.favoriteIds, newShowFavorites,
+    );
+    emit(state.copyWith(
+      showFavoritesOnly: newShowFavorites,
+      filteredEvents: filtered,
+    ));
   }
 
   List<model.TimetableEvent> _filterEvents(
     List<model.TimetableEvent> events,
     DateTime? date,
     String? tag,
+    List<String> favoriteIds,
+    bool showFavoritesOnly,
   ) {
     var filtered = events;
 
@@ -80,6 +139,10 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
     if (tag != null) {
       filtered = filtered.where((event) => event.tags.contains(tag)).toList();
+    }
+
+    if (showFavoritesOnly) {
+      filtered = filtered.where((event) => favoriteIds.contains(event.id)).toList();
     }
 
     return filtered;
