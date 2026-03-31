@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/core/config/api_config.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
 
 class WikiRepository {
   final Dio _dio;
   final String _baseUrl;
+  static const _cacheKey = 'wiki_articles_cache';
 
   WikiRepository({Dio? dio, String? baseUrl})
     : _dio = dio ?? Dio(),
@@ -14,16 +18,18 @@ class WikiRepository {
     try {
       final response = await _dio.get('$_baseUrl/wiki_articles');
       final List<dynamic> data = response.data as List<dynamic>;
-      return data
+      final articles = data
           .map((json) => WikiArticle.fromJson(json as Map<String, dynamic>))
           .toList();
+      await _cacheData(data);
+      return articles;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         return [];
       }
-      throw Exception('Failed to load wiki articles: $e');
+      return await _loadFromCache();
     } catch (e) {
-      throw Exception('Failed to load wiki articles: $e');
+      return await _loadFromCache();
     }
   }
 
@@ -33,5 +39,22 @@ class WikiRepository {
       (article) => article.id == id,
       orElse: () => throw Exception('Article not found'),
     );
+  }
+
+  Future<void> _cacheData(List<dynamic> data) async {
+    final box = await Hive.openBox('api_cache');
+    await box.put(_cacheKey, jsonEncode(data));
+  }
+
+  Future<List<WikiArticle>> _loadFromCache() async {
+    final box = await Hive.openBox('api_cache');
+    final cached = box.get(_cacheKey) as String?;
+    if (cached != null) {
+      final List<dynamic> data = jsonDecode(cached) as List<dynamic>;
+      return data
+          .map((json) => WikiArticle.fromJson(json as Map<String, dynamic>))
+          .toList();
+    }
+    return [];
   }
 }
