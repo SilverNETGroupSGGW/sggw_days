@@ -14,6 +14,8 @@ class TimetablePage extends StatefulWidget {
 }
 
 class _TimetablePageState extends State<TimetablePage> {
+  bool _showTimeline = false;
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +50,14 @@ class _TimetablePageState extends State<TimetablePage> {
             icon: const Icon(Icons.calendar_today),
             onPressed: () => _selectDate(context),
           ),
+          IconButton(
+            icon: Icon(_showTimeline ? Icons.view_list : Icons.view_timeline),
+            onPressed: () {
+              setState(() {
+                _showTimeline = !_showTimeline;
+              });
+            },
+          ),
         ],
       ),
       body: BlocConsumer<TimetableBloc, TimetableState>(
@@ -71,7 +81,7 @@ class _TimetablePageState extends State<TimetablePage> {
                   const Icon(Icons.event_busy, size: 100),
                   const SizedBox(height: 16),
                   Text(
-                    'No events on ${DateFormat.yMMMd().format(state.selectedDate!)}',
+                    '${l10n.noEventsOn} ${DateFormat.yMMMd().format(state.selectedDate!)}',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ],
@@ -79,53 +89,198 @@ class _TimetablePageState extends State<TimetablePage> {
             );
           }
 
-          return ListView.builder(
-            itemCount: state.filteredEvents.length,
-            itemBuilder: (context, index) {
-              final event = state.filteredEvents[index];
-              final isFavorite = state.favoriteIds.contains(event.id);
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    child: Text(
-                      DateFormat.Hm().format(event.startTime),
-                      style: const TextStyle(fontSize: 10),
-                    ),
-                  ),
-                  title: Text(event.title),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(event.location),
-                      Text(
-                        '${DateFormat.Hm().format(event.startTime)} - ${DateFormat.Hm().format(event.endTime)}',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite
-                          ? Theme.of(context).colorScheme.error
-                          : null,
-                    ),
-                    onPressed: () {
-                      context.read<TimetableBloc>().add(
-                        ToggleFavorite(event.id),
-                      );
-                    },
-                  ),
-                  onTap: () => _showEventDetails(context, event),
-                ),
-              );
-            },
-          );
+          if (_showTimeline) {
+            return _buildTimelineView(context, state);
+          }
+
+          return _buildListView(context, state);
         },
       ),
+    );
+  }
+
+  Widget _buildListView(BuildContext context, TimetableState state) {
+    return ListView.builder(
+      itemCount: state.filteredEvents.length,
+      itemBuilder: (context, index) {
+        final event = state.filteredEvents[index];
+        final isFavorite = state.favoriteIds.contains(event.id);
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ListTile(
+            leading: CircleAvatar(
+              child: Text(
+                DateFormat.Hm().format(event.startTime),
+                style: const TextStyle(fontSize: 10),
+              ),
+            ),
+            title: Text(event.title),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(event.location),
+                Text(
+                  '${DateFormat.Hm().format(event.startTime)} - ${DateFormat.Hm().format(event.endTime)}',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+            trailing: IconButton(
+              icon: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: isFavorite
+                    ? Theme.of(context).colorScheme.error
+                    : null,
+              ),
+              onPressed: () {
+                context.read<TimetableBloc>().add(
+                  ToggleFavorite(event.id),
+                );
+              },
+            ),
+            onTap: () => _showEventDetails(context, event),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTimelineView(BuildContext context, TimetableState state) {
+    final theme = Theme.of(context);
+    final events = List.of(state.filteredEvents)
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: events.length,
+      itemBuilder: (context, index) {
+        final event = events[index];
+        final isFavorite = state.favoriteIds.contains(event.id);
+        final duration = event.endTime.difference(event.startTime);
+        final durationText = duration.inMinutes >= 60
+            ? '${duration.inHours}h ${duration.inMinutes % 60}m'
+            : '${duration.inMinutes}m';
+
+        return IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Time column
+              SizedBox(
+                width: 56,
+                child: Text(
+                  DateFormat.Hm().format(event.startTime),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              // Timeline line
+              Column(
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  if (index < events.length - 1)
+                    Expanded(
+                      child: Container(
+                        width: 2,
+                        color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(width: 12),
+              // Event card
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Card(
+                    child: InkWell(
+                      onTap: () => _showEventDetails(context, event),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    event.title,
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    isFavorite
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    size: 20,
+                                    color: isFavorite
+                                        ? theme.colorScheme.error
+                                        : null,
+                                  ),
+                                  onPressed: () {
+                                    context.read<TimetableBloc>().add(
+                                      ToggleFavorite(event.id),
+                                    );
+                                  },
+                                  constraints: const BoxConstraints(),
+                                  padding: EdgeInsets.zero,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  size: 14,
+                                  color: theme.colorScheme.secondary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  durationText,
+                                  style: theme.textTheme.bodySmall,
+                                ),
+                                const SizedBox(width: 12),
+                                Icon(
+                                  Icons.location_on,
+                                  size: 14,
+                                  color: theme.colorScheme.secondary,
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    event.location,
+                                    style: theme.textTheme.bodySmall,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

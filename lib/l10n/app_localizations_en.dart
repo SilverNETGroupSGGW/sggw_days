@@ -173,4 +173,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noArticlesFound => 'No articles found';
+
+  @override
+  String get noEventsOn => 'No events on';
 }

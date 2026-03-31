@@ -415,6 +415,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Nie znaleziono artykułów'**
   String get noArticlesFound;
+
+  /// No description provided for @noEventsOn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak wydarzeń na'**
+  String get noEventsOn;
 }
 
 class _AppLocalizationsDelegate

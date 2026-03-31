@@ -173,4 +173,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get noArticlesFound => 'Nie znaleziono artykułów';
+
+  @override
+  String get noEventsOn => 'Brak wydarzeń na';
 }

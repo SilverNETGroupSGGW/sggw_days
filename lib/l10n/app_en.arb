@@ -52,5 +52,6 @@
   "noScansYet": "No points found yet",
   "search": "Search...",
   "allCategories": "All",
-  "noArticlesFound": "No articles found"
+  "noArticlesFound": "No articles found",
+  "noEventsOn": "No events on"
 }
