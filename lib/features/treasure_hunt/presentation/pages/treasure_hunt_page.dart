@@ -21,10 +21,29 @@ class TreasureHuntPage extends StatefulWidget {
   State<TreasureHuntPage> createState() => _TreasureHuntPageState();
 }
 
+class _CampusBuilding {
+  final String name;
+  final String namePl;
+  final LatLng position;
+  final IconData icon;
+
+  const _CampusBuilding(this.name, this.namePl, this.position, this.icon);
+}
+
+const _campusBuildings = [
+  _CampusBuilding('Main Building', 'Budynek Główny', LatLng(52.1615, 21.0462), Icons.school),
+  _CampusBuilding('Library', 'Biblioteka Główna', LatLng(52.1598, 21.0480), Icons.local_library),
+  _CampusBuilding('Aula Kryształowa', 'Aula Kryształowa', LatLng(52.1608, 21.0453), Icons.meeting_room),
+  _CampusBuilding('Sports Center', 'Centrum Sportowe', LatLng(52.1575, 21.0497), Icons.sports),
+  _CampusBuilding('Student Canteen', 'Stołówka Studencka', LatLng(52.1592, 21.0470), Icons.restaurant),
+  _CampusBuilding('Dormitories', 'Akademiki', LatLng(52.1568, 21.0455), Icons.hotel),
+];
+
 class _TreasureHuntPageState extends State<TreasureHuntPage> {
   final MapController _mapController = MapController();
   LatLng? _currentPosition;
   StreamSubscription<Position>? _positionStreamSubscription;
+  bool _showBuildings = false;
 
   // SGGW coordinates
   static const LatLng sggwCenter = LatLng(52.1598, 21.0463);
@@ -128,6 +147,16 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
             },
           ),
           IconButton(
+            icon: Icon(
+              Icons.apartment,
+              color: _showBuildings
+                  ? Theme.of(context).colorScheme.primary
+                  : null,
+            ),
+            tooltip: l10n.campusBuildings,
+            onPressed: () => setState(() => _showBuildings = !_showBuildings),
+          ),
+          IconButton(
             icon: const Icon(Icons.history),
             onPressed: () {
               Navigator.push(
@@ -226,6 +255,46 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                       ),
                     );
                   }),
+                  if (_showBuildings)
+                    ..._campusBuildings.map((building) => Marker(
+                      point: building.position,
+                      width: 80,
+                      height: 60,
+                      child: GestureDetector(
+                        onTap: () => _showBuildingInfo(context, building),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.tertiaryContainer,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                building.icon,
+                                color: Theme.of(context).colorScheme.onTertiaryContainer,
+                                size: 20,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.85),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                Localizations.localeOf(context).languageCode == 'pl'
+                                    ? building.namePl
+                                    : building.name,
+                                style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 8),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
                   if (_currentPosition != null)
                     Marker(
                       point: _currentPosition!,
@@ -287,6 +356,25 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           FilledButton(
             onPressed: () => Navigator.pop(context),
             child: Text(l10n.ok),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showBuildingInfo(BuildContext context, _CampusBuilding building) {
+    final name = Localizations.localeOf(context).languageCode == 'pl'
+        ? building.namePl
+        : building.name;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: Icon(building.icon, size: 48),
+        title: Text(name),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(AppLocalizations.of(context)!.ok),
           ),
         ],
       ),

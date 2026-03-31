@@ -421,6 +421,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Brak wydarzeń na'**
   String get noEventsOn;
+
+  /// No description provided for @campusBuildings.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budynki kampusu'**
+  String get campusBuildings;
 }
 
 class _AppLocalizationsDelegate

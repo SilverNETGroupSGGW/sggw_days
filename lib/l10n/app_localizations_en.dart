@@ -176,4 +176,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noEventsOn => 'No events on';
+
+  @override
+  String get campusBuildings => 'Campus Buildings';
 }
