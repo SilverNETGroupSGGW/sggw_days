@@ -49,5 +49,8 @@
   "mustBeCloser": "You must be closer to the treasure point!",
   "allPointsFound": "You found all the treasure points! Amazing job exploring the SGGW campus!",
   "scanHistory": "Scan History",
-  "noScansYet": "No points found yet"
+  "noScansYet": "No points found yet",
+  "search": "Search...",
+  "allCategories": "All",
+  "noArticlesFound": "No articles found"
 }

@@ -164,4 +164,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get noScansYet => 'Nie znaleziono jeszcze żadnych punktów';
+
+  @override
+  String get search => 'Szukaj...';
+
+  @override
+  String get allCategories => 'Wszystkie';
+
+  @override
+  String get noArticlesFound => 'Nie znaleziono artykułów';
 }

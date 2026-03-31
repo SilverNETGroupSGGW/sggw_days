@@ -42,7 +42,7 @@ class _WikiPageState extends State<WikiPage> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search...',
+                hintText: l10n.search,
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -70,14 +70,67 @@ class _WikiPageState extends State<WikiPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state.filteredArticles.isEmpty) {
-            return const Center(child: Text('No articles found'));
-          }
+          // Extract unique categories
+          final categories = state.articles
+              .map((a) => a.category)
+              .toSet()
+              .toList()
+            ..sort();
 
-          return ListView.builder(
-            itemCount: state.filteredArticles.length,
-            itemBuilder: (context, index) {
-              final article = state.filteredArticles[index];
+          return Column(
+            children: [
+              if (categories.isNotEmpty)
+                SizedBox(
+                  height: 48,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: FilterChip(
+                          label: Text(l10n.allCategories),
+                          selected: state.selectedCategory == null,
+                          onSelected: (_) {
+                            context.read<WikiBloc>().add(
+                              const FilterArticlesByCategory(null),
+                            );
+                          },
+                        ),
+                      ),
+                      ...categories.map((category) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: FilterChip(
+                            label: Text(category),
+                            selected: state.selectedCategory == category,
+                            onSelected: (_) {
+                              context.read<WikiBloc>().add(
+                                FilterArticlesByCategory(
+                                  state.selectedCategory == category
+                                      ? null
+                                      : category,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              if (state.filteredArticles.isEmpty)
+                Expanded(
+                  child: Center(
+                    child: Text(l10n.noArticlesFound),
+                  ),
+                )
+              else
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: state.filteredArticles.length,
+                    itemBuilder: (context, index) {
+                      final article = state.filteredArticles[index];
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
@@ -100,7 +153,10 @@ class _WikiPageState extends State<WikiPage> {
                   onTap: () => _showArticleDetails(context, article),
                 ),
               );
-            },
+                    },
+                  ),
+                ),
+            ],
           );
         },
       ),

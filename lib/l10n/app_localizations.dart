@@ -397,6 +397,24 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Nie znaleziono jeszcze żadnych punktów'**
   String get noScansYet;
+
+  /// No description provided for @search.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj...'**
+  String get search;
+
+  /// No description provided for @allCategories.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie'**
+  String get allCategories;
+
+  /// No description provided for @noArticlesFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono artykułów'**
+  String get noArticlesFound;
 }
 
 class _AppLocalizationsDelegate

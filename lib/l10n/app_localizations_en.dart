@@ -164,4 +164,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noScansYet => 'No points found yet';
+
+  @override
+  String get search => 'Search...';
+
+  @override
+  String get allCategories => 'All';
+
+  @override
+  String get noArticlesFound => 'No articles found';
 }
