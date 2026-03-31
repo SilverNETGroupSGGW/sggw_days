@@ -135,6 +135,12 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
               SnackBar(content: Text(state.errorMessage ?? 'Error')),
             );
           }
+          // Check if all points found
+          if (state.points.isNotEmpty &&
+              state.foundPointIds.length == state.points.length &&
+              state.status == TreasureHuntStatus.success) {
+            _showCelebration(context);
+          }
         },
         builder: (context, state) {
           if (state.status == TreasureHuntStatus.loading) {
@@ -246,6 +252,33 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   String _formatDistance(double meters) {
     if (meters < 1000) return '${meters.round()} m';
     return '${(meters / 1000).toStringAsFixed(1)} km';
+  }
+
+  void _showCelebration(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: Icon(
+          Icons.emoji_events,
+          size: 64,
+          color: theme.colorScheme.primary,
+        ),
+        title: Text(l10n.congratulations),
+        content: Text(
+          l10n.allPointsFound,
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.ok),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showPointDetails(BuildContext context, dynamic point, bool isFound) {

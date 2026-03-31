@@ -154,4 +154,8 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get mustBeCloser => 'Musisz być bliżej punktu!';
+
+  @override
+  String get allPointsFound =>
+      'Znalazłeś wszystkie punkty! Świetna robota w odkrywaniu kampusu SGGW!';
 }

@@ -46,5 +46,6 @@
   "aboutContent": "SGGW Days is the official app for the Warsaw University of Life Sciences open days event. Explore the campus, participate in the treasure hunt, and discover everything SGGW has to offer.",
   "developedBy": "Developed by SilverNET Group SGGW",
   "distance": "Distance",
-  "mustBeCloser": "You must be closer to the treasure point!"
+  "mustBeCloser": "You must be closer to the treasure point!",
+  "allPointsFound": "You found all the treasure points! Amazing job exploring the SGGW campus!"
 }

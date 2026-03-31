@@ -379,6 +379,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Musisz być bliżej punktu!'**
   String get mustBeCloser;
+
+  /// No description provided for @allPointsFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Znalazłeś wszystkie punkty! Świetna robota w odkrywaniu kampusu SGGW!'**
+  String get allPointsFound;
 }
 
 class _AppLocalizationsDelegate

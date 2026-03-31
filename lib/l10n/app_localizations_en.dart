@@ -154,4 +154,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mustBeCloser => 'You must be closer to the treasure point!';
+
+  @override
+  String get allPointsFound =>
+      'You found all the treasure points! Amazing job exploring the SGGW campus!';
 }
