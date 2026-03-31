@@ -47,5 +47,7 @@
   "about": "O aplikacji",
   "aboutDesc": "Informacje o aplikacji i twórcach",
   "aboutContent": "Dni SGGW to oficjalna aplikacja na dzień otwarty Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie. Poznaj kampus, weź udział w grze terenowej i odkryj wszystko, co SGGW ma do zaoferowania.",
-  "developedBy": "Stworzone przez SilverNET Group SGGW"
+  "developedBy": "Stworzone przez SilverNET Group SGGW",
+  "distance": "Odległość",
+  "mustBeCloser": "Musisz być bliżej punktu!"
 }

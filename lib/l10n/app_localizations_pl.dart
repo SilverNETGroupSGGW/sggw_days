@@ -148,4 +148,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get developedBy => 'Stworzone przez SilverNET Group SGGW';
+
+  @override
+  String get distance => 'Odległość';
+
+  @override
+  String get mustBeCloser => 'Musisz być bliżej punktu!';
 }

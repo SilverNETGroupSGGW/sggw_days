@@ -161,16 +161,49 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                     final position = LatLng(point.latitude, point.longitude);
                     return Marker(
                       point: position,
-                      width: 40,
-                      height: 40,
+                      width: 60,
+                      height: 60,
                       child: GestureDetector(
                         onTap: () => _showPointDetails(context, point, isFound),
-                        child: Icon(
-                          isFound ? Icons.check_circle : Icons.location_on,
-                          color: isFound
-                              ? AppColors.primaryGreen
-                              : AppColors.red,
-                          size: 40,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isFound ? Icons.check_circle : Icons.location_on,
+                              color: isFound
+                                  ? AppColors.primaryGreen
+                                  : AppColors.red,
+                              size: 32,
+                            ),
+                            if (_currentPosition != null && !isFound)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 1,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surface
+                                      .withValues(alpha: 0.85),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  _formatDistance(
+                                    Geolocator.distanceBetween(
+                                      _currentPosition!.latitude,
+                                      _currentPosition!.longitude,
+                                      point.latitude,
+                                      point.longitude,
+                                    ),
+                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall
+                                      ?.copyWith(fontSize: 9),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     );
@@ -210,7 +243,26 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     );
   }
 
+  String _formatDistance(double meters) {
+    if (meters < 1000) return '${meters.round()} m';
+    return '${(meters / 1000).toStringAsFixed(1)} km';
+  }
+
   void _showPointDetails(BuildContext context, dynamic point, bool isFound) {
+    final l10n = AppLocalizations.of(context)!;
+    String? distanceText;
+    if (_currentPosition != null) {
+      final distance = Geolocator.distanceBetween(
+        _currentPosition!.latitude,
+        _currentPosition!.longitude,
+        point.latitude as double,
+        point.longitude as double,
+      );
+      distanceText = distance < 1000
+          ? '${distance.round()} m'
+          : '${(distance / 1000).toStringAsFixed(1)} km';
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -220,30 +272,47 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(point.description as String),
-            if (isFound) const SizedBox(height: 16),
-            if (isFound)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  children: [
-                    const Icon(Icons.check, color: AppColors.primaryGreen),
-                    const SizedBox(width: 8),
-                    Text(
-                      AppLocalizations.of(context)!.pointFound,
-                      style: const TextStyle(
-                        color: AppColors.primaryGreen,
-                        fontWeight: FontWeight.bold,
-                      ),
+            if (distanceText != null) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    Icons.straighten,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${l10n.distance}: $distanceText',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ],
+            if (isFound) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  const Icon(Icons.check, color: AppColors.primaryGreen),
+                  const SizedBox(width: 8),
+                  Text(
+                    l10n.pointFound,
+                    style: const TextStyle(
+                      color: AppColors.primaryGreen,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.ok),
+            child: Text(l10n.ok),
           ),
         ],
       ),
@@ -342,9 +411,7 @@ class _QRScannerPage extends StatelessWidget {
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text(
-                      'You must be closer to the treasure point!',
-                    ),
+                    content: Text(l10n.mustBeCloser),
                     backgroundColor: Theme.of(context).colorScheme.error,
                   ),
                 );

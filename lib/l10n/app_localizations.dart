@@ -367,6 +367,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Stworzone przez SilverNET Group SGGW'**
   String get developedBy;
+
+  /// No description provided for @distance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odległość'**
+  String get distance;
+
+  /// No description provided for @mustBeCloser.
+  ///
+  /// In pl, this message translates to:
+  /// **'Musisz być bliżej punktu!'**
+  String get mustBeCloser;
 }
 
 class _AppLocalizationsDelegate

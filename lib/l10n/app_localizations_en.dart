@@ -148,4 +148,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get developedBy => 'Developed by SilverNET Group SGGW';
+
+  @override
+  String get distance => 'Distance';
+
+  @override
+  String get mustBeCloser => 'You must be closer to the treasure point!';
 }
