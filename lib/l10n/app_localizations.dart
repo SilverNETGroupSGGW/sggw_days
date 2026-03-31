@@ -385,6 +385,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Znalazłeś wszystkie punkty! Świetna robota w odkrywaniu kampusu SGGW!'**
   String get allPointsFound;
+
+  /// No description provided for @scanHistory.
+  ///
+  /// In pl, this message translates to:
+  /// **'Historia skanowań'**
+  String get scanHistory;
+
+  /// No description provided for @noScansYet.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono jeszcze żadnych punktów'**
+  String get noScansYet;
 }
 
 class _AppLocalizationsDelegate

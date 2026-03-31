@@ -11,6 +11,7 @@ import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_state.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/pages/scan_history_page.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
 class TreasureHuntPage extends StatefulWidget {
@@ -122,6 +123,17 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                       ),
                     ),
                   ],
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ScanHistoryPage(),
                 ),
               );
             },

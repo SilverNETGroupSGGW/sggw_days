@@ -158,4 +158,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get allPointsFound =>
       'You found all the treasure points! Amazing job exploring the SGGW campus!';
+
+  @override
+  String get scanHistory => 'Scan History';
+
+  @override
+  String get noScansYet => 'No points found yet';
 }

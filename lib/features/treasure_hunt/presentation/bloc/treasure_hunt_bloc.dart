@@ -30,11 +30,22 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
           _progressBox.get('found_points', defaultValue: <String>[]) ??
           <String>[];
 
+      // Load scan history
+      final historyBox = await Hive.openBox('scan_history');
+      final Map<String, DateTime> history = {};
+      for (final id in foundIds) {
+        final timestamp = historyBox.get(id);
+        if (timestamp != null) {
+          history[id] = DateTime.parse(timestamp as String);
+        }
+      }
+
       emit(
         state.copyWith(
           status: TreasureHuntStatus.success,
           points: points,
           foundPointIds: foundIds,
+          scanHistory: history,
         ),
       );
     } catch (e) {
@@ -58,7 +69,18 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
     final updatedFoundIds = [...state.foundPointIds, event.pointId];
     await _progressBox.put('found_points', updatedFoundIds);
 
-    emit(state.copyWith(foundPointIds: updatedFoundIds));
+    // Save scan timestamp
+    final now = DateTime.now();
+    final historyBox = await Hive.openBox('scan_history');
+    await historyBox.put(event.pointId, now.toIso8601String());
+
+    final updatedHistory = Map<String, DateTime>.from(state.scanHistory);
+    updatedHistory[event.pointId] = now;
+
+    emit(state.copyWith(
+      foundPointIds: updatedFoundIds,
+      scanHistory: updatedHistory,
+    ));
   }
 
   Future<void> _onScanQRCode(

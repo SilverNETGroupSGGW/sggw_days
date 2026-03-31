@@ -158,4 +158,10 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get allPointsFound =>
       'Znalazłeś wszystkie punkty! Świetna robota w odkrywaniu kampusu SGGW!';
+
+  @override
+  String get scanHistory => 'Historia skanowań';
+
+  @override
+  String get noScansYet => 'Nie znaleziono jeszcze żadnych punktów';
 }

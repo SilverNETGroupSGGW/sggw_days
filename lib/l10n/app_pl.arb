@@ -50,5 +50,7 @@
   "developedBy": "Stworzone przez SilverNET Group SGGW",
   "distance": "Odległość",
   "mustBeCloser": "Musisz być bliżej punktu!",
-  "allPointsFound": "Znalazłeś wszystkie punkty! Świetna robota w odkrywaniu kampusu SGGW!"
+  "allPointsFound": "Znalazłeś wszystkie punkty! Świetna robota w odkrywaniu kampusu SGGW!",
+  "scanHistory": "Historia skanowań",
+  "noScansYet": "Nie znaleziono jeszcze żadnych punktów"
 }
