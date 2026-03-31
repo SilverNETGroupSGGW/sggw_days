@@ -135,6 +135,29 @@ class SettingsPage extends StatelessWidget {
               ),
               const Divider(),
               ListTile(
+                leading: const Icon(Icons.text_fields),
+                title: Text(l10n.fontSize),
+                subtitle: Slider(
+                  value: state.textScaleFactor,
+                  min: 0.8,
+                  max: 1.4,
+                  divisions: 6,
+                  label: '${(state.textScaleFactor * 100).round()}%',
+                  onChanged: (value) {
+                    context.read<SettingsCubit>().setTextScaleFactor(value);
+                  },
+                ),
+              ),
+              SwitchListTile(
+                secondary: const Icon(Icons.format_bold),
+                title: Text(l10n.boldText),
+                value: state.boldText,
+                onChanged: (value) {
+                  context.read<SettingsCubit>().toggleBoldText(value);
+                },
+              ),
+              const Divider(),
+              ListTile(
                 leading: const Icon(Icons.info_outline),
                 title: Text(l10n.viewOnboarding),
                 subtitle: Text(l10n.viewOnboardingDesc),

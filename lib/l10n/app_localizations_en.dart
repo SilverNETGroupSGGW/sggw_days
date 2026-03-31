@@ -179,4 +179,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get campusBuildings => 'Campus Buildings';
+
+  @override
+  String get fontSize => 'Font Size';
+
+  @override
+  String get boldText => 'Bold Text';
 }

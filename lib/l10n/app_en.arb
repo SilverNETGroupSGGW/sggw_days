@@ -54,5 +54,7 @@
   "allCategories": "All",
   "noArticlesFound": "No articles found",
   "noEventsOn": "No events on",
-  "campusBuildings": "Campus Buildings"
+  "campusBuildings": "Campus Buildings",
+  "fontSize": "Font Size",
+  "boldText": "Bold Text"
 }

@@ -427,6 +427,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Budynki kampusu'**
   String get campusBuildings;
+
+  /// No description provided for @fontSize.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozmiar czcionki'**
+  String get fontSize;
+
+  /// No description provided for @boldText.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pogrubiony tekst'**
+  String get boldText;
 }
 
 class _AppLocalizationsDelegate

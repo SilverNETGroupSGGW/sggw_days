@@ -29,4 +29,12 @@ class SettingsCubit extends Cubit<SettingsState> {
   void toggleDynamicColors(bool value) {
     emit(state.copyWith(useDynamicColors: value));
   }
+
+  void setTextScaleFactor(double value) {
+    emit(state.copyWith(textScaleFactor: value));
+  }
+
+  void toggleBoldText(bool value) {
+    emit(state.copyWith(boldText: value));
+  }
 }

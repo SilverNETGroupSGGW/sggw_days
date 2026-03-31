@@ -179,4 +179,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get campusBuildings => 'Budynki kampusu';
+
+  @override
+  String get fontSize => 'Rozmiar czcionki';
+
+  @override
+  String get boldText => 'Pogrubiony tekst';
 }

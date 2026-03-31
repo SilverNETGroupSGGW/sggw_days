@@ -134,9 +134,11 @@ class _MyAppState extends State<MyApp> {
               title: 'Dni SGGW',
               theme: AppTheme.light(
                 useDynamicColors: settings.useDynamicColors,
+                boldText: settings.boldText,
               ),
               darkTheme: AppTheme.dark(
                 useDynamicColors: settings.useDynamicColors,
+                boldText: settings.boldText,
               ),
               themeMode: settings.themeMode,
               localizationsDelegates: [
@@ -148,6 +150,15 @@ class _MyAppState extends State<MyApp> {
               supportedLocales: const [Locale('pl'), Locale('en')],
               locale: settings.locale,
               routerConfig: appRouter,
+              builder: (context, child) {
+                final mediaQuery = MediaQuery.of(context);
+                return MediaQuery(
+                  data: mediaQuery.copyWith(
+                    textScaler: TextScaler.linear(settings.textScaleFactor),
+                  ),
+                  child: child!,
+                );
+              },
             );
           },
         ),
