@@ -12,7 +12,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get appTitle => 'Dni SGGW';
 
   @override
-  String get treasureHunt => 'Gra Terenowa';
+  String get treasureHunt => 'Mapa';
 
   @override
   String get wiki => 'Wiedza';
@@ -190,16 +190,15 @@ class AppLocalizationsPl extends AppLocalizations {
   String get adminLogin => 'Logowanie admina';
 
   @override
-  String get password => 'Hasło';
+  String get signInWithGoogle => 'Zaloguj przez Google';
 
   @override
-  String get login => 'Zaloguj się';
+  String get adminNotAuthorized =>
+      'Twoje konto nie ma uprawnień do panelu administratora.';
 
   @override
-  String get email => 'Email';
-
-  @override
-  String get invalidPassword => 'Nieprawidłowe dane logowania';
+  String get adminSignInFailed =>
+      'Logowanie nie powiodło się. Spróbuj ponownie.';
 
   @override
   String get checkIn => 'Zamelduj się';
@@ -209,4 +208,126 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get offlineMode => 'Tryb offline — dane z pamięci podręcznej';
+
+  @override
+  String get scanPageTitle => 'Punkt';
+
+  @override
+  String get scanPageDesc =>
+      'To jest punkt Dni SGGW! Otwórz aplikację Dni SGGW i zeskanuj ten kod QR w pobliżu lokalizacji, aby zdobyć punkt.';
+
+  @override
+  String get scanPageOpenApp => 'Otwórz aplikację';
+
+  @override
+  String get scanPagePointNotFound => 'Nie znaleziono tego punktu.';
+
+  @override
+  String get invalidQrCode => 'Nieprawidłowy kod QR';
+
+  @override
+  String get points => 'Punkty';
+
+  @override
+  String get typeTreasurePoint => 'Punkt skarbowy';
+
+  @override
+  String get typeEvent => 'Wydarzenie';
+
+  @override
+  String get typePointOfInterest => 'Punkt zainteresowania';
+
+  @override
+  String get checklist => 'Lista';
+
+  @override
+  String treasurePointsRemaining(int count) {
+    return '$count punktów skarbowych pozostało';
+  }
+
+  @override
+  String get nextTreasurePoint => 'Następny punkt skarbowy';
+
+  @override
+  String get allTreasurePointsCollected => 'Wszystkie punkty skarbowe zebrane!';
+
+  @override
+  String get relatedWiki => 'Powiązane artykuły';
+
+  @override
+  String get relatedEvents => 'Powiązane wydarzenia';
+
+  @override
+  String get tutorialTitle => 'Zacznij odkrywać!';
+
+  @override
+  String get tutorialDesc =>
+      'Zeskanuj swój pierwszy kod QR przy pobliskim punkcie, aby odblokować pełne doświadczenie aplikacji.';
+
+  @override
+  String get appLocked => 'Zeskanuj pierwszy punkt, aby odblokować';
+
+  @override
+  String get pointCollected => 'Punkt zebrany!';
+
+  @override
+  String pointCollectedDesc(String pointName) {
+    return 'Pomyślnie zeskanowałeś $pointName!';
+  }
+
+  @override
+  String get seeDetails => 'Szczegóły';
+
+  @override
+  String get continueScan => 'Kontynuuj';
+
+  @override
+  String get reorderPoints => 'Zmień kolejność';
+
+  @override
+  String get trackOnMap => 'Śledź na mapie';
+
+  @override
+  String get pointLocked => 'Ten punkt nie jest jeszcze odblokowany';
+
+  @override
+  String treasurePointNumber(int number) {
+    return 'Punkt skarbowy #$number';
+  }
+
+  @override
+  String adminInvalidEntries(int count) {
+    return '$count nieprawidłowych wpisów';
+  }
+
+  @override
+  String get adminInvalidEntriesDesc =>
+      'Te wpisy nie pasują do aktualnego schematu i wymagają naprawy.';
+
+  @override
+  String get adminFixEntry => 'Napraw';
+
+  @override
+  String get adminFixAll => 'Napraw wszystkie';
+
+  @override
+  String get adminFixPreviewTitle => 'Podgląd naprawy';
+
+  @override
+  String get adminFixConfirm => 'Zatwierdź naprawę';
+
+  @override
+  String get adminRawData => 'Obecne (surowe)';
+
+  @override
+  String get adminFixedData => 'Naprawione';
+
+  @override
+  String get adminDeleteEntry => 'Usuń';
+
+  @override
+  String get adminEntryFixed => 'Wpis naprawiony pomyślnie';
+
+  @override
+  String get adminAllEntriesFixed => 'Wszystkie wpisy naprawione pomyślnie';
 }

@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'SGGW Days';
 
   @override
-  String get treasureHunt => 'Treasure Hunt';
+  String get treasureHunt => 'Map';
 
   @override
   String get wiki => 'Wiki';
@@ -190,16 +190,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminLogin => 'Admin Login';
 
   @override
-  String get password => 'Password';
+  String get signInWithGoogle => 'Sign in with Google';
 
   @override
-  String get login => 'Log In';
+  String get adminNotAuthorized =>
+      'Your account is not authorised to access the admin panel.';
 
   @override
-  String get email => 'Email';
-
-  @override
-  String get invalidPassword => 'Invalid credentials';
+  String get adminSignInFailed => 'Sign-in failed. Please try again.';
 
   @override
   String get checkIn => 'Check In';
@@ -209,4 +207,126 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlineMode => 'Offline mode — using cached data';
+
+  @override
+  String get scanPageTitle => 'Point';
+
+  @override
+  String get scanPageDesc =>
+      'This is a treasure hunt point from SGGW Days! Open the SGGW Days app and scan this QR code near the location to collect the point.';
+
+  @override
+  String get scanPageOpenApp => 'Open App';
+
+  @override
+  String get scanPagePointNotFound => 'This point was not found.';
+
+  @override
+  String get invalidQrCode => 'Invalid QR code';
+
+  @override
+  String get points => 'Points';
+
+  @override
+  String get typeTreasurePoint => 'Treasure Point';
+
+  @override
+  String get typeEvent => 'Event';
+
+  @override
+  String get typePointOfInterest => 'Point of Interest';
+
+  @override
+  String get checklist => 'Checklist';
+
+  @override
+  String treasurePointsRemaining(int count) {
+    return '$count treasure points remaining';
+  }
+
+  @override
+  String get nextTreasurePoint => 'Next Treasure Point';
+
+  @override
+  String get allTreasurePointsCollected => 'All treasure points collected!';
+
+  @override
+  String get relatedWiki => 'Related Articles';
+
+  @override
+  String get relatedEvents => 'Related Events';
+
+  @override
+  String get tutorialTitle => 'Start Exploring!';
+
+  @override
+  String get tutorialDesc =>
+      'Scan your first QR code at a nearby point to unlock the full app experience.';
+
+  @override
+  String get appLocked => 'Scan your first point to unlock';
+
+  @override
+  String get pointCollected => 'Point Collected!';
+
+  @override
+  String pointCollectedDesc(String pointName) {
+    return 'You successfully scanned $pointName!';
+  }
+
+  @override
+  String get seeDetails => 'See Details';
+
+  @override
+  String get continueScan => 'Continue';
+
+  @override
+  String get reorderPoints => 'Reorder Points';
+
+  @override
+  String get trackOnMap => 'Track on Map';
+
+  @override
+  String get pointLocked => 'This point is not yet unlocked';
+
+  @override
+  String treasurePointNumber(int number) {
+    return 'Treasure Point #$number';
+  }
+
+  @override
+  String adminInvalidEntries(int count) {
+    return '$count invalid entries';
+  }
+
+  @override
+  String get adminInvalidEntriesDesc =>
+      'These entries do not match the current schema and need to be fixed.';
+
+  @override
+  String get adminFixEntry => 'Fix';
+
+  @override
+  String get adminFixAll => 'Fix All';
+
+  @override
+  String get adminFixPreviewTitle => 'Fix Preview';
+
+  @override
+  String get adminFixConfirm => 'Confirm Fix';
+
+  @override
+  String get adminRawData => 'Current (raw)';
+
+  @override
+  String get adminFixedData => 'Fixed';
+
+  @override
+  String get adminDeleteEntry => 'Delete';
+
+  @override
+  String get adminEntryFixed => 'Entry fixed successfully';
+
+  @override
+  String get adminAllEntriesFixed => 'All entries fixed successfully';
 }

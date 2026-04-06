@@ -4,7 +4,7 @@
   "@appTitle": {
     "description": "Tytuł aplikacji"
   },
-  "treasureHunt": "Gra Terenowa",
+  "treasureHunt": "Mapa",
   "wiki": "Wiedza",
   "timetable": "Harmonogram",
   "notifications": "Powiadomienia",
@@ -61,11 +61,75 @@
   "fontSize": "Rozmiar czcionki",
   "boldText": "Pogrubiony tekst",
   "adminLogin": "Logowanie admina",
-  "password": "Hasło",
-  "login": "Zaloguj się",
-  "email": "Email",
-  "invalidPassword": "Nieprawidłowe dane logowania",
+  "signInWithGoogle": "Zaloguj przez Google",
+  "adminNotAuthorized": "Twoje konto nie ma uprawnień do panelu administratora.",
+  "adminSignInFailed": "Logowanie nie powiodło się. Spróbuj ponownie.",
   "checkIn": "Zamelduj się",
   "checkedIn": "Zameldowany",
-  "offlineMode": "Tryb offline — dane z pamięci podręcznej"
+  "offlineMode": "Tryb offline — dane z pamięci podręcznej",
+  "scanPageTitle": "Punkt",
+  "scanPageDesc": "To jest punkt Dni SGGW! Otwórz aplikację Dni SGGW i zeskanuj ten kod QR w pobliżu lokalizacji, aby zdobyć punkt.",
+  "scanPageOpenApp": "Otwórz aplikację",
+  "scanPagePointNotFound": "Nie znaleziono tego punktu.",
+  "invalidQrCode": "Nieprawidłowy kod QR",
+  "points": "Punkty",
+  "typeTreasurePoint": "Punkt skarbowy",
+  "typeEvent": "Wydarzenie",
+  "typePointOfInterest": "Punkt zainteresowania",
+  "checklist": "Lista",
+  "treasurePointsRemaining": "{count} punktów skarbowych pozostało",
+  "@treasurePointsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nextTreasurePoint": "Następny punkt skarbowy",
+  "allTreasurePointsCollected": "Wszystkie punkty skarbowe zebrane!",
+  "relatedWiki": "Powiązane artykuły",
+  "relatedEvents": "Powiązane wydarzenia",
+  "tutorialTitle": "Zacznij odkrywać!",
+  "tutorialDesc": "Zeskanuj swój pierwszy kod QR przy pobliskim punkcie, aby odblokować pełne doświadczenie aplikacji.",
+  "appLocked": "Zeskanuj pierwszy punkt, aby odblokować",
+  "pointCollected": "Punkt zebrany!",
+  "pointCollectedDesc": "Pomyślnie zeskanowałeś {pointName}!",
+  "@pointCollectedDesc": {
+    "placeholders": {
+      "pointName": {
+        "type": "String"
+      }
+    }
+  },
+  "seeDetails": "Szczegóły",
+  "continueScan": "Kontynuuj",
+  "reorderPoints": "Zmień kolejność",
+  "trackOnMap": "Śledź na mapie",
+  "pointLocked": "Ten punkt nie jest jeszcze odblokowany",
+  "treasurePointNumber": "Punkt skarbowy #{number}",
+  "@treasurePointNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "adminInvalidEntries": "{count} nieprawidłowych wpisów",
+  "@adminInvalidEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminInvalidEntriesDesc": "Te wpisy nie pasują do aktualnego schematu i wymagają naprawy.",
+  "adminFixEntry": "Napraw",
+  "adminFixAll": "Napraw wszystkie",
+  "adminFixPreviewTitle": "Podgląd naprawy",
+  "adminFixConfirm": "Zatwierdź naprawę",
+  "adminRawData": "Obecne (surowe)",
+  "adminFixedData": "Naprawione",
+  "adminDeleteEntry": "Usuń",
+  "adminEntryFixed": "Wpis naprawiony pomyślnie",
+  "adminAllEntriesFixed": "Wszystkie wpisy naprawione pomyślnie"
 }

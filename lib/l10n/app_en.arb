@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
   "appTitle": "SGGW Days",
-  "treasureHunt": "Treasure Hunt",
+  "treasureHunt": "Map",
   "wiki": "Wiki",
   "timetable": "Timetable",
   "notifications": "Notifications",
@@ -58,11 +58,75 @@
   "fontSize": "Font Size",
   "boldText": "Bold Text",
   "adminLogin": "Admin Login",
-  "password": "Password",
-  "login": "Log In",
-  "email": "Email",
-  "invalidPassword": "Invalid credentials",
+  "signInWithGoogle": "Sign in with Google",
+  "adminNotAuthorized": "Your account is not authorised to access the admin panel.",
+  "adminSignInFailed": "Sign-in failed. Please try again.",
   "checkIn": "Check In",
   "checkedIn": "Checked in",
-  "offlineMode": "Offline mode — using cached data"
+  "offlineMode": "Offline mode — using cached data",
+  "scanPageTitle": "Point",
+  "scanPageDesc": "This is a treasure hunt point from SGGW Days! Open the SGGW Days app and scan this QR code near the location to collect the point.",
+  "scanPageOpenApp": "Open App",
+  "scanPagePointNotFound": "This point was not found.",
+  "invalidQrCode": "Invalid QR code",
+  "points": "Points",
+  "typeTreasurePoint": "Treasure Point",
+  "typeEvent": "Event",
+  "typePointOfInterest": "Point of Interest",
+  "checklist": "Checklist",
+  "treasurePointsRemaining": "{count} treasure points remaining",
+  "@treasurePointsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nextTreasurePoint": "Next Treasure Point",
+  "allTreasurePointsCollected": "All treasure points collected!",
+  "relatedWiki": "Related Articles",
+  "relatedEvents": "Related Events",
+  "tutorialTitle": "Start Exploring!",
+  "tutorialDesc": "Scan your first QR code at a nearby point to unlock the full app experience.",
+  "appLocked": "Scan your first point to unlock",
+  "pointCollected": "Point Collected!",
+  "pointCollectedDesc": "You successfully scanned {pointName}!",
+  "@pointCollectedDesc": {
+    "placeholders": {
+      "pointName": {
+        "type": "String"
+      }
+    }
+  },
+  "seeDetails": "See Details",
+  "continueScan": "Continue",
+  "reorderPoints": "Reorder Points",
+  "trackOnMap": "Track on Map",
+  "pointLocked": "This point is not yet unlocked",
+  "treasurePointNumber": "Treasure Point #{number}",
+  "@treasurePointNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "adminInvalidEntries": "{count} invalid entries",
+  "@adminInvalidEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminInvalidEntriesDesc": "These entries do not match the current schema and need to be fixed.",
+  "adminFixEntry": "Fix",
+  "adminFixAll": "Fix All",
+  "adminFixPreviewTitle": "Fix Preview",
+  "adminFixConfirm": "Confirm Fix",
+  "adminRawData": "Current (raw)",
+  "adminFixedData": "Fixed",
+  "adminDeleteEntry": "Delete",
+  "adminEntryFixed": "Entry fixed successfully",
+  "adminAllEntriesFixed": "All entries fixed successfully"
 }

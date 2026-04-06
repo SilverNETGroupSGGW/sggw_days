@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @treasureHunt.
   ///
   /// In pl, this message translates to:
-  /// **'Gra Terenowa'**
+  /// **'Mapa'**
   String get treasureHunt;
 
   /// No description provided for @wiki.
@@ -446,29 +446,23 @@ abstract class AppLocalizations {
   /// **'Logowanie admina'**
   String get adminLogin;
 
-  /// No description provided for @password.
+  /// No description provided for @signInWithGoogle.
   ///
   /// In pl, this message translates to:
-  /// **'Hasło'**
-  String get password;
+  /// **'Zaloguj przez Google'**
+  String get signInWithGoogle;
 
-  /// No description provided for @login.
+  /// No description provided for @adminNotAuthorized.
   ///
   /// In pl, this message translates to:
-  /// **'Zaloguj się'**
-  String get login;
+  /// **'Twoje konto nie ma uprawnień do panelu administratora.'**
+  String get adminNotAuthorized;
 
-  /// No description provided for @email.
+  /// No description provided for @adminSignInFailed.
   ///
   /// In pl, this message translates to:
-  /// **'Email'**
-  String get email;
-
-  /// No description provided for @invalidPassword.
-  ///
-  /// In pl, this message translates to:
-  /// **'Nieprawidłowe dane logowania'**
-  String get invalidPassword;
+  /// **'Logowanie nie powiodło się. Spróbuj ponownie.'**
+  String get adminSignInFailed;
 
   /// No description provided for @checkIn.
   ///
@@ -487,6 +481,228 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Tryb offline — dane z pamięci podręcznej'**
   String get offlineMode;
+
+  /// No description provided for @scanPageTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Punkt'**
+  String get scanPageTitle;
+
+  /// No description provided for @scanPageDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'To jest punkt Dni SGGW! Otwórz aplikację Dni SGGW i zeskanuj ten kod QR w pobliżu lokalizacji, aby zdobyć punkt.'**
+  String get scanPageDesc;
+
+  /// No description provided for @scanPageOpenApp.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz aplikację'**
+  String get scanPageOpenApp;
+
+  /// No description provided for @scanPagePointNotFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono tego punktu.'**
+  String get scanPagePointNotFound;
+
+  /// No description provided for @invalidQrCode.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieprawidłowy kod QR'**
+  String get invalidQrCode;
+
+  /// No description provided for @points.
+  ///
+  /// In pl, this message translates to:
+  /// **'Punkty'**
+  String get points;
+
+  /// No description provided for @typeTreasurePoint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Punkt skarbowy'**
+  String get typeTreasurePoint;
+
+  /// No description provided for @typeEvent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wydarzenie'**
+  String get typeEvent;
+
+  /// No description provided for @typePointOfInterest.
+  ///
+  /// In pl, this message translates to:
+  /// **'Punkt zainteresowania'**
+  String get typePointOfInterest;
+
+  /// No description provided for @checklist.
+  ///
+  /// In pl, this message translates to:
+  /// **'Lista'**
+  String get checklist;
+
+  /// No description provided for @treasurePointsRemaining.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} punktów skarbowych pozostało'**
+  String treasurePointsRemaining(int count);
+
+  /// No description provided for @nextTreasurePoint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Następny punkt skarbowy'**
+  String get nextTreasurePoint;
+
+  /// No description provided for @allTreasurePointsCollected.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie punkty skarbowe zebrane!'**
+  String get allTreasurePointsCollected;
+
+  /// No description provided for @relatedWiki.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązane artykuły'**
+  String get relatedWiki;
+
+  /// No description provided for @relatedEvents.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązane wydarzenia'**
+  String get relatedEvents;
+
+  /// No description provided for @tutorialTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zacznij odkrywać!'**
+  String get tutorialTitle;
+
+  /// No description provided for @tutorialDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zeskanuj swój pierwszy kod QR przy pobliskim punkcie, aby odblokować pełne doświadczenie aplikacji.'**
+  String get tutorialDesc;
+
+  /// No description provided for @appLocked.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zeskanuj pierwszy punkt, aby odblokować'**
+  String get appLocked;
+
+  /// No description provided for @pointCollected.
+  ///
+  /// In pl, this message translates to:
+  /// **'Punkt zebrany!'**
+  String get pointCollected;
+
+  /// No description provided for @pointCollectedDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomyślnie zeskanowałeś {pointName}!'**
+  String pointCollectedDesc(String pointName);
+
+  /// No description provided for @seeDetails.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły'**
+  String get seeDetails;
+
+  /// No description provided for @continueScan.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontynuuj'**
+  String get continueScan;
+
+  /// No description provided for @reorderPoints.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień kolejność'**
+  String get reorderPoints;
+
+  /// No description provided for @trackOnMap.
+  ///
+  /// In pl, this message translates to:
+  /// **'Śledź na mapie'**
+  String get trackOnMap;
+
+  /// No description provided for @pointLocked.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten punkt nie jest jeszcze odblokowany'**
+  String get pointLocked;
+
+  /// No description provided for @treasurePointNumber.
+  ///
+  /// In pl, this message translates to:
+  /// **'Punkt skarbowy #{number}'**
+  String treasurePointNumber(int number);
+
+  /// No description provided for @adminInvalidEntries.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} nieprawidłowych wpisów'**
+  String adminInvalidEntries(int count);
+
+  /// No description provided for @adminInvalidEntriesDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Te wpisy nie pasują do aktualnego schematu i wymagają naprawy.'**
+  String get adminInvalidEntriesDesc;
+
+  /// No description provided for @adminFixEntry.
+  ///
+  /// In pl, this message translates to:
+  /// **'Napraw'**
+  String get adminFixEntry;
+
+  /// No description provided for @adminFixAll.
+  ///
+  /// In pl, this message translates to:
+  /// **'Napraw wszystkie'**
+  String get adminFixAll;
+
+  /// No description provided for @adminFixPreviewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podgląd naprawy'**
+  String get adminFixPreviewTitle;
+
+  /// No description provided for @adminFixConfirm.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdź naprawę'**
+  String get adminFixConfirm;
+
+  /// No description provided for @adminRawData.
+  ///
+  /// In pl, this message translates to:
+  /// **'Obecne (surowe)'**
+  String get adminRawData;
+
+  /// No description provided for @adminFixedData.
+  ///
+  /// In pl, this message translates to:
+  /// **'Naprawione'**
+  String get adminFixedData;
+
+  /// No description provided for @adminDeleteEntry.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń'**
+  String get adminDeleteEntry;
+
+  /// No description provided for @adminEntryFixed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpis naprawiony pomyślnie'**
+  String get adminEntryFixed;
+
+  /// No description provided for @adminAllEntriesFixed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie wpisy naprawione pomyślnie'**
+  String get adminAllEntriesFixed;
 }
 
 class _AppLocalizationsDelegate
