@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
 
@@ -24,6 +25,7 @@ class WikiRepository {
     } on FirebaseException {
       return await _loadFromCache();
     } catch (e) {
+      debugPrint('WikiRepository error: $e');
       return await _loadFromCache();
     }
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 
@@ -19,12 +20,14 @@ class TimetableRepository {
         data['id'] = doc.id;
         // Convert Firestore Timestamps to ISO strings for Freezed deserialization
         if (data['startTime'] is Timestamp) {
-          data['startTime'] =
-              (data['startTime'] as Timestamp).toDate().toIso8601String();
+          data['startTime'] = (data['startTime'] as Timestamp)
+              .toDate()
+              .toIso8601String();
         }
         if (data['endTime'] is Timestamp) {
-          data['endTime'] =
-              (data['endTime'] as Timestamp).toDate().toIso8601String();
+          data['endTime'] = (data['endTime'] as Timestamp)
+              .toDate()
+              .toIso8601String();
         }
         return TimetableEvent.fromJson(data);
       }).toList();
@@ -33,6 +36,7 @@ class TimetableRepository {
     } on FirebaseException {
       return await _loadFromCache();
     } catch (e) {
+      debugPrint('TimetableRepository error: $e');
       return await _loadFromCache();
     }
   }

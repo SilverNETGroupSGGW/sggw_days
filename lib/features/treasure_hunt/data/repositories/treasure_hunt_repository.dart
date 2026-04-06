@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 
@@ -24,6 +25,7 @@ class TreasureHuntRepository {
     } on FirebaseException {
       return await _loadFromCache();
     } catch (e) {
+      debugPrint('TreasureHuntRepository error: $e');
       return await _loadFromCache();
     }
   }
