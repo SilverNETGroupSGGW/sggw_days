@@ -6,11 +6,14 @@ ARG TARGETARCH
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV FLUTTER_INSTALL_DIR=${FLUTTER_INSTALL_DIR}
-ENV PATH="${FLUTTER_INSTALL_DIR}/flutter/bin:${PATH}"
+ENV PATH="${FLUTTER_INSTALL_DIR}/flutter/bin:${HOME}/.pub-cache/bin:${PATH}"
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
     curl git unzip xz-utils zip libglu1-mesa ca-certificates jq \
     && rm -rf /var/lib/apt/lists/*
+
+ADD firebase.tools /tmp/firebase.tools
+RUN chmod +x /tmp/firebase.tools && /tmp/firebase.tools
 
 COPY .devcontainer/install-flutter.sh /tmp/install-flutter.sh
 RUN FLUTTER_CHANNEL=${FLUTTER_CHANNEL} TARGETARCH=${TARGETARCH} \
