@@ -196,11 +196,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get login => 'Log In';
 
   @override
-  String get invalidPassword => 'Invalid password';
+  String get email => 'Email';
+
+  @override
+  String get invalidPassword => 'Invalid credentials';
 
   @override
   String get checkIn => 'Check In';
 
   @override
   String get checkedIn => 'Checked in';
+
+  @override
+  String get offlineMode => 'Offline mode — using cached data';
 }

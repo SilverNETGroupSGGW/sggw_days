@@ -1,39 +1,34 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive_ce/hive.dart';
-import 'package:sggw_days/core/config/api_config.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 
 class TreasureHuntRepository {
-  final Dio _dio;
-  final String _baseUrl;
+  final FirebaseFirestore _firestore;
   static const _cacheKey = 'treasure_points_cache';
 
-  TreasureHuntRepository({Dio? dio, String? baseUrl})
-    : _dio = dio ?? Dio(),
-      _baseUrl = baseUrl ?? ApiConfig.defaultBaseUrl;
+  TreasureHuntRepository({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   Future<List<TreasurePoint>> getTreasurePoints() async {
     try {
-      final response = await _dio.get('$_baseUrl/treasure_points');
-      final List<dynamic> data = response.data as List<dynamic>;
-      final points = data
-          .map((json) => TreasurePoint.fromJson(json as Map<String, dynamic>))
-          .toList();
-      await _cacheData(data);
+      final snapshot = await _firestore.collection('treasure_points').get();
+      final points = snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return TreasurePoint.fromJson(data);
+      }).toList();
+      await _cacheData(points.map((p) => p.toJson()).toList());
       return points;
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        return [];
-      }
+    } on FirebaseException {
       return await _loadFromCache();
     } catch (e) {
       return await _loadFromCache();
     }
   }
 
-  Future<void> _cacheData(List<dynamic> data) async {
+  Future<void> _cacheData(List<Map<String, dynamic>> data) async {
     final box = await Hive.openBox('api_cache');
     await box.put(_cacheKey, jsonEncode(data));
   }

@@ -60,7 +60,9 @@
   "adminLogin": "Admin Login",
   "password": "Password",
   "login": "Log In",
-  "invalidPassword": "Invalid password",
+  "email": "Email",
+  "invalidPassword": "Invalid credentials",
   "checkIn": "Check In",
-  "checkedIn": "Checked in"
+  "checkedIn": "Checked in",
+  "offlineMode": "Offline mode — using cached data"
 }

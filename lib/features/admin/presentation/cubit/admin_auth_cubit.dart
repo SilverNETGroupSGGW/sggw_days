@@ -1,42 +1,38 @@
-import 'dart:convert';
-
-import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_ce/hive.dart';
 
 part 'admin_auth_state.dart';
 
 class AdminAuthCubit extends Cubit<AdminAuthState> {
-  // SHA-256 hash of the default admin password "sggw2025"
-  static final String _passwordHash =
-      sha256.convert(utf8.encode('sggw2025')).toString();
+  final FirebaseAuth _auth;
 
-  AdminAuthCubit() : super(const AdminAuthState()) {
+  AdminAuthCubit({FirebaseAuth? auth})
+    : _auth = auth ?? FirebaseAuth.instance,
+      super(const AdminAuthState()) {
     _checkAuth();
   }
 
-  Future<void> _checkAuth() async {
-    final box = await Hive.openBox('admin_auth');
-    final isAuthenticated =
-        box.get('authenticated', defaultValue: false) as bool;
-    emit(state.copyWith(isAuthenticated: isAuthenticated));
+  void _checkAuth() {
+    final user = _auth.currentUser;
+    emit(state.copyWith(isAuthenticated: user != null));
   }
 
-  Future<bool> login(String password) async {
-    final inputHash = sha256.convert(utf8.encode(password)).toString();
-    if (inputHash == _passwordHash) {
-      final box = await Hive.openBox('admin_auth');
-      await box.put('authenticated', true);
+  Future<bool> login(String email, String password) async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       emit(state.copyWith(isAuthenticated: true));
       return true;
+    } on FirebaseAuthException {
+      return false;
     }
-    return false;
   }
 
   Future<void> logout() async {
-    final box = await Hive.openBox('admin_auth');
-    await box.put('authenticated', false);
+    await _auth.signOut();
     emit(state.copyWith(isAuthenticated: false));
   }
 }

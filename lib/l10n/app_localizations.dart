@@ -458,10 +458,16 @@ abstract class AppLocalizations {
   /// **'Zaloguj się'**
   String get login;
 
+  /// No description provided for @email.
+  ///
+  /// In pl, this message translates to:
+  /// **'Email'**
+  String get email;
+
   /// No description provided for @invalidPassword.
   ///
   /// In pl, this message translates to:
-  /// **'Nieprawidłowe hasło'**
+  /// **'Nieprawidłowe dane logowania'**
   String get invalidPassword;
 
   /// No description provided for @checkIn.
@@ -475,6 +481,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Zameldowany'**
   String get checkedIn;
+
+  /// No description provided for @offlineMode.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tryb offline — dane z pamięci podręcznej'**
+  String get offlineMode;
 }
 
 class _AppLocalizationsDelegate

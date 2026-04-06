@@ -1,32 +1,27 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive_ce/hive.dart';
-import 'package:sggw_days/core/config/api_config.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
 
 class WikiRepository {
-  final Dio _dio;
-  final String _baseUrl;
+  final FirebaseFirestore _firestore;
   static const _cacheKey = 'wiki_articles_cache';
 
-  WikiRepository({Dio? dio, String? baseUrl})
-    : _dio = dio ?? Dio(),
-      _baseUrl = baseUrl ?? ApiConfig.defaultBaseUrl;
+  WikiRepository({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   Future<List<WikiArticle>> getArticles() async {
     try {
-      final response = await _dio.get('$_baseUrl/wiki_articles');
-      final List<dynamic> data = response.data as List<dynamic>;
-      final articles = data
-          .map((json) => WikiArticle.fromJson(json as Map<String, dynamic>))
-          .toList();
-      await _cacheData(data);
+      final snapshot = await _firestore.collection('wiki_articles').get();
+      final articles = snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return WikiArticle.fromJson(data);
+      }).toList();
+      await _cacheData(articles.map((a) => a.toJson()).toList());
       return articles;
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        return [];
-      }
+    } on FirebaseException {
       return await _loadFromCache();
     } catch (e) {
       return await _loadFromCache();
@@ -41,7 +36,7 @@ class WikiRepository {
     );
   }
 
-  Future<void> _cacheData(List<dynamic> data) async {
+  Future<void> _cacheData(List<Map<String, dynamic>> data) async {
     final box = await Hive.openBox('api_cache');
     await box.put(_cacheKey, jsonEncode(data));
   }

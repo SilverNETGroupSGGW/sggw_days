@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,11 +18,26 @@ import 'package:sggw_days/features/treasure_hunt/data/repositories/treasure_hunt
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
 import 'package:sggw_days/features/wiki/data/repositories/wiki_repository.dart';
 import 'package:sggw_days/features/wiki/presentation/bloc/wiki_bloc.dart';
+import 'package:sggw_days/firebase_options.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
+
+/// Whether Firebase initialized successfully.
+/// When false, the app runs in offline/cache-only mode.
+bool isFirebaseAvailable = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    isFirebaseAvailable = true;
+  } catch (_) {
+    // Firebase unavailable — app will run in offline mode using cached data.
+    isFirebaseAvailable = false;
+  }
 
   await Hive.initFlutter();
   final progressBox = await Hive.openBox<List<String>>('progress');

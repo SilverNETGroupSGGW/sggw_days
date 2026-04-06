@@ -1,32 +1,36 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive_ce/hive.dart';
-import 'package:sggw_days/core/config/api_config.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 
 class TimetableRepository {
-  final Dio _dio;
-  final String _baseUrl;
+  final FirebaseFirestore _firestore;
   static const _cacheKey = 'timetable_events_cache';
 
-  TimetableRepository({Dio? dio, String? baseUrl})
-    : _dio = dio ?? Dio(),
-      _baseUrl = baseUrl ?? ApiConfig.defaultBaseUrl;
+  TimetableRepository({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   Future<List<TimetableEvent>> getEvents() async {
     try {
-      final response = await _dio.get('$_baseUrl/timetable_events');
-      final List<dynamic> data = response.data as List<dynamic>;
-      final events = data
-          .map((json) => TimetableEvent.fromJson(json as Map<String, dynamic>))
-          .toList();
-      await _cacheData(data);
+      final snapshot = await _firestore.collection('timetable_events').get();
+      final events = snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        // Convert Firestore Timestamps to ISO strings for Freezed deserialization
+        if (data['startTime'] is Timestamp) {
+          data['startTime'] =
+              (data['startTime'] as Timestamp).toDate().toIso8601String();
+        }
+        if (data['endTime'] is Timestamp) {
+          data['endTime'] =
+              (data['endTime'] as Timestamp).toDate().toIso8601String();
+        }
+        return TimetableEvent.fromJson(data);
+      }).toList();
+      await _cacheData(events.map((e) => e.toJson()).toList());
       return events;
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        return [];
-      }
+    } on FirebaseException {
       return await _loadFromCache();
     } catch (e) {
       return await _loadFromCache();
@@ -42,7 +46,7 @@ class TimetableRepository {
     }).toList();
   }
 
-  Future<void> _cacheData(List<dynamic> data) async {
+  Future<void> _cacheData(List<Map<String, dynamic>> data) async {
     final box = await Hive.openBox('api_cache');
     await box.put(_cacheKey, jsonEncode(data));
   }

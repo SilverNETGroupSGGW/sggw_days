@@ -196,11 +196,17 @@ class AppLocalizationsPl extends AppLocalizations {
   String get login => 'Zaloguj się';
 
   @override
-  String get invalidPassword => 'Nieprawidłowe hasło';
+  String get email => 'Email';
+
+  @override
+  String get invalidPassword => 'Nieprawidłowe dane logowania';
 
   @override
   String get checkIn => 'Zamelduj się';
 
   @override
   String get checkedIn => 'Zameldowany';
+
+  @override
+  String get offlineMode => 'Tryb offline — dane z pamięci podręcznej';
 }

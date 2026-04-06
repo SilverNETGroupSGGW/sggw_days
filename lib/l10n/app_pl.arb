@@ -63,7 +63,9 @@
   "adminLogin": "Logowanie admina",
   "password": "Hasło",
   "login": "Zaloguj się",
-  "invalidPassword": "Nieprawidłowe hasło",
+  "email": "Email",
+  "invalidPassword": "Nieprawidłowe dane logowania",
   "checkIn": "Zamelduj się",
-  "checkedIn": "Zameldowany"
+  "checkedIn": "Zameldowany",
+  "offlineMode": "Tryb offline — dane z pamięci podręcznej"
 }
