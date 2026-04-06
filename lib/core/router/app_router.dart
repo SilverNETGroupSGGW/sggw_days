@@ -5,6 +5,7 @@ import 'package:sggw_days/features/admin/presentation/pages/admin_login_page.dar
 import 'package:sggw_days/features/home/presentation/pages/home_page.dart';
 import 'package:sggw_days/features/settings/presentation/pages/settings_page.dart';
 import 'package:sggw_days/features/timetable/presentation/pages/timetable_page.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/pages/scan_page.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/pages/treasure_hunt_page.dart';
 import 'package:sggw_days/features/wiki/presentation/pages/wiki_page.dart';
 
@@ -19,6 +20,12 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/admin',
       builder: (context, state) => const AdminLoginPage(),
+    ),
+    GoRoute(
+      path: '/scan/:pointId',
+      builder: (context, state) => ScanPage(
+        pointId: state.pathParameters['pointId']!,
+      ),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {

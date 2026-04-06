@@ -138,12 +138,8 @@ class _MyAppState extends State<MyApp> {
                 TimetableBloc(repository: context.read<TimetableRepository>()),
           ),
           BlocProvider(
-            create: (context) => AdminBloc(
-              adminRepository: context.read<AdminRepository>(),
-              treasureHuntRepository: context.read<TreasureHuntRepository>(),
-              wikiRepository: context.read<WikiRepository>(),
-              timetableRepository: context.read<TimetableRepository>(),
-            ),
+            create: (context) =>
+                AdminBloc(adminRepository: context.read<AdminRepository>()),
           ),
         ],
         child: BlocBuilder<SettingsCubit, SettingsState>(
