@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
@@ -202,6 +203,12 @@ class SettingsPage extends StatelessWidget {
                     ],
                   );
                 },
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.admin_panel_settings),
+                title: const Text('Admin'),
+                onTap: () => context.push('/admin'),
               ),
             ],
           );
