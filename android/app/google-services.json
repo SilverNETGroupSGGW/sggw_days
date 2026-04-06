@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "583939995714",
+    "project_id": "sggw-days",
+    "storage_bucket": "sggw-days.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583939995714:android:6d7f39be62d3d0350755db",
+        "android_client_info": {
+          "package_name": "com.example.sggw_days"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbzOts0v_Y_kZc7ZBRk1FvkwGFJUkgF50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

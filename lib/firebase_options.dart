@@ -4,9 +4,7 @@ import 'package:flutter/foundation.dart'
 
 /// Firebase configuration for the `sggw-days` project.
 ///
-/// Fill in the placeholder values from Firebase Console → Project Settings → Your apps.
-/// Web: Add a web app in Firebase Console to get apiKey, appId, messagingSenderId.
-/// Android: Download google-services.json to android/app/.
+/// Generated Firebase configuration for each supported platform.
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -24,30 +22,28 @@ class DefaultFirebaseOptions {
     }
   }
 
-  // TODO: Fill in from Firebase Console → Project Settings → Web app
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'YOUR_WEB_API_KEY',
-    appId: 'YOUR_WEB_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    apiKey: 'AIzaSyA86AiKYmy94rm0Sm_0I5Q0kMnqRr4i_ek',
+    appId: '1:583939995714:web:64bb87337df191160755db',
+    messagingSenderId: '583939995714',
     projectId: 'sggw-days',
     authDomain: 'sggw-days.firebaseapp.com',
     storageBucket: 'sggw-days.firebasestorage.app',
+    measurementId: 'G-GX7TTYCPRG',
   );
 
-  // TODO: Fill in from Firebase Console → Project Settings → Android app
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR_ANDROID_API_KEY',
-    appId: 'YOUR_ANDROID_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    apiKey: 'AIzaSyCbzOts0v_Y_kZc7ZBRk1FvkwGFJUkgF50',
+    appId: '1:583939995714:android:6d7f39be62d3d0350755db',
+    messagingSenderId: '583939995714',
     projectId: 'sggw-days',
     storageBucket: 'sggw-days.firebasestorage.app',
   );
 
-  // TODO: Fill in from Firebase Console → Project Settings → iOS app
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR_IOS_API_KEY',
-    appId: 'YOUR_IOS_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    apiKey: 'AIzaSyCisIDKK2e5gOv9qPhTlXOqxMMaecXQfIQ',
+    appId: '1:583939995714:ios:3a42cd195f20776b0755db',
+    messagingSenderId: '583939995714',
     projectId: 'sggw-days',
     storageBucket: 'sggw-days.firebasestorage.app',
     iosBundleId: 'com.example.sggwDays',
