@@ -17,6 +17,7 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
     on<LoadTreasurePoints>(_onLoadTreasurePoints);
     on<MarkPointAsFound>(_onMarkPointAsFound);
     on<ScanQRCode>(_onScanQRCode);
+    on<TrackPoint>(_onTrackPoint);
   }
 
   Future<void> _onLoadTreasurePoints(
@@ -77,19 +78,35 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
     final updatedHistory = Map<String, DateTime>.from(state.scanHistory);
     updatedHistory[event.pointId] = now;
 
-    emit(state.copyWith(
-      foundPointIds: updatedFoundIds,
-      scanHistory: updatedHistory,
-    ));
+    emit(
+      state.copyWith(
+        foundPointIds: updatedFoundIds,
+        scanHistory: updatedHistory,
+        lastScannedPointId: event.pointId,
+      ),
+    );
+  }
+
+  void _onTrackPoint(TrackPoint event, Emitter<TreasureHuntState> emit) {
+    emit(state.copyWith(trackedPointId: event.pointId));
   }
 
   Future<void> _onScanQRCode(
     ScanQRCode event,
     Emitter<TreasureHuntState> emit,
   ) async {
-    final point = state.points
-        .where((p) => p.qrCode == event.qrCode)
-        .firstOrNull;
+    // Try matching by URL-based point ID first
+    final uri = Uri.tryParse(event.qrCode);
+    String? pointId;
+    if (uri != null &&
+        uri.pathSegments.length == 2 &&
+        uri.pathSegments[0] == 'scan') {
+      pointId = uri.pathSegments[1];
+    }
+
+    final point = pointId != null
+        ? state.points.where((p) => p.id == pointId).firstOrNull
+        : state.points.where((p) => p.qrCode == event.qrCode).firstOrNull;
 
     if (point != null) {
       add(MarkPointAsFound(point.id));

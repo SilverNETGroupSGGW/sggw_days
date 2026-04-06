@@ -28,3 +28,12 @@ class ScanQRCode extends TreasureHuntEvent {
   @override
   List<Object?> get props => [qrCode];
 }
+
+class TrackPoint extends TreasureHuntEvent {
+  final String? pointId;
+
+  const TrackPoint(this.pointId);
+
+  @override
+  List<Object?> get props => [pointId];
+}
