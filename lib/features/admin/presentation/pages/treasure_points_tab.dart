@@ -1,19 +1,37 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
+import 'package:sggw_days/features/admin/presentation/widgets/invalid_entries_banner.dart';
+import 'package:sggw_days/features/admin/presentation/widgets/location_picker_map.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/qr_code_widget.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
+import 'package:sggw_days/l10n/app_localizations.dart';
+
+IconData iconForPointType(PointType type) {
+  return switch (type) {
+    PointType.treasurePoint => Icons.emoji_events,
+    PointType.pointOfInterest => Icons.place,
+  };
+}
+
+String labelForPointType(PointType type, AppLocalizations l10n) {
+  return switch (type) {
+    PointType.treasurePoint => l10n.typeTreasurePoint,
+    PointType.pointOfInterest => l10n.typePointOfInterest,
+  };
+}
 
 class TreasurePointsTab extends StatelessWidget {
   const TreasurePointsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
         if (state.status == AdminStatus.loading &&
@@ -23,17 +41,36 @@ class TreasurePointsTab extends StatelessWidget {
 
         return Column(
           children: [
+            InvalidEntriesBanner(
+              entries: state.invalidTreasurePoints,
+              collection: 'treasure_points',
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton.icon(
-                onPressed: () => _showAddEditDialog(context),
-                icon: const Icon(Icons.add),
-                label: const Text('Add Treasure Point'),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showAddEditDialog(context),
+                      icon: const Icon(Icons.add),
+                      label: Text(
+                        '${l10n.cancel.replaceAll(l10n.cancel, 'Add')} Point',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton.icon(
+                    onPressed: () =>
+                        _showReorderDialog(context, state.treasurePoints),
+                    icon: const Icon(Icons.reorder),
+                    label: Text(l10n.reorderPoints),
+                  ),
+                ],
               ),
             ),
             Expanded(
               child: state.treasurePoints.isEmpty
-                  ? const Center(child: Text('No treasure points yet'))
+                  ? Center(child: Text('No ${l10n.points.toLowerCase()} yet'))
                   : ListView.builder(
                       itemCount: state.treasurePoints.length,
                       itemBuilder: (context, index) {
@@ -44,8 +81,9 @@ class TreasurePointsTab extends StatelessWidget {
                             vertical: 8,
                           ),
                           child: ExpansionTile(
-                            leading: const Icon(Icons.location_on),
+                            leading: Icon(iconForPointType(point.type)),
                             title: Text(point.name),
+                            subtitle: Text(labelForPointType(point.type, l10n)),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -75,21 +113,22 @@ class TreasurePointsTab extends StatelessWidget {
                                       'Location: ${point.latitude}, ${point.longitude}',
                                     ),
                                     const SizedBox(height: 16),
-                                    Center(
-                                      child: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            8.0,
+                                    if (point.qrCode.isNotEmpty)
+                                      Center(
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              8.0,
+                                            ),
+                                            color: Colors.white,
                                           ),
-                                          color: Colors.white,
-                                        ),
-                                        child: QrCodeWidget(
-                                          data: point.qrCode,
-                                          size: 200,
+                                          child: QrCodeWidget(
+                                            data: point.qrCode,
+                                            size: 200,
+                                          ),
                                         ),
                                       ),
-                                    ),
                                   ],
                                 ),
                               ),
@@ -106,6 +145,7 @@ class TreasurePointsTab extends StatelessWidget {
   }
 
   void _showAddEditDialog(BuildContext context, {TreasurePoint? point}) {
+    final l10n = AppLocalizations.of(context)!;
     final nameController = TextEditingController(text: point?.name ?? '');
     final descController = TextEditingController(
       text: point?.description ?? '',
@@ -116,143 +156,202 @@ class TreasurePointsTab extends StatelessWidget {
     final lonController = TextEditingController(
       text: point?.longitude.toString() ?? '',
     );
-    final qrCodeController = TextEditingController(text: point?.qrCode ?? '');
+    PointType selectedType = point?.type ?? PointType.pointOfInterest;
 
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-          point == null ? 'Add Treasure Point' : 'Edit Treasure Point',
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-              ),
-              TextField(
-                controller: descController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 8),
-              Row(
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setState) => Dialog(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 500,
+              maxHeight: MediaQuery.of(context).size.height * 0.8,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: TextField(
-                      controller: latController,
-                      decoration: const InputDecoration(labelText: 'Latitude'),
-                      keyboardType: TextInputType.number,
-                    ),
+                  Text(
+                    point == null ? 'Add Point' : 'Edit Point',
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: lonController,
-                      decoration: const InputDecoration(labelText: 'Longitude'),
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton.icon(
-                onPressed: () async {
-                  try {
-                    final permission = await Geolocator.checkPermission();
-                    if (permission == LocationPermission.denied ||
-                        permission == LocationPermission.deniedForever) {
-                      await Geolocator.requestPermission();
-                    }
-                    final position = await Geolocator.getCurrentPosition();
-                    latController.text = position.latitude.toString();
-                    lonController.text = position.longitude.toString();
-                  } catch (e) {
-                    if (dialogContext.mounted) {
-                      ScaffoldMessenger.of(dialogContext).showSnackBar(
-                        SnackBar(content: Text('Error getting location: $e')),
-                      );
-                    }
-                  }
-                },
-                icon: const Icon(Icons.my_location),
-                label: const Text('Use Current Location'),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: qrCodeController,
-                      decoration: const InputDecoration(
-                        labelText: 'QR Code Data',
+                  const SizedBox(height: 16),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SegmentedButton<PointType>(
+                            segments: [
+                              ButtonSegment(
+                                value: PointType.treasurePoint,
+                                label: Text(l10n.typeTreasurePoint),
+                                icon: Icon(
+                                  iconForPointType(PointType.treasurePoint),
+                                ),
+                              ),
+                              ButtonSegment(
+                                value: PointType.pointOfInterest,
+                                label: Text(l10n.typePointOfInterest),
+                                icon: Icon(
+                                  iconForPointType(PointType.pointOfInterest),
+                                ),
+                              ),
+                            ],
+                            selected: {selectedType},
+                            onSelectionChanged: (selected) {
+                              setState(() => selectedType = selected.first);
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          TextField(
+                            controller: nameController,
+                            decoration: const InputDecoration(
+                              labelText: 'Name',
+                            ),
+                          ),
+                          TextField(
+                            controller: descController,
+                            decoration: const InputDecoration(
+                              labelText: 'Description',
+                            ),
+                            maxLines: 2,
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: latController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Latitude',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: TextField(
+                                  controller: lonController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Longitude',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              try {
+                                final permission =
+                                    await Geolocator.checkPermission();
+                                if (permission == LocationPermission.denied ||
+                                    permission ==
+                                        LocationPermission.deniedForever) {
+                                  await Geolocator.requestPermission();
+                                }
+                                final position =
+                                    await Geolocator.getCurrentPosition();
+                                latController.text = position.latitude
+                                    .toString();
+                                lonController.text = position.longitude
+                                    .toString();
+                              } catch (e) {
+                                if (dialogContext.mounted) {
+                                  ScaffoldMessenger.of(
+                                    dialogContext,
+                                  ).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Error getting location: $e',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            icon: const Icon(Icons.my_location),
+                            label: const Text('Use Current Location'),
+                          ),
+                          const SizedBox(height: 12),
+                          LocationPickerMap(
+                            initialLocation: point != null
+                                ? LatLng(point.latitude, point.longitude)
+                                : null,
+                            onLocationSelected: (latLng) {
+                              latController.text = latLng.latitude
+                                  .toStringAsFixed(6);
+                              lonController.text = latLng.longitude
+                                  .toStringAsFixed(6);
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                        ],
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.refresh),
-                    tooltip: 'Generate Random QR Data',
-                    onPressed: () {
-                      const chars =
-                          'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-                      final rnd = Random();
-                      final randomString = String.fromCharCodes(
-                        Iterable.generate(
-                          16,
-                          (_) => chars.codeUnitAt(rnd.nextInt(chars.length)),
-                        ),
-                      );
-                      qrCodeController.text = 'sggw_days_$randomString';
-                    },
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(dialogContext).pop(),
+                        child: Text(l10n.cancel),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          final newPoint = TreasurePoint(
+                            id: point?.id ?? '',
+                            name: nameController.text,
+                            description: descController.text,
+                            latitude: double.tryParse(latController.text) ?? 0,
+                            longitude: double.tryParse(lonController.text) ?? 0,
+                            qrCode: point?.qrCode ?? '',
+                            type: selectedType,
+                            order: point?.order ?? 0,
+                          );
+
+                          if (point == null) {
+                            context.read<AdminBloc>().add(
+                              CreateTreasurePoint(newPoint),
+                            );
+                          } else {
+                            context.read<AdminBloc>().add(
+                              UpdateTreasurePoint(newPoint),
+                            );
+                          }
+
+                          Navigator.of(dialogContext).pop();
+                        },
+                        child: Text(point == null ? 'Add' : 'Update'),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final newPoint = TreasurePoint(
-                id: point?.id ?? '',
-                name: nameController.text,
-                description: descController.text,
-                latitude: double.tryParse(latController.text) ?? 0,
-                longitude: double.tryParse(lonController.text) ?? 0,
-                qrCode: qrCodeController.text,
-              );
-
-              if (point == null) {
-                context.read<AdminBloc>().add(CreateTreasurePoint(newPoint));
-              } else {
-                context.read<AdminBloc>().add(UpdateTreasurePoint(newPoint));
-              }
-
-              Navigator.of(dialogContext).pop();
-            },
-            child: Text(point == null ? 'Add' : 'Update'),
-          ),
-        ],
       ),
     );
   }
 
   void _showDeleteDialog(BuildContext context, TreasurePoint point) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete Treasure Point'),
+        title: const Text('Delete Point'),
         content: Text('Are you sure you want to delete "${point.name}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -266,6 +365,122 @@ class TreasurePointsTab extends StatelessWidget {
             child: const Text('Delete'),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showReorderDialog(BuildContext context, List<TreasurePoint> allPoints) {
+    final l10n = AppLocalizations.of(context)!;
+    // Only reorder treasure points
+    final treasurePoints =
+        allPoints.where((p) => p.type == PointType.treasurePoint).toList()
+          ..sort((a, b) => a.order.compareTo(b.order));
+
+    if (treasurePoints.isEmpty) return;
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => _ReorderDialog(
+        treasurePoints: treasurePoints,
+        l10n: l10n,
+        onSave: (reordered) {
+          context.read<AdminBloc>().add(ReorderTreasurePoints(reordered));
+        },
+      ),
+    );
+  }
+}
+
+class _ReorderDialog extends StatefulWidget {
+  final List<TreasurePoint> treasurePoints;
+  final AppLocalizations l10n;
+  final ValueChanged<List<TreasurePoint>> onSave;
+
+  const _ReorderDialog({
+    required this.treasurePoints,
+    required this.l10n,
+    required this.onSave,
+  });
+
+  @override
+  State<_ReorderDialog> createState() => _ReorderDialogState();
+}
+
+class _ReorderDialogState extends State<_ReorderDialog> {
+  late List<TreasurePoint> _items;
+
+  @override
+  void initState() {
+    super.initState();
+    _items = List.of(widget.treasurePoints);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Dialog(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 500,
+          maxHeight: MediaQuery.of(context).size.height * 0.7,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                widget.l10n.reorderPoints,
+                style: theme.textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 16),
+              Flexible(
+                child: ReorderableListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _items.length,
+                  onReorder: (oldIndex, newIndex) {
+                    setState(() {
+                      if (newIndex > oldIndex) newIndex--;
+                      final item = _items.removeAt(oldIndex);
+                      _items.insert(newIndex, item);
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    final point = _items[index];
+                    return ListTile(
+                      key: ValueKey(point.id),
+                      leading: CircleAvatar(child: Text('${index + 1}')),
+                      title: Text(point.name),
+                      trailing: ReorderableDragStartListener(
+                        index: index,
+                        child: const Icon(Icons.drag_handle),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(widget.l10n.cancel),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: () {
+                      widget.onSave(_items);
+                      Navigator.pop(context);
+                    },
+                    child: Text(widget.l10n.ok),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

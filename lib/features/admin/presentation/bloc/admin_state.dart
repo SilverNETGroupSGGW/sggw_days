@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:sggw_days/features/admin/data/models/invalid_entry.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
@@ -10,6 +11,9 @@ class AdminState extends Equatable {
   final List<TreasurePoint> treasurePoints;
   final List<WikiArticle> wikiArticles;
   final List<TimetableEvent> timetableEvents;
+  final List<InvalidEntry> invalidTreasurePoints;
+  final List<InvalidEntry> invalidWikiArticles;
+  final List<InvalidEntry> invalidTimetableEvents;
   final String? errorMessage;
 
   const AdminState({
@@ -17,6 +21,9 @@ class AdminState extends Equatable {
     this.treasurePoints = const [],
     this.wikiArticles = const [],
     this.timetableEvents = const [],
+    this.invalidTreasurePoints = const [],
+    this.invalidWikiArticles = const [],
+    this.invalidTimetableEvents = const [],
     this.errorMessage,
   });
 
@@ -25,6 +32,9 @@ class AdminState extends Equatable {
     List<TreasurePoint>? treasurePoints,
     List<WikiArticle>? wikiArticles,
     List<TimetableEvent>? timetableEvents,
+    List<InvalidEntry>? invalidTreasurePoints,
+    List<InvalidEntry>? invalidWikiArticles,
+    List<InvalidEntry>? invalidTimetableEvents,
     String? errorMessage,
   }) {
     return AdminState(
@@ -32,6 +42,11 @@ class AdminState extends Equatable {
       treasurePoints: treasurePoints ?? this.treasurePoints,
       wikiArticles: wikiArticles ?? this.wikiArticles,
       timetableEvents: timetableEvents ?? this.timetableEvents,
+      invalidTreasurePoints:
+          invalidTreasurePoints ?? this.invalidTreasurePoints,
+      invalidWikiArticles: invalidWikiArticles ?? this.invalidWikiArticles,
+      invalidTimetableEvents:
+          invalidTimetableEvents ?? this.invalidTimetableEvents,
       errorMessage: errorMessage,
     );
   }
@@ -42,6 +57,9 @@ class AdminState extends Equatable {
     treasurePoints,
     wikiArticles,
     timetableEvents,
+    invalidTreasurePoints,
+    invalidWikiArticles,
+    invalidTimetableEvents,
     errorMessage,
   ];
 }

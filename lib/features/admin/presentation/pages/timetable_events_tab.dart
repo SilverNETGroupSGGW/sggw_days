@@ -1,8 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
+import 'package:sggw_days/features/admin/presentation/widgets/invalid_entries_banner.dart';
+import 'package:sggw_days/features/admin/presentation/widgets/treasure_point_selector.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 
 class TimetableEventsTab extends StatelessWidget {
@@ -19,6 +25,10 @@ class TimetableEventsTab extends StatelessWidget {
 
         return Column(
           children: [
+            InvalidEntriesBanner(
+              entries: state.invalidTimetableEvents,
+              collection: 'timetable_events',
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton.icon(
@@ -90,6 +100,14 @@ class TimetableEventsTab extends StatelessWidget {
     DateTime startTime = event?.startTime ?? DateTime.now();
     DateTime endTime =
         event?.endTime ?? DateTime.now().add(const Duration(hours: 1));
+    List<String> selectedPointIds = List<String>.from(
+      event?.treasurePointIds ?? [],
+    );
+
+    bool useImageUpload = false;
+    Uint8List? selectedImageBytes;
+    String? selectedImageName;
+    bool isUploading = false;
 
     showDialog(
       context: context,
@@ -117,17 +135,89 @@ class TimetableEventsTab extends StatelessWidget {
                     controller: locationController,
                     decoration: const InputDecoration(labelText: 'Location'),
                   ),
-                  TextField(
-                    controller: imageUrlController,
-                    decoration: const InputDecoration(
-                      labelText: 'Image URL (optional)',
-                    ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      const Text('Image URL'),
+                      const Spacer(),
+                      Switch(
+                        value: useImageUpload,
+                        onChanged: (value) {
+                          setState(() => useImageUpload = value);
+                        },
+                      ),
+                      const Text('Upload Image'),
+                    ],
                   ),
+                  if (!useImageUpload)
+                    TextField(
+                      controller: imageUrlController,
+                      decoration: const InputDecoration(
+                        labelText: 'Image URL (optional)',
+                      ),
+                    )
+                  else
+                    Column(
+                      children: [
+                        if (selectedImageBytes != null)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.memory(
+                                selectedImageBytes!,
+                                height: 150,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                selectedImageName ?? 'No image selected',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                final picker = ImagePicker();
+                                final picked = await picker.pickImage(
+                                  source: ImageSource.gallery,
+                                );
+                                if (picked != null) {
+                                  final bytes = await picked.readAsBytes();
+                                  setState(() {
+                                    selectedImageBytes = bytes;
+                                    selectedImageName = picked.name;
+                                  });
+                                }
+                              },
+                              icon: const Icon(Icons.upload),
+                              label: const Text('Choose Image'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 8),
                   TextField(
                     controller: tagsController,
                     decoration: const InputDecoration(
                       labelText: 'Tags (comma-separated)',
                     ),
+                  ),
+                  const SizedBox(height: 16),
+                  TreasurePointSelector(
+                    availablePoints: dialogContext
+                        .read<AdminBloc>()
+                        .state
+                        .treasurePoints,
+                    selectedIds: selectedPointIds,
+                    onChanged: (ids) {
+                      setState(() => selectedPointIds = ids);
+                    },
                   ),
                   const SizedBox(height: 16),
                   ListTile(
@@ -155,6 +245,9 @@ class TimetableEventsTab extends StatelessWidget {
                               time.hour,
                               time.minute,
                             );
+                            if (startTime.isAfter(endTime)) {
+                              endTime = startTime.add(const Duration(hours: 1));
+                            }
                           });
                         }
                       }
@@ -200,35 +293,81 @@ class TimetableEventsTab extends StatelessWidget {
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              onPressed: () {
-                final tags = tagsController.text
-                    .split(',')
-                    .map((e) => e.trim())
-                    .where((e) => e.isNotEmpty)
-                    .toList();
+              onPressed: isUploading
+                  ? null
+                  : () async {
+                      String? imageUrl = imageUrlController.text.isEmpty
+                          ? null
+                          : imageUrlController.text;
 
-                final newEvent = TimetableEvent(
-                  id: event?.id ?? '',
-                  title: titleController.text,
-                  description: descController.text,
-                  startTime: startTime,
-                  endTime: endTime,
-                  location: locationController.text,
-                  imageUrl: imageUrlController.text.isEmpty
-                      ? null
-                      : imageUrlController.text,
-                  tags: tags,
-                );
+                      if (useImageUpload &&
+                          selectedImageBytes != null &&
+                          selectedImageName != null) {
+                        setState(() => isUploading = true);
+                        try {
+                          final repo = dialogContext.read<AdminRepository>();
+                          imageUrl = await repo.uploadImage(
+                            imageBytes: selectedImageBytes!,
+                            fileName:
+                                '${DateTime.now().millisecondsSinceEpoch}_$selectedImageName',
+                            folder: 'event_images',
+                          );
+                        } catch (e) {
+                          if (dialogContext.mounted) {
+                            ScaffoldMessenger.of(dialogContext).showSnackBar(
+                              SnackBar(
+                                content: Text('Image upload failed: $e'),
+                                backgroundColor: Theme.of(
+                                  dialogContext,
+                                ).colorScheme.error,
+                              ),
+                            );
+                          }
+                          setState(() => isUploading = false);
+                          return;
+                        }
+                        setState(() => isUploading = false);
+                      }
 
-                if (event == null) {
-                  context.read<AdminBloc>().add(CreateTimetableEvent(newEvent));
-                } else {
-                  context.read<AdminBloc>().add(UpdateTimetableEvent(newEvent));
-                }
+                      final tags = tagsController.text
+                          .split(',')
+                          .map((e) => e.trim())
+                          .where((e) => e.isNotEmpty)
+                          .toList();
 
-                Navigator.of(dialogContext).pop();
-              },
-              child: Text(event == null ? 'Add' : 'Update'),
+                      final newEvent = TimetableEvent(
+                        id: event?.id ?? '',
+                        title: titleController.text,
+                        description: descController.text,
+                        startTime: startTime,
+                        endTime: endTime,
+                        location: locationController.text,
+                        imageUrl: imageUrl,
+                        tags: tags,
+                        treasurePointIds: selectedPointIds,
+                      );
+
+                      if (!dialogContext.mounted) return;
+
+                      if (event == null) {
+                        dialogContext.read<AdminBloc>().add(
+                          CreateTimetableEvent(newEvent),
+                        );
+                      } else {
+                        dialogContext.read<AdminBloc>().add(
+                          UpdateTimetableEvent(newEvent),
+                        );
+                      }
+
+                      Navigator.of(dialogContext).pop();
+                    },
+              child: isUploading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(event == null ? 'Add' : 'Update'),
             ),
           ],
         ),

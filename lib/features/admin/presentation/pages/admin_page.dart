@@ -44,6 +44,14 @@ class _AdminPageState extends State<AdminPage>
         title: const Text('Admin Dashboard'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              context.read<AdminBloc>().add(LoadTreasurePoints());
+              context.read<AdminBloc>().add(LoadWikiArticles());
+              context.read<AdminBloc>().add(LoadTimetableEvents());
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
               context.read<AdminAuthCubit>().logout();
@@ -54,7 +62,7 @@ class _AdminPageState extends State<AdminPage>
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
-            Tab(icon: Icon(Icons.location_on), text: 'Treasure Points'),
+            Tab(icon: Icon(Icons.place), text: 'Points'),
             Tab(icon: Icon(Icons.article), text: 'Wiki Articles'),
             Tab(icon: Icon(Icons.event), text: 'Timetable'),
           ],

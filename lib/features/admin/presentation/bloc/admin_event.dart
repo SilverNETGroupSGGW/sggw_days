@@ -41,6 +41,15 @@ class DeleteTreasurePoint extends AdminEvent {
   List<Object?> get props => [id];
 }
 
+class ReorderTreasurePoints extends AdminEvent {
+  final List<TreasurePoint> reorderedPoints;
+
+  const ReorderTreasurePoints(this.reorderedPoints);
+
+  @override
+  List<Object?> get props => [reorderedPoints];
+}
+
 // Wiki Article Events
 class LoadWikiArticles extends AdminEvent {}
 
@@ -99,4 +108,29 @@ class DeleteTimetableEvent extends AdminEvent {
 
   @override
   List<Object?> get props => [id];
+}
+
+// Invalid Entry Events
+class FixInvalidEntry extends AdminEvent {
+  final String collection;
+  final String docId;
+  final Map<String, dynamic> fixedData;
+
+  const FixInvalidEntry({
+    required this.collection,
+    required this.docId,
+    required this.fixedData,
+  });
+
+  @override
+  List<Object?> get props => [collection, docId, fixedData];
+}
+
+class FixAllInvalidEntries extends AdminEvent {
+  final String collection;
+
+  const FixAllInvalidEntries(this.collection);
+
+  @override
+  List<Object?> get props => [collection];
 }
