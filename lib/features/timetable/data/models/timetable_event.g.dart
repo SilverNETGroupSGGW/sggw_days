@@ -18,6 +18,11 @@ _TimetableEvent _$TimetableEventFromJson(Map<String, dynamic> json) =>
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
           const [],
+      treasurePointIds:
+          (json['treasurePointIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$TimetableEventToJson(_TimetableEvent instance) =>
@@ -30,4 +35,5 @@ Map<String, dynamic> _$TimetableEventToJson(_TimetableEvent instance) =>
       'location': instance.location,
       'imageUrl': instance.imageUrl,
       'tags': instance.tags,
+      'treasurePointIds': instance.treasurePointIds,
     };

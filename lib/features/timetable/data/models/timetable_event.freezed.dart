@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TimetableEvent {
 
- String get id; String get title; String get description; DateTime get startTime; DateTime get endTime; String get location; String? get imageUrl; List<String> get tags;
+ String get id; String get title; String get description; DateTime get startTime; DateTime get endTime; String get location; String? get imageUrl; List<String> get tags; List<String> get treasurePointIds;
 /// Create a copy of TimetableEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $TimetableEventCopyWith<TimetableEvent> get copyWith => _$TimetableEventCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimetableEvent&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.location, location) || other.location == location)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.tags, tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimetableEvent&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.location, location) || other.location == location)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.tags, tags)&&const DeepCollectionEquality().equals(other.treasurePointIds, treasurePointIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,location,imageUrl,const DeepCollectionEquality().hash(tags));
+int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,location,imageUrl,const DeepCollectionEquality().hash(tags),const DeepCollectionEquality().hash(treasurePointIds));
 
 @override
 String toString() {
-  return 'TimetableEvent(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, location: $location, imageUrl: $imageUrl, tags: $tags)';
+  return 'TimetableEvent(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, location: $location, imageUrl: $imageUrl, tags: $tags, treasurePointIds: $treasurePointIds)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $TimetableEventCopyWith<$Res>  {
   factory $TimetableEventCopyWith(TimetableEvent value, $Res Function(TimetableEvent) _then) = _$TimetableEventCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String description, DateTime startTime, DateTime endTime, String location, String? imageUrl, List<String> tags
+ String id, String title, String description, DateTime startTime, DateTime endTime, String location, String? imageUrl, List<String> tags, List<String> treasurePointIds
 });
 
 
@@ -65,7 +65,7 @@ class _$TimetableEventCopyWithImpl<$Res>
 
 /// Create a copy of TimetableEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? location = null,Object? imageUrl = freezed,Object? tags = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? location = null,Object? imageUrl = freezed,Object? tags = null,Object? treasurePointIds = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -75,6 +75,7 @@ as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_n
 as DateTime,location: null == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
+as List<String>,treasurePointIds: null == treasurePointIds ? _self.treasurePointIds : treasurePointIds // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  DateTime startTime,  DateTime endTime,  String location,  String? imageUrl,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  DateTime startTime,  DateTime endTime,  String location,  String? imageUrl,  List<String> tags,  List<String> treasurePointIds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TimetableEvent() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.location,_that.imageUrl,_that.tags);case _:
+return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.location,_that.imageUrl,_that.tags,_that.treasurePointIds);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  DateTime startTime,  DateTime endTime,  String location,  String? imageUrl,  List<String> tags)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  DateTime startTime,  DateTime endTime,  String location,  String? imageUrl,  List<String> tags,  List<String> treasurePointIds)  $default,) {final _that = this;
 switch (_that) {
 case _TimetableEvent():
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.location,_that.imageUrl,_that.tags);case _:
+return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.location,_that.imageUrl,_that.tags,_that.treasurePointIds);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  DateTime startTime,  DateTime endTime,  String location,  String? imageUrl,  List<String> tags)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  DateTime startTime,  DateTime endTime,  String location,  String? imageUrl,  List<String> tags,  List<String> treasurePointIds)?  $default,) {final _that = this;
 switch (_that) {
 case _TimetableEvent() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.location,_that.imageUrl,_that.tags);case _:
+return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.location,_that.imageUrl,_that.tags,_that.treasurePointIds);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 @JsonSerializable()
 
 class _TimetableEvent implements TimetableEvent {
-  const _TimetableEvent({required this.id, required this.title, required this.description, required this.startTime, required this.endTime, required this.location, this.imageUrl, final  List<String> tags = const []}): _tags = tags;
+  const _TimetableEvent({required this.id, required this.title, required this.description, required this.startTime, required this.endTime, required this.location, this.imageUrl, final  List<String> tags = const [], final  List<String> treasurePointIds = const []}): _tags = tags,_treasurePointIds = treasurePointIds;
   factory _TimetableEvent.fromJson(Map<String, dynamic> json) => _$TimetableEventFromJson(json);
 
 @override final  String id;
@@ -233,6 +234,13 @@ class _TimetableEvent implements TimetableEvent {
   return EqualUnmodifiableListView(_tags);
 }
 
+ final  List<String> _treasurePointIds;
+@override@JsonKey() List<String> get treasurePointIds {
+  if (_treasurePointIds is EqualUnmodifiableListView) return _treasurePointIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_treasurePointIds);
+}
+
 
 /// Create a copy of TimetableEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -247,16 +255,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimetableEvent&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.location, location) || other.location == location)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other._tags, _tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimetableEvent&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.location, location) || other.location == location)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._treasurePointIds, _treasurePointIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,location,imageUrl,const DeepCollectionEquality().hash(_tags));
+int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,location,imageUrl,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_treasurePointIds));
 
 @override
 String toString() {
-  return 'TimetableEvent(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, location: $location, imageUrl: $imageUrl, tags: $tags)';
+  return 'TimetableEvent(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, location: $location, imageUrl: $imageUrl, tags: $tags, treasurePointIds: $treasurePointIds)';
 }
 
 
@@ -267,7 +275,7 @@ abstract mixin class _$TimetableEventCopyWith<$Res> implements $TimetableEventCo
   factory _$TimetableEventCopyWith(_TimetableEvent value, $Res Function(_TimetableEvent) _then) = __$TimetableEventCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String description, DateTime startTime, DateTime endTime, String location, String? imageUrl, List<String> tags
+ String id, String title, String description, DateTime startTime, DateTime endTime, String location, String? imageUrl, List<String> tags, List<String> treasurePointIds
 });
 
 
@@ -284,7 +292,7 @@ class __$TimetableEventCopyWithImpl<$Res>
 
 /// Create a copy of TimetableEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? location = null,Object? imageUrl = freezed,Object? tags = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? location = null,Object? imageUrl = freezed,Object? tags = null,Object? treasurePointIds = null,}) {
   return _then(_TimetableEvent(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -294,6 +302,7 @@ as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_n
 as DateTime,location: null == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
+as List<String>,treasurePointIds: null == treasurePointIds ? _self._treasurePointIds : treasurePointIds // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }

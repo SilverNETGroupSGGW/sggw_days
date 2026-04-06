@@ -14,6 +14,7 @@ abstract class TimetableEvent with _$TimetableEvent {
     required String location,
     String? imageUrl,
     @Default([]) List<String> tags,
+    @Default([]) List<String> treasurePointIds,
   }) = _TimetableEvent;
 
   factory TimetableEvent.fromJson(Map<String, dynamic> json) =>

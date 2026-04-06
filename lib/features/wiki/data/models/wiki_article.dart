@@ -12,6 +12,7 @@ abstract class WikiArticle with _$WikiArticle {
     required String category,
     String? imageUrl,
     @Default([]) List<String> tags,
+    @Default([]) List<String> treasurePointIds,
   }) = _WikiArticle;
 
   factory WikiArticle.fromJson(Map<String, dynamic> json) =>
