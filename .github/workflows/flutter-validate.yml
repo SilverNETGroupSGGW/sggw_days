@@ -1,0 +1,49 @@
+name: Flutter Validate
+
+on:
+  workflow_call:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          channel: "stable"
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Verify generated files are up to date
+        run: |
+          dart run build_runner build --delete-conflicting-outputs
+          flutter gen-l10n
+          if [ -n "$(git status --short --untracked-files=all)" ]; then
+            echo "Generated files are out of date. Run build_runner and gen-l10n locally, then commit the results."
+            git status --short --untracked-files=all
+            git diff
+            exit 1
+          fi
+
+      - name: Check formatting
+        run: |
+          paths="lib"
+          if [ -d test ]; then
+            paths="$paths test"
+          fi
+          dart format --output=none --set-exit-if-changed $paths
+
+      - name: Analyze project
+        run: flutter analyze
+
+      - name: Run tests
+        run: |
+          if [ -d test ]; then
+            flutter test
+          else
+            echo "No tests directory found; skipping tests."
+          fi

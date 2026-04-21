@@ -43,3 +43,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android keystore and signing files (NEVER COMMIT)
+*.jks
+*.keystore
+android/app/upload-keystore.jks
+keystore.properties
+keystore-base64.txt
+*.p12
+*.pfx
