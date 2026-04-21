@@ -1,4 +1,4 @@
-package com.example.sggw_days
+package com.silvernet.sggw_days
 
 import io.flutter.embedding.android.FlutterActivity
 

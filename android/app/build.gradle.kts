@@ -7,36 +7,49 @@ plugins {
 }
 
 android {
-    namespace = "com.example.sggw_days"
-    compflutter.compileSdkVersioneSdk = flutter.compileSdkVersion
+    namespace = "com.silvernet.sggw_days"
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = JavaVersion.VERSION_21.toString()
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.sggw_days"
-        // You can update the following values to match your application needs.
-        // For more informatidevminSdkVeflutter.targetSdkVersioniondkletter.devminSdkVeflutter.targetSdkVersioniondkle-config.minSdkVeflutter.targetSdkVersioniondk = flutter.minSdkVeflutter.targetSdkVersionion
+        applicationId = "com.silvernet.sggw_days"
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+    signingConfigs {
+        create("release") {
+            keyAlias = System.getenv("KEYSTORE_ALIAS") ?: ""
+            keyPassword = System.getenv("KEYSTORE_ALIAS_PASSWORD")?.toCharArray() ?: CharArray(0)
+            storeFile = if (System.getenv("KEYSTORE_PATH") != null) {
+                file(System.getenv("KEYSTORE_PATH")!!)
+            } else {
+                null
+            }
+            storePassword = System.getenv("KEYSTORE_PASSWORD")?.toCharArray() ?: CharArray(0)
         }
     }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+}
+
+dependencies {
+  implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
+  implementation("com.google.firebase:firebase-analytics")
 }
 
 flutter {
