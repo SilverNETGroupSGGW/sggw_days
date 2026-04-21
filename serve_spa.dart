@@ -33,15 +33,15 @@ void main() async {
 }
 
 String _mimeType(String ext) => switch (ext) {
-      'html' => 'text/html',
-      'js' => 'application/javascript',
-      'css' => 'text/css',
-      'json' => 'application/json',
-      'png' => 'image/png',
-      'jpg' || 'jpeg' => 'image/jpeg',
-      'svg' => 'image/svg+xml',
-      'woff' || 'woff2' => 'font/woff2',
-      'ttf' => 'font/ttf',
-      'wasm' => 'application/wasm',
-      _ => 'application/octet-stream',
-    };
+  'html' => 'text/html',
+  'js' => 'application/javascript',
+  'css' => 'text/css',
+  'json' => 'application/json',
+  'png' => 'image/png',
+  'jpg' || 'jpeg' => 'image/jpeg',
+  'svg' => 'image/svg+xml',
+  'woff' || 'woff2' => 'font/woff2',
+  'ttf' => 'font/ttf',
+  'wasm' => 'application/wasm',
+  _ => 'application/octet-stream',
+};

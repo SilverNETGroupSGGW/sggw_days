@@ -94,10 +94,7 @@ class AdminRepository {
   Future<TimetableEvent> updateTimetableEvent(TimetableEvent event) async {
     try {
       final data = event.toJson()..remove('id');
-      await _firestore
-          .collection('timetable_events')
-          .doc(event.id)
-          .set(data);
+      await _firestore.collection('timetable_events').doc(event.id).set(data);
       return event;
     } catch (e) {
       throw Exception('Failed to update timetable event: $e');
@@ -142,11 +139,7 @@ class AdminRepository {
       try {
         final parsed = TreasurePoint.fromJson(raw);
         final fixedData = _sanitizeTreasurePointData(raw, parsed);
-        final issues = _compareJson(
-          raw,
-          fixedData,
-          excludeKeys: {'isFound'},
-        );
+        final issues = _compareJson(raw, fixedData, excludeKeys: {'isFound'});
         if (issues.isNotEmpty) {
           invalid.add(
             InvalidEntry(

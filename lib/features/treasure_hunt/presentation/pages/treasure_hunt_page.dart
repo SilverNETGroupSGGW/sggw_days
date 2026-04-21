@@ -454,11 +454,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     void trackAndClose(TreasurePoint point) {
       Navigator.pop(context);
       context.read<TreasureHuntBloc>().add(TrackPoint(point.id));
-      _zoomToFitTracked(
-        context,
-        point,
-        hasScanned: foundIds.isNotEmpty,
-      );
+      _zoomToFitTracked(context, point, hasScanned: foundIds.isNotEmpty);
     }
 
     showModalBottomSheet(
@@ -657,7 +653,8 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
       final leftPadding = (size.width * 0.14).clamp(72.0, 132.0).toDouble();
       final rightPadding = (size.width * 0.2).clamp(104.0, 180.0).toDouble();
       final topPadding =
-          (size.height * (hasScanned ? 0.12 : 0.2)).clamp(104.0, 220.0)
+          (size.height * (hasScanned ? 0.12 : 0.2))
+              .clamp(104.0, 220.0)
               .toDouble() +
           safePadding.top;
       final bottomPadding =
