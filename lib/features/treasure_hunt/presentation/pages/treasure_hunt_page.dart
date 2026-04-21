@@ -454,7 +454,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     void trackAndClose(TreasurePoint point) {
       Navigator.pop(context);
       context.read<TreasureHuntBloc>().add(TrackPoint(point.id));
-      _zoomToFitTracked(point);
+      _zoomToFitTracked(
+        context,
+        point,
+        hasScanned: foundIds.isNotEmpty,
+      );
     }
 
     showModalBottomSheet(
@@ -639,12 +643,38 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     );
   }
 
-  void _zoomToFitTracked(TreasurePoint point) {
+  void _zoomToFitTracked(
+    BuildContext context,
+    TreasurePoint point, {
+    required bool hasScanned,
+  }) {
     final target = LatLng(point.latitude, point.longitude);
     if (_currentPosition != null) {
+      final size = MediaQuery.sizeOf(context);
+      final safePadding = MediaQuery.paddingOf(context);
       final bounds = LatLngBounds.fromPoints([_currentPosition!, target]);
+
+      final leftPadding = (size.width * 0.14).clamp(72.0, 132.0).toDouble();
+      final rightPadding = (size.width * 0.2).clamp(104.0, 180.0).toDouble();
+      final topPadding =
+          (size.height * (hasScanned ? 0.12 : 0.2)).clamp(104.0, 220.0)
+              .toDouble() +
+          safePadding.top;
+      final bottomPadding =
+          (size.height * 0.22).clamp(136.0, 240.0).toDouble() +
+          safePadding.bottom;
+
       _mapController.fitCamera(
-        CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(80)),
+        CameraFit.bounds(
+          bounds: bounds,
+          padding: EdgeInsets.fromLTRB(
+            leftPadding,
+            topPadding,
+            rightPadding,
+            bottomPadding,
+          ),
+          maxZoom: 16.75,
+        ),
       );
     } else {
       _mapController.move(target, 17.0);
