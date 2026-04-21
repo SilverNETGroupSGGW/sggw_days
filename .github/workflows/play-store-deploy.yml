@@ -1,9 +1,9 @@
 name: Deploy to Google Play Store (Internal Testing)
 
-"on":
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+on:
+    push:
+        branches: [ main ]
+    workflow_dispatch:
 
 jobs:
     validate:
@@ -19,7 +19,7 @@ jobs:
             - name: Setup project tooling
               uses: ./.github/actions/setup-project
               with:
-                  java-version: '21'
+                  java-version: "21"
 
             - name: Create keystore from secret
               run: |

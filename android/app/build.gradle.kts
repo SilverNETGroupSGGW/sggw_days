@@ -20,6 +20,7 @@ android {
 
     defaultConfig {
         applicationId = "com.silvernet.sggw_days"
+        minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
