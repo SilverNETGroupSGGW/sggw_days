@@ -2,6 +2,17 @@
 
 A new Flutter project.
 
+## GitHub Actions Deployment
+
+The repository deploys Firebase automatically with GitHub Actions:
+
+- Pull requests run [firebase-hosting-pull-request.yml](.github/workflows/firebase-hosting-pull-request.yml) to create Hosting preview channels.
+- Pushes to `main` and manual workflow dispatch run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml), which validates the Flutter project, builds the web app, and deploys Firebase Hosting plus Firestore and Storage rules to the `sggw-days` project.
+
+Required repository secret:
+
+- `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Hosting and update Firestore and Storage rules.
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
