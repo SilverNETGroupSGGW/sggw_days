@@ -148,7 +148,10 @@ void main() {
     await secondScanCompleted;
 
     expect(bloc.state.foundPointIds, equals(const ['point-1', 'point-2']));
-    expect(progressBox.get('found_points'), equals(const ['point-1', 'point-2']));
+    expect(
+      progressBox.get('found_points'),
+      equals(const ['point-1', 'point-2']),
+    );
 
     await bloc.close();
   });
