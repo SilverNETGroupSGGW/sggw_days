@@ -38,7 +38,7 @@ jobs:
             - name: Upload to Google Play (Internal Testing)
               uses: r0adkll/upload-google-play@v1
               with:
-                  serviceAccountJson: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS }}
+                  serviceAccountJsonPlainText: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS }}
                   packageName: com.silvernet.sggw_days
                   releaseFiles: "build/app/outputs/bundle/release/app-release.aab"
                   tracks: internal
