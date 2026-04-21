@@ -41,8 +41,8 @@ jobs:
                   serviceAccountJson: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS }}
                   packageName: com.silvernet.sggw_days
                   releaseFiles: "build/app/outputs/bundle/release/app-release.aab"
-                  track: internal
-                  status: inProgress
+                  tracks: internal
+                  status: completed
                   mappingFile: build/app/outputs/mapping/release/mapping.txt
 
             - name: Clean up sensitive files
