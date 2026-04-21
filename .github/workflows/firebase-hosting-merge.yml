@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -37,7 +37,7 @@ jobs:
 
       - name: Get Flutter dependencies
         run: flutter pub get
-      
+
       - name: Build web
         run: flutter build web --wasm --release --base-href "/"
 
@@ -50,7 +50,8 @@ jobs:
         run: npm install --global firebase-tools
 
       - name: Deploy Firebase Hosting and rules
-        run: firebase deploy --project sggw-days --only hosting,firestore:rules,storage:main --non-interactive
+        run: firebase deploy --project sggw-days --only
+          hosting,firestore:rules,storage:main --non-interactive
 
       - name: Clean up Firebase service account
         if: always()
