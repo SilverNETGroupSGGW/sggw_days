@@ -16,33 +16,12 @@ class ScanPage extends StatefulWidget {
 }
 
 class _ScanPageState extends State<ScanPage> {
-  bool _collected = false;
-
   @override
   void initState() {
     super.initState();
     final bloc = context.read<TreasureHuntBloc>();
     if (bloc.state.status != TreasureHuntStatus.success) {
       bloc.add(const LoadTreasurePoints());
-    }
-    _tryCollect();
-  }
-
-  void _tryCollect() {
-    final bloc = context.read<TreasureHuntBloc>();
-    final state = bloc.state;
-    if (state.foundPointIds.contains(widget.pointId)) {
-      setState(() => _collected = true);
-      return;
-    }
-    if (state.status == TreasureHuntStatus.success) {
-      final point = state.points
-          .where((p) => p.id == widget.pointId)
-          .firstOrNull;
-      if (point != null) {
-        bloc.add(MarkPointAsFound(widget.pointId));
-        setState(() => _collected = true);
-      }
     }
   }
 
@@ -53,12 +32,7 @@ class _ScanPageState extends State<ScanPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.scanPageTitle)),
-      body: BlocConsumer<TreasureHuntBloc, TreasureHuntState>(
-        listener: (context, state) {
-          if (!_collected && state.status == TreasureHuntStatus.success) {
-            _tryCollect();
-          }
-        },
+      body: BlocBuilder<TreasureHuntBloc, TreasureHuntState>(
         builder: (context, state) {
           if (state.status == TreasureHuntStatus.loading) {
             return const Center(child: CircularProgressIndicator());
@@ -67,6 +41,9 @@ class _ScanPageState extends State<ScanPage> {
           final point = state.points
               .where((p) => p.id == widget.pointId)
               .firstOrNull;
+
+          final isCollected =
+              point != null && state.foundPointIds.contains(point.id);
 
           if (point == null) {
             return Center(
@@ -104,9 +81,9 @@ class _ScanPageState extends State<ScanPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    _collected ? Icons.check_circle : Icons.location_on,
+                    isCollected ? Icons.check_circle : Icons.location_on,
                     size: 80,
-                    color: _collected
+                    color: isCollected
                         ? theme.colorScheme.primary
                         : theme.colorScheme.secondary,
                   ),
@@ -122,7 +99,7 @@ class _ScanPageState extends State<ScanPage> {
                     style: theme.textTheme.bodyLarge,
                     textAlign: TextAlign.center,
                   ),
-                  if (_collected) ...[
+                  if (isCollected) ...[
                     const SizedBox(height: 20),
                     Card(
                       color: theme.colorScheme.primaryContainer,

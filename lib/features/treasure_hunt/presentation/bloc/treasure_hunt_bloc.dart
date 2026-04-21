@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:sggw_days/features/treasure_hunt/data/models/treasure_scan_code.dart';
 import 'package:sggw_days/features/treasure_hunt/data/repositories/treasure_hunt_repository.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_state.dart';
@@ -95,20 +96,13 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
     ScanQRCode event,
     Emitter<TreasureHuntState> emit,
   ) async {
-    // Try matching by URL-based point ID first
-    final uri = Uri.tryParse(event.qrCode);
-    String? pointId;
-    if (uri != null &&
-        uri.pathSegments.length == 2 &&
-        uri.pathSegments[0] == 'scan') {
-      pointId = uri.pathSegments[1];
-    }
+    final pointId = tryExtractTreasurePointId(event.qrCode);
 
     final point = pointId != null
         ? state.points.where((p) => p.id == pointId).firstOrNull
         : state.points.where((p) => p.qrCode == event.qrCode).firstOrNull;
 
-    if (point != null) {
+    if (point != null && state.unlockedPointIds.contains(point.id)) {
       add(MarkPointAsFound(point.id));
     }
   }

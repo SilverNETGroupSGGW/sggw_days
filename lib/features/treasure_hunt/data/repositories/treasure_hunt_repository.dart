@@ -6,15 +6,17 @@ import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 
 class TreasureHuntRepository {
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _firestore;
   static const _cacheKey = 'treasure_points_cache';
 
   TreasureHuntRepository({FirebaseFirestore? firestore})
-    : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore;
+
+  FirebaseFirestore get firestore => _firestore ?? FirebaseFirestore.instance;
 
   Future<List<TreasurePoint>> getTreasurePoints() async {
     try {
-      final snapshot = await _firestore.collection('treasure_points').get();
+      final snapshot = await firestore.collection('treasure_points').get();
       final points = snapshot.docs.map((doc) {
         final data = doc.data();
         data['id'] = doc.id;

@@ -8,6 +8,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:sggw_days/features/treasure_hunt/data/models/treasure_scan_code.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
@@ -810,6 +811,10 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           builder: (context) => _QRScannerPage(
             currentPosition: position,
             treasurePoints: context.read<TreasureHuntBloc>().state.points,
+            unlockedPointIds: context
+                .read<TreasureHuntBloc>()
+                .state
+                .unlockedPointIds,
             onCodeScanned: (code) {
               context.read<TreasureHuntBloc>().add(ScanQRCode(code));
               Navigator.pop(context);
@@ -832,11 +837,13 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
 class _QRScannerPage extends StatelessWidget {
   final Position currentPosition;
   final List<TreasurePoint> treasurePoints;
+  final Set<String> unlockedPointIds;
   final Function(String) onCodeScanned;
 
   const _QRScannerPage({
     required this.currentPosition,
     required this.treasurePoints,
+    required this.unlockedPointIds,
     required this.onCodeScanned,
   });
 
@@ -850,13 +857,7 @@ class _QRScannerPage extends StatelessWidget {
   }
 
   String? _extractPointId(String code) {
-    final uri = Uri.tryParse(code);
-    if (uri != null &&
-        uri.pathSegments.length == 2 &&
-        uri.pathSegments[0] == 'scan') {
-      return uri.pathSegments[1];
-    }
-    return null;
+    return tryExtractTreasurePointId(code);
   }
 
   TreasurePoint? _findPoint(String code) {
@@ -904,6 +905,13 @@ class _QRScannerPage extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(l10n.invalidQrCode),
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                );
+              } else if (!unlockedPointIds.contains(point.id)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.pointLocked),
                     backgroundColor: Theme.of(context).colorScheme.error,
                   ),
                 );
