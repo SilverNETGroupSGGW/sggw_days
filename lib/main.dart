@@ -48,7 +48,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   final Box<List<String>> progressBox;
-  final Box settingsBox;
+  final Box<dynamic> settingsBox;
 
   const MyApp({
     super.key,
@@ -120,7 +120,9 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => SettingsCubit()),
+          BlocProvider(
+            create: (context) => SettingsCubit(settingsBox: widget.settingsBox),
+          ),
           BlocProvider(create: (context) => ConnectivityCubit()),
           BlocProvider(create: (context) => AdminAuthCubit()),
           BlocProvider(

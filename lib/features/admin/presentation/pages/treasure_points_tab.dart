@@ -305,12 +305,58 @@ class TreasurePointsTab extends StatelessWidget {
                       const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () {
+                          final name = nameController.text.trim();
+                          final description = descController.text.trim();
+                          final latitude = double.tryParse(
+                            latController.text.trim(),
+                          );
+                          final longitude = double.tryParse(
+                            lonController.text.trim(),
+                          );
+
+                          if (name.isEmpty || description.isEmpty) {
+                            ScaffoldMessenger.of(dialogContext).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Name and description are required.',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (latitude == null ||
+                              latitude < -90 ||
+                              latitude > 90) {
+                            ScaffoldMessenger.of(dialogContext).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Latitude must be between -90 and 90.',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (longitude == null ||
+                              longitude < -180 ||
+                              longitude > 180) {
+                            ScaffoldMessenger.of(dialogContext).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Longitude must be between -180 and 180.',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
                           final newPoint = TreasurePoint(
                             id: point?.id ?? '',
-                            name: nameController.text,
-                            description: descController.text,
-                            latitude: double.tryParse(latController.text) ?? 0,
-                            longitude: double.tryParse(lonController.text) ?? 0,
+                            name: name,
+                            description: description,
+                            latitude: latitude,
+                            longitude: longitude,
                             qrCode: point?.qrCode ?? '',
                             type: selectedType,
                             order: point?.order ?? 0,

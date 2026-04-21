@@ -30,6 +30,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Future<void> _checkPermissions() async {
     final cameraStatus = await Permission.camera.status;
     final locationStatus = await Permission.location.status;
+    if (!mounted) return;
     setState(() {
       _permissionsGranted = cameraStatus.isGranted && locationStatus.isGranted;
     });
@@ -43,6 +44,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Future<void> _completeOnboarding() async {
     await widget.settingsBox.put('onboarding_completed', true);
+    if (!mounted) return;
     widget.onComplete();
   }
 

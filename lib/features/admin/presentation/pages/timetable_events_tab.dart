@@ -296,9 +296,53 @@ class TimetableEventsTab extends StatelessWidget {
               onPressed: isUploading
                   ? null
                   : () async {
-                      String? imageUrl = imageUrlController.text.isEmpty
+                      final title = titleController.text.trim();
+                      final description = descController.text.trim();
+                      final location = locationController.text.trim();
+
+                      if (title.isEmpty ||
+                          description.isEmpty ||
+                          location.isEmpty) {
+                        ScaffoldMessenger.of(dialogContext).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Title, description, and location are required.',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      if (!endTime.isAfter(startTime)) {
+                        ScaffoldMessenger.of(dialogContext).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'End time must be after the start time.',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      String? imageUrl = imageUrlController.text.trim().isEmpty
                           ? null
-                          : imageUrlController.text;
+                          : imageUrlController.text.trim();
+
+                      if (imageUrl != null) {
+                        final imageUri = Uri.tryParse(imageUrl);
+                        final isValidHttpsImage =
+                            imageUri != null &&
+                            imageUri.scheme == 'https' &&
+                            imageUri.host.isNotEmpty;
+                        if (!isValidHttpsImage) {
+                          ScaffoldMessenger.of(dialogContext).showSnackBar(
+                            const SnackBar(
+                              content: Text('Image URL must use HTTPS.'),
+                            ),
+                          );
+                          return;
+                        }
+                      }
 
                       if (useImageUpload &&
                           selectedImageBytes != null &&
@@ -337,11 +381,11 @@ class TimetableEventsTab extends StatelessWidget {
 
                       final newEvent = TimetableEvent(
                         id: event?.id ?? '',
-                        title: titleController.text,
-                        description: descController.text,
+                        title: title,
+                        description: description,
                         startTime: startTime,
                         endTime: endTime,
-                        location: locationController.text,
+                        location: location,
                         imageUrl: imageUrl,
                         tags: tags,
                         treasurePointIds: selectedPointIds,

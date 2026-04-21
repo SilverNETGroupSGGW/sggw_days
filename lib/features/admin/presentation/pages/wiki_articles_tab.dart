@@ -234,9 +234,42 @@ class WikiArticlesTab extends StatelessWidget {
               onPressed: isUploading
                   ? null
                   : () async {
-                      String? imageUrl = imageUrlController.text.isEmpty
+                      final title = titleController.text.trim();
+                      final content = contentController.text.trim();
+                      final category = categoryController.text.trim();
+
+                      if (title.isEmpty ||
+                          content.isEmpty ||
+                          category.isEmpty) {
+                        ScaffoldMessenger.of(dialogContext).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Title, category, and content are required.',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      String? imageUrl = imageUrlController.text.trim().isEmpty
                           ? null
-                          : imageUrlController.text;
+                          : imageUrlController.text.trim();
+
+                      if (imageUrl != null) {
+                        final imageUri = Uri.tryParse(imageUrl);
+                        final isValidHttpsImage =
+                            imageUri != null &&
+                            imageUri.scheme == 'https' &&
+                            imageUri.host.isNotEmpty;
+                        if (!isValidHttpsImage) {
+                          ScaffoldMessenger.of(dialogContext).showSnackBar(
+                            const SnackBar(
+                              content: Text('Image URL must use HTTPS.'),
+                            ),
+                          );
+                          return;
+                        }
+                      }
 
                       if (useImageUpload &&
                           selectedImageBytes != null &&
@@ -275,9 +308,9 @@ class WikiArticlesTab extends StatelessWidget {
 
                       final newArticle = WikiArticle(
                         id: article?.id ?? '',
-                        title: titleController.text,
-                        content: contentController.text,
-                        category: categoryController.text,
+                        title: title,
+                        content: content,
+                        category: category,
                         imageUrl: imageUrl,
                         tags: tags,
                         treasurePointIds: selectedPointIds,
