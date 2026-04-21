@@ -15,22 +15,15 @@ class TimetableRepository {
   Future<List<TimetableEvent>> getEvents() async {
     try {
       final snapshot = await _firestore.collection('timetable_events').get();
-      final events = snapshot.docs.map((doc) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        // Convert Firestore Timestamps to ISO strings for Freezed deserialization
-        if (data['startTime'] is Timestamp) {
-          data['startTime'] = (data['startTime'] as Timestamp)
-              .toDate()
-              .toIso8601String();
+      final events = <TimetableEvent>[];
+      for (final doc in snapshot.docs) {
+        try {
+          final data = _normalizeTimetableEventData(doc.id, doc.data());
+          events.add(TimetableEvent.fromJson(data));
+        } catch (e) {
+          debugPrint('Skipping timetable event ${doc.id}: $e');
         }
-        if (data['endTime'] is Timestamp) {
-          data['endTime'] = (data['endTime'] as Timestamp)
-              .toDate()
-              .toIso8601String();
-        }
-        return TimetableEvent.fromJson(data);
-      }).toList();
+      }
       await _cacheData(events.map((e) => e.toJson()).toList());
       return events;
     } on FirebaseException {
@@ -60,10 +53,74 @@ class TimetableRepository {
     final cached = box.get(_cacheKey) as String?;
     if (cached != null) {
       final List<dynamic> data = jsonDecode(cached) as List<dynamic>;
-      return data
-          .map((json) => TimetableEvent.fromJson(json as Map<String, dynamic>))
-          .toList();
+      final events = <TimetableEvent>[];
+      for (final json in data) {
+        try {
+          final normalized = _normalizeTimetableEventData(
+            null,
+            Map<String, dynamic>.from(json as Map),
+          );
+          events.add(TimetableEvent.fromJson(normalized));
+        } catch (e) {
+          debugPrint('Skipping cached timetable event: $e');
+        }
+      }
+      return events;
     }
     return [];
+  }
+
+  Map<String, dynamic> _normalizeTimetableEventData(
+    String? id,
+    Map<String, dynamic> rawData,
+  ) {
+    final data = Map<String, dynamic>.from(rawData);
+    if (id != null) {
+      data['id'] = id;
+    }
+
+    data['startTime'] = _toIsoString(data['startTime']);
+    data['endTime'] = _toIsoString(data['endTime']);
+    data['imageUrl'] = _toNullableString(data['imageUrl']);
+    data['tags'] = _toStringList(data['tags']);
+    data['treasurePointIds'] = _toStringList(data['treasurePointIds']);
+
+    if (!_hasRequiredText(data['title']) ||
+        !_hasRequiredText(data['description']) ||
+        !_hasRequiredText(data['location']) ||
+        data['startTime'] == null ||
+        data['endTime'] == null) {
+      throw const FormatException('Missing required timetable event fields');
+    }
+
+    return data;
+  }
+
+  bool _hasRequiredText(Object? value) {
+    return (value is String ? value : value?.toString() ?? '')
+        .trim()
+        .isNotEmpty;
+  }
+
+  String? _toIsoString(Object? value) {
+    return switch (value) {
+      Timestamp timestamp => timestamp.toDate().toIso8601String(),
+      DateTime dateTime => dateTime.toIso8601String(),
+      String text when text.trim().isNotEmpty => text,
+      _ => null,
+    };
+  }
+
+  String? _toNullableString(Object? value) {
+    final text = (value is String ? value : value?.toString() ?? '').trim();
+    return text.isEmpty ? null : text;
+  }
+
+  List<String> _toStringList(Object? value) {
+    if (value is List) {
+      return value.map((item) => item.toString()).toList();
+    }
+
+    return const [];
   }
 }
