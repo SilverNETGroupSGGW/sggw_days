@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "sggw-days"
+  },
+  "targets": {
+    "sggw-days": {
+      "storage": {
+        "main": [
+          "sggw-days.firebasestorage.app"
+        ]
+      }
+    }
   }
 }

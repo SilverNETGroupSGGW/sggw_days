@@ -13,6 +13,8 @@ Required repository secret:
 
 - `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Hosting and update Firestore and Storage rules.
 
+Storage rules are deployed through the explicit Firebase Storage target `main`, mapped in [.firebaserc](.firebaserc) to the bucket `sggw-days.firebasestorage.app`. If the live deploy still fails with a Storage permission error, the service account behind `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS` needs Firebase Storage access for that bucket in addition to Hosting and Rules permissions.
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
