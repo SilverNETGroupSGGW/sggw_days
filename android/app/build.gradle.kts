@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -16,10 +18,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_21.toString()
-    }
-
     defaultConfig {
         applicationId = "com.silvernet.sggw_days"
         targetSdk = flutter.targetSdkVersion
@@ -29,14 +27,15 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = System.getenv("KEYSTORE_ALIAS") ?: ""
-            keyPassword = System.getenv("KEYSTORE_ALIAS_PASSWORD")?.toCharArray() ?: CharArray(0)
-            storeFile = if (System.getenv("KEYSTORE_PATH") != null) {
-                file(System.getenv("KEYSTORE_PATH")!!)
+            keyAlias = System.getenv("KEYSTORE_ALIAS")
+            keyPassword = System.getenv("KEYSTORE_ALIAS_PASSWORD")
+            val keystorePath = System.getenv("KEYSTORE_PATH")
+            storeFile = if (keystorePath != null) {
+                file(keystorePath)
             } else {
                 null
             }
-            storePassword = System.getenv("KEYSTORE_PASSWORD")?.toCharArray() ?: CharArray(0)
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
         }
     }
 
@@ -44,6 +43,12 @@ android {
         release {
             signingConfig = signingConfigs.getByName("release")
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(JavaVersion.VERSION_21.toString()))
     }
 }
 

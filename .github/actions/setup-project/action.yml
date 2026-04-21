@@ -1,0 +1,52 @@
+name: "Setup Project Tooling"
+description: "Prepare optional Java or Node tooling, then install Flutter dependencies."
+
+inputs:
+  flutter-channel:
+    description: "Flutter release channel to install."
+    required: false
+    default: "stable"
+  flutter-cache:
+    description: "Whether to enable Flutter SDK caching."
+    required: false
+    default: "true"
+  java-version:
+    description: "Java version to install for Android builds."
+    required: false
+    default: ""
+  java-distribution:
+    description: "Java distribution passed to actions/setup-java."
+    required: false
+    default: "temurin"
+  node-version:
+    description: "Node.js version to install for Firebase tooling."
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Java
+      if: ${{ inputs.java-version != '' }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: ${{ inputs.java-distribution }}
+        java-version: ${{ inputs.java-version }}
+        cache: gradle
+
+    - name: Setup Node.js
+      if: ${{ inputs.node-version != '' }}
+      uses: actions/setup-node@v4
+      with:
+        cache: npm
+        node-version: ${{ inputs.node-version }}
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        cache: true
+        channel: ${{ inputs.flutter-channel }}
+
+    - name: Get Flutter dependencies
+      shell: bash
+      run: flutter pub get

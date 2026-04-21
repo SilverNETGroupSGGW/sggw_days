@@ -1,12 +1,9 @@
 name: Deploy to Google Play Store (Internal Testing)
 
 "on":
-    push:
-        branches: [ main ]
-    workflow_dispatch:
-
-env:
-    JAVA_VERSION: "21"
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
     validate:
@@ -19,21 +16,10 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Setup Java
-              uses: actions/setup-java@v4
+            - name: Setup project tooling
+              uses: ./.github/actions/setup-project
               with:
-                  distribution: "temurin"
-                  java-version: ${{ env.JAVA_VERSION }}
-                  cache: "gradle"
-
-            - name: Setup Flutter
-              uses: subosito/flutter-action@v2
-              with:
-                  cache: true
-                  channel: "stable"
-
-            - name: Get Flutter dependencies
-              run: flutter pub get
+                  java-version: '21'
 
             - name: Create keystore from secret
               run: |
