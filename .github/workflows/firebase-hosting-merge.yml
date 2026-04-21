@@ -26,7 +26,6 @@ jobs:
 
       - name: Setup project tooling
         uses: ./.github/actions/setup-project
-        with:
 
       - name: Build web
         run: flutter build web --wasm --release --base-href "/"
