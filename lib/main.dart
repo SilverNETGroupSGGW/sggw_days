@@ -9,7 +9,6 @@ import 'package:sggw_days/core/router/app_router.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
 import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
-import 'package:sggw_days/features/admin/presentation/cubit/admin_auth_cubit.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
@@ -30,13 +29,15 @@ void main() async {
   usePathUrlStrategy();
 
   try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    isFirebaseAvailable = true;
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+    isFirebaseAvailable = Firebase.apps.isNotEmpty;
   } catch (_) {
-    // Firebase unavailable — app will run in offline mode using cached data.
-    isFirebaseAvailable = false;
+    // Keep the app online when Firebase was already initialized elsewhere.
+    isFirebaseAvailable = Firebase.apps.isNotEmpty;
   }
 
   await Hive.initFlutter();
@@ -124,7 +125,6 @@ class _MyAppState extends State<MyApp> {
             create: (context) => SettingsCubit(settingsBox: widget.settingsBox),
           ),
           BlocProvider(create: (context) => ConnectivityCubit()),
-          BlocProvider(create: (context) => AdminAuthCubit()),
           BlocProvider(
             create: (context) => TreasureHuntBloc(
               repository: context.read<TreasureHuntRepository>(),

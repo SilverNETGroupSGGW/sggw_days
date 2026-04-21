@@ -9,6 +9,18 @@ class AdminLoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => AdminAuthCubit(),
+      child: const _AdminLoginView(),
+    );
+  }
+}
+
+class _AdminLoginView extends StatelessWidget {
+  const _AdminLoginView();
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -17,7 +29,12 @@ class AdminLoginPage extends StatelessWidget {
         listener: (context, state) {
           if (state.isAuthenticated) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const AdminPage()),
+              MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                  create: (context) => AdminAuthCubit(),
+                  child: const AdminPage(),
+                ),
+              ),
             );
           }
         },
