@@ -33,5 +33,11 @@ class SettingsState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [locale, themeMode, useDynamicColors, textScaleFactor, boldText];
+  List<Object?> get props => [
+    locale,
+    themeMode,
+    useDynamicColors,
+    textScaleFactor,
+    boldText,
+  ];
 }

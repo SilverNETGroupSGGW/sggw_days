@@ -30,11 +30,15 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
       // Load favorites from Hive
       final favBox = await Hive.openBox<List<String>>('favorites');
-      final favoriteIds = favBox.get('timetable_favorites', defaultValue: <String>[]) ?? <String>[];
+      final favoriteIds =
+          favBox.get('timetable_favorites', defaultValue: <String>[]) ??
+          <String>[];
 
       // Load check-ins from Hive
       final checkInBox = await Hive.openBox<List<String>>('check_ins');
-      final checkedInIds = checkInBox.get('event_check_ins', defaultValue: <String>[]) ?? <String>[];
+      final checkedInIds =
+          checkInBox.get('event_check_ins', defaultValue: <String>[]) ??
+          <String>[];
 
       final filtered = _filterEvents(
         events,
@@ -69,8 +73,11 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     Emitter<TimetableState> emit,
   ) {
     final filtered = _filterEvents(
-      state.events, event.date, state.selectedTag,
-      state.favoriteIds, state.showFavoritesOnly,
+      state.events,
+      event.date,
+      state.selectedTag,
+      state.favoriteIds,
+      state.showFavoritesOnly,
     );
     emit(state.copyWith(filteredEvents: filtered, selectedDate: event.date));
   }
@@ -80,8 +87,11 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     Emitter<TimetableState> emit,
   ) {
     final filtered = _filterEvents(
-      state.events, state.selectedDate, event.tag,
-      state.favoriteIds, state.showFavoritesOnly,
+      state.events,
+      state.selectedDate,
+      event.tag,
+      state.favoriteIds,
+      state.showFavoritesOnly,
     );
     emit(state.copyWith(filteredEvents: filtered, selectedTag: event.tag));
   }
@@ -101,14 +111,16 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     await favBox.put('timetable_favorites', updatedFavorites);
 
     final filtered = _filterEvents(
-      state.events, state.selectedDate, state.selectedTag,
-      updatedFavorites, state.showFavoritesOnly,
+      state.events,
+      state.selectedDate,
+      state.selectedTag,
+      updatedFavorites,
+      state.showFavoritesOnly,
     );
 
-    emit(state.copyWith(
-      favoriteIds: updatedFavorites,
-      filteredEvents: filtered,
-    ));
+    emit(
+      state.copyWith(favoriteIds: updatedFavorites, filteredEvents: filtered),
+    );
   }
 
   void _onToggleShowFavorites(
@@ -117,13 +129,18 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   ) {
     final newShowFavorites = !state.showFavoritesOnly;
     final filtered = _filterEvents(
-      state.events, state.selectedDate, state.selectedTag,
-      state.favoriteIds, newShowFavorites,
+      state.events,
+      state.selectedDate,
+      state.selectedTag,
+      state.favoriteIds,
+      newShowFavorites,
     );
-    emit(state.copyWith(
-      showFavoritesOnly: newShowFavorites,
-      filteredEvents: filtered,
-    ));
+    emit(
+      state.copyWith(
+        showFavoritesOnly: newShowFavorites,
+        filteredEvents: filtered,
+      ),
+    );
   }
 
   List<model.TimetableEvent> _filterEvents(
@@ -148,7 +165,9 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     }
 
     if (showFavoritesOnly) {
-      filtered = filtered.where((event) => favoriteIds.contains(event.id)).toList();
+      filtered = filtered
+          .where((event) => favoriteIds.contains(event.id))
+          .toList();
     }
 
     return filtered;

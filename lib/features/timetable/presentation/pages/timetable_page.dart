@@ -158,14 +158,10 @@ class _TimetablePageState extends State<TimetablePage> {
             trailing: IconButton(
               icon: Icon(
                 isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: isFavorite
-                    ? Theme.of(context).colorScheme.error
-                    : null,
+                color: isFavorite ? Theme.of(context).colorScheme.error : null,
               ),
               onPressed: () {
-                context.read<TimetableBloc>().add(
-                  ToggleFavorite(event.id),
-                );
+                context.read<TimetableBloc>().add(ToggleFavorite(event.id));
               },
             ),
             onTap: () => _showEventDetails(context, event),
@@ -330,7 +326,10 @@ class _TimetablePageState extends State<TimetablePage> {
 
   void _showEventDetails(BuildContext context, dynamic event) {
     final l10n = AppLocalizations.of(context)!;
-    final isCheckedIn = context.read<TimetableBloc>().state.checkedInIds
+    final isCheckedIn = context
+        .read<TimetableBloc>()
+        .state
+        .checkedInIds
         .contains(event.id as String);
 
     showDialog(
@@ -364,8 +363,11 @@ class _TimetablePageState extends State<TimetablePage> {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.check_circle, size: 16,
-                      color: Theme.of(context).colorScheme.primary),
+                  Icon(
+                    Icons.check_circle,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     l10n.checkedIn,

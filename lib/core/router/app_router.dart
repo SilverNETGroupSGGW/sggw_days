@@ -23,9 +23,8 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/scan/:pointId',
-      builder: (context, state) => ScanPage(
-        pointId: state.pathParameters['pointId']!,
-      ),
+      builder: (context, state) =>
+          ScanPage(pointId: state.pathParameters['pointId']!),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {

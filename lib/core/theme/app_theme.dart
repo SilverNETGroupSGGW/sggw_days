@@ -47,7 +47,10 @@ class AppColors {
 }
 
 class AppTheme {
-  static ThemeData light({bool useDynamicColors = false, bool boldText = false}) {
+  static ThemeData light({
+    bool useDynamicColors = false,
+    bool boldText = false,
+  }) {
     final base = ThemeData(
       useMaterial3: true,
       colorScheme: useDynamicColors
@@ -68,25 +71,28 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
     if (!boldText) return base;
-    return base.copyWith(
-      textTheme: _applyBold(base.textTheme),
-    );
+    return base.copyWith(textTheme: _applyBold(base.textTheme));
   }
 
-  static ThemeData dark({bool useDynamicColors = false, bool boldText = false}) {
+  static ThemeData dark({
+    bool useDynamicColors = false,
+    bool boldText = false,
+  }) {
     final base = ThemeData(
       useMaterial3: true,
       colorScheme: useDynamicColors
@@ -107,22 +113,22 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
     if (!boldText) return base;
-    return base.copyWith(
-      textTheme: _applyBold(base.textTheme),
-    );
+    return base.copyWith(textTheme: _applyBold(base.textTheme));
   }
 
   static TextTheme _applyBold(TextTheme theme) {
@@ -131,7 +137,9 @@ class AppTheme {
       displayMedium: theme.displayMedium?.copyWith(fontWeight: FontWeight.bold),
       displaySmall: theme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
       headlineLarge: theme.headlineLarge?.copyWith(fontWeight: FontWeight.bold),
-      headlineMedium: theme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+      headlineMedium: theme.headlineMedium?.copyWith(
+        fontWeight: FontWeight.bold,
+      ),
       headlineSmall: theme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
       titleLarge: theme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
       titleMedium: theme.titleMedium?.copyWith(fontWeight: FontWeight.w700),

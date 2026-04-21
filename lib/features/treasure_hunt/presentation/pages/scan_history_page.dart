@@ -74,10 +74,7 @@ class ScanHistoryPage extends StatelessWidget {
                 subtitle: scanTime != null
                     ? Text(dateFormat.format(scanTime))
                     : null,
-                trailing: const Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                ),
+                trailing: const Icon(Icons.check_circle, color: Colors.green),
               );
             },
           );

@@ -41,11 +41,7 @@ class _ConnectivityBannerState extends State<ConnectivityBanner> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.cloud_off,
-                      color: colorScheme.onError,
-                      size: 16,
-                    ),
+                    Icon(Icons.cloud_off, color: colorScheme.onError, size: 16),
                     const SizedBox(width: 8),
                     Text(
                       l10n.noConnection,

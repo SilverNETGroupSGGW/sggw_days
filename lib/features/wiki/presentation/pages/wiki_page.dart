@@ -71,11 +71,8 @@ class _WikiPageState extends State<WikiPage> {
           }
 
           // Extract unique categories
-          final categories = state.articles
-              .map((a) => a.category)
-              .toSet()
-              .toList()
-            ..sort();
+          final categories =
+              state.articles.map((a) => a.category).toSet().toList()..sort();
 
           return Column(
             children: [
@@ -120,39 +117,38 @@ class _WikiPageState extends State<WikiPage> {
                   ),
                 ),
               if (state.filteredArticles.isEmpty)
-                Expanded(
-                  child: Center(
-                    child: Text(l10n.noArticlesFound),
-                  ),
-                )
+                Expanded(child: Center(child: Text(l10n.noArticlesFound)))
               else
                 Expanded(
                   child: ListView.builder(
                     itemCount: state.filteredArticles.length,
                     itemBuilder: (context, index) {
                       final article = state.filteredArticles[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ListTile(
-                  leading: article.imageUrl != null
-                      ? Image.network(
-                          article.imageUrl!,
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                        )
-                      : const Icon(Icons.article, size: 60),
-                  title: Text(article.title),
-                  subtitle: Text(
-                    article.category,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () => _showArticleDetails(context, article),
-                ),
-              );
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: ListTile(
+                          leading: article.imageUrl != null
+                              ? Image.network(
+                                  article.imageUrl!,
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(Icons.article, size: 60),
+                          title: Text(article.title),
+                          subtitle: Text(
+                            article.category,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onTap: () => _showArticleDetails(context, article),
+                        ),
+                      );
                     },
                   ),
                 ),
