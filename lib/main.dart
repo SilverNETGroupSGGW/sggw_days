@@ -20,10 +20,6 @@ import 'package:sggw_days/features/wiki/presentation/bloc/wiki_bloc.dart';
 import 'package:sggw_days/firebase_options.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
-/// Whether Firebase initialized successfully.
-/// When false, the app runs in offline/cache-only mode.
-bool isFirebaseAvailable = false;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
@@ -34,11 +30,7 @@ void main() async {
         options: DefaultFirebaseOptions.currentPlatform,
       );
     }
-    isFirebaseAvailable = Firebase.apps.isNotEmpty;
-  } catch (_) {
-    // Keep the app online when Firebase was already initialized elsewhere.
-    isFirebaseAvailable = Firebase.apps.isNotEmpty;
-  }
+  } catch (_) {}
 
   await Hive.initFlutter();
   final progressBox = await Hive.openBox<List<String>>('progress');
