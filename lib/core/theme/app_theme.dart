@@ -50,54 +50,23 @@ class AppTheme {
   static ThemeData light({
     bool useDynamicColors = false,
     bool boldText = false,
-  }) {
-    final base = ThemeData(
-      useMaterial3: true,
-      colorScheme: useDynamicColors
-          ? AppColors.dynamicLightScheme
-          : AppColors.sggwLightScheme,
-      appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
-      navigationBarTheme: NavigationBarThemeData(
-        indicatorColor: AppColors.primaryGreen.withValues(alpha: 0.3),
-        labelTextStyle: WidgetStateProperty.all(
-          const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        ),
-      ),
-      cardTheme: CardThemeData(
-        elevation: 1,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
-    if (!boldText) return base;
-    return base.copyWith(textTheme: _applyBold(base.textTheme));
-  }
+  }) => _build(
+    useDynamicColors ? AppColors.dynamicLightScheme : AppColors.sggwLightScheme,
+    boldText: boldText,
+  );
 
   static ThemeData dark({
     bool useDynamicColors = false,
     bool boldText = false,
-  }) {
+  }) => _build(
+    useDynamicColors ? AppColors.dynamicDarkScheme : AppColors.sggwDarkScheme,
+    boldText: boldText,
+  );
+
+  static ThemeData _build(ColorScheme colorScheme, {required bool boldText}) {
     final base = ThemeData(
       useMaterial3: true,
-      colorScheme: useDynamicColors
-          ? AppColors.dynamicDarkScheme
-          : AppColors.sggwDarkScheme,
+      colorScheme: colorScheme,
       appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
       navigationBarTheme: NavigationBarThemeData(
         indicatorColor: AppColors.primaryGreen.withValues(alpha: 0.3),

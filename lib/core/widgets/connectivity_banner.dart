@@ -18,27 +18,34 @@ class ConnectivityBanner extends StatelessWidget {
         return Column(
           children: [
             if (status == ConnectivityStatus.offline)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 16,
-                ),
-                color: colorScheme.error,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.cloud_off, color: colorScheme.onError, size: 16),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.noConnection,
-                      style: TextStyle(
+              SafeArea(
+                bottom: false,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
+                  color: colorScheme.error,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.cloud_off,
                         color: colorScheme.onError,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                        size: 16,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.noConnection,
+                        style: TextStyle(
+                          color: colorScheme.onError,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             Expanded(child: child),
