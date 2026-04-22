@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
@@ -157,13 +156,22 @@ class SettingsPage extends StatelessWidget {
                   context.read<SettingsCubit>().toggleBoldText(value);
                 },
               ),
+              SwitchListTile(
+                secondary: const Icon(Icons.skip_next_outlined),
+                title: Text(l10n.skipTreasureHuntSettingTitle),
+                subtitle: Text(l10n.skipTreasureHuntSettingDesc),
+                value: state.skipTreasureHunt,
+                onChanged: (value) {
+                  context.read<SettingsCubit>().setSkipTreasureHunt(value);
+                },
+              ),
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.info_outline),
                 title: Text(l10n.viewOnboarding),
                 subtitle: Text(l10n.viewOnboardingDesc),
                 onTap: () async {
-                  final settingsBox = await Hive.openBox('settings');
+                  final settingsCubit = context.read<SettingsCubit>();
                   if (context.mounted) {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
@@ -171,10 +179,11 @@ class SettingsPage extends StatelessWidget {
                           onComplete: () {
                             Navigator.of(context).pop();
                           },
-                          settingsBox: settingsBox,
+                          settingsBox: settingsCubit.settingsBox,
                         ),
                       ),
                     );
+                    settingsCubit.reloadFromStorage();
                   }
                 },
               ),

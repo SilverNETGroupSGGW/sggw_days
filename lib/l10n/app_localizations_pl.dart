@@ -437,4 +437,45 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get adminAllEntriesFixed => 'Wszystkie wpisy naprawione pomyślnie';
+
+  @override
+  String get continueWithoutTreasureHunt => 'Kontynuuj bez gry terenowej';
+
+  @override
+  String get skipTreasureHuntDialogTitle => 'Pominąć grę terenową?';
+
+  @override
+  String get skipTreasureHuntDialogBody =>
+      'Nadal możesz przeglądać mapę, wiedzę i harmonogram. Zbieranie kodów QR oraz postęp gry pozostaną opcjonalne. Ominą Cię też rywalizacja, rankingi i nagrody powiązane z grą terenową.';
+
+  @override
+  String get skipTreasureHuntEnabledSnack =>
+      'Odblokowanie gry terenowej jest teraz opcjonalne.';
+
+  @override
+  String get skipTreasureHuntSettingTitle => 'Pomiń blokadę gry terenowej';
+
+  @override
+  String get skipTreasureHuntSettingDesc =>
+      'Pokazuj punkty na mapie, wiedzę i harmonogram bez skanowania pierwszego punktu skarbu.';
+
+  @override
+  String get permissionDeniedTitle => 'Wymagane uprawnienie';
+
+  @override
+  String get permissionDeniedCameraBody =>
+      'Dostęp do kamery jest potrzebny do skanowania kodów QR podczas gry terenowej.';
+
+  @override
+  String get permissionDeniedLocationBody =>
+      'Dostęp do lokalizacji jest potrzebny, aby potwierdzić, że jesteś wystarczająco blisko punktu skarbu.';
+
+  @override
+  String get permissionDeniedOpenSettings => 'Otwórz ustawienia';
+
+  @override
+  String get permissionDeniedRetry => 'Spróbuj ponownie';
+
+  @override
+  String get cameraLoading => 'Uruchamianie kamery...';
 }

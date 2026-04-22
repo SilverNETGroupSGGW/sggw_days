@@ -6,6 +6,7 @@ class SettingsState extends Equatable {
   final bool useDynamicColors;
   final double textScaleFactor;
   final bool boldText;
+  final bool skipTreasureHunt;
 
   const SettingsState({
     required this.locale,
@@ -13,6 +14,7 @@ class SettingsState extends Equatable {
     required this.useDynamicColors,
     this.textScaleFactor = 1.0,
     this.boldText = false,
+    this.skipTreasureHunt = false,
   });
 
   SettingsState copyWith({
@@ -22,6 +24,7 @@ class SettingsState extends Equatable {
     bool? useDynamicColors,
     double? textScaleFactor,
     bool? boldText,
+    bool? skipTreasureHunt,
   }) {
     return SettingsState(
       locale: clearLocale ? null : (locale ?? this.locale),
@@ -29,6 +32,7 @@ class SettingsState extends Equatable {
       useDynamicColors: useDynamicColors ?? this.useDynamicColors,
       textScaleFactor: textScaleFactor ?? this.textScaleFactor,
       boldText: boldText ?? this.boldText,
+      skipTreasureHunt: skipTreasureHunt ?? this.skipTreasureHunt,
     );
   }
 
@@ -39,5 +43,6 @@ class SettingsState extends Equatable {
     useDynamicColors,
     textScaleFactor,
     boldText,
+    skipTreasureHunt,
   ];
 }

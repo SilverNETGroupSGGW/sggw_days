@@ -13,28 +13,35 @@ class SettingsCubit extends Cubit<SettingsState> {
   static const _dynamicColorsKey = 'use_dynamic_colors';
   static const _textScaleFactorKey = 'text_scale_factor';
   static const _boldTextKey = 'bold_text';
+  static const _skipTreasureHuntKey = 'non_game_mode';
 
   final Box<dynamic> _settingsBox;
+    Box<dynamic> get settingsBox => _settingsBox;
 
   SettingsCubit({required Box<dynamic> settingsBox})
     : _settingsBox = settingsBox,
-      super(
-        SettingsState(
-          locale: _readLocale(settingsBox),
-          themeMode: _readThemeMode(settingsBox),
-          useDynamicColors:
-              settingsBox.get(_dynamicColorsKey, defaultValue: false)
-                  as bool? ??
-              false,
-          textScaleFactor:
-              (settingsBox.get(_textScaleFactorKey, defaultValue: 1.0) as num?)
-                  ?.toDouble() ??
-              1.0,
-          boldText:
-              settingsBox.get(_boldTextKey, defaultValue: false) as bool? ??
-              false,
-        ),
-      );
+      super(_restoreState(settingsBox));
+
+    static SettingsState _restoreState(Box<dynamic> settingsBox) {
+    return SettingsState(
+      locale: _readLocale(settingsBox),
+      themeMode: _readThemeMode(settingsBox),
+      useDynamicColors:
+        settingsBox.get(_dynamicColorsKey, defaultValue: false) as bool? ??
+        false,
+      textScaleFactor:
+        (settingsBox.get(_textScaleFactorKey, defaultValue: 1.0) as num?)
+          ?.toDouble() ??
+        1.0,
+      boldText:
+        settingsBox.get(_boldTextKey, defaultValue: false) as bool? ??
+        false,
+      skipTreasureHunt:
+        settingsBox.get(_skipTreasureHuntKey, defaultValue: false)
+          as bool? ??
+        false,
+    );
+    }
 
   static Locale? _readLocale(Box<dynamic> settingsBox) {
     final languageCode = settingsBox.get(_localeKey) as String?;
@@ -90,5 +97,14 @@ class SettingsCubit extends Cubit<SettingsState> {
   void toggleBoldText(bool value) {
     _saveSetting(_boldTextKey, value);
     emit(state.copyWith(boldText: value));
+  }
+
+  void reloadFromStorage() {
+    emit(_restoreState(_settingsBox));
+  }
+
+  void setSkipTreasureHunt(bool value) {
+    _saveSetting(_skipTreasureHuntKey, value);
+    emit(state.copyWith(skipTreasureHunt: value));
   }
 }

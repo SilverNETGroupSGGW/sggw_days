@@ -435,4 +435,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminAllEntriesFixed => 'All entries fixed successfully';
+
+  @override
+  String get continueWithoutTreasureHunt => 'Continue without treasure hunt';
+
+  @override
+  String get skipTreasureHuntDialogTitle => 'Skip the treasure hunt?';
+
+  @override
+  String get skipTreasureHuntDialogBody =>
+      'You can still browse the map, wiki and timetable. QR collection and treasure progress will stay optional. You will also miss out on competition, leaderboards and rewards tied to the treasure hunt.';
+
+  @override
+  String get skipTreasureHuntEnabledSnack =>
+      'Treasure hunt unlock is now optional.';
+
+  @override
+  String get skipTreasureHuntSettingTitle => 'Skip treasure hunt gate';
+
+  @override
+  String get skipTreasureHuntSettingDesc =>
+      'Show map points, wiki and timetable without scanning the first treasure point.';
+
+  @override
+  String get permissionDeniedTitle => 'Permission required';
+
+  @override
+  String get permissionDeniedCameraBody =>
+      'Camera access is needed to scan QR codes during the treasure hunt.';
+
+  @override
+  String get permissionDeniedLocationBody =>
+      'Location access is needed to confirm that you are close enough to a treasure point.';
+
+  @override
+  String get permissionDeniedOpenSettings => 'Open settings';
+
+  @override
+  String get permissionDeniedRetry => 'Try again';
+
+  @override
+  String get cameraLoading => 'Starting camera...';
 }

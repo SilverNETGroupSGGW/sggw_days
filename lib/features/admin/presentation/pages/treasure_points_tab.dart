@@ -9,21 +9,8 @@ import 'package:sggw_days/features/admin/presentation/widgets/invalid_entries_ba
 import 'package:sggw_days/features/admin/presentation/widgets/location_picker_map.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/qr_code_widget.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/point_type_presentation.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
-
-IconData iconForPointType(PointType type) {
-  return switch (type) {
-    PointType.treasurePoint => Icons.emoji_events,
-    PointType.pointOfInterest => Icons.place,
-  };
-}
-
-String labelForPointType(PointType type, AppLocalizations l10n) {
-  return switch (type) {
-    PointType.treasurePoint => l10n.typeTreasurePoint,
-    PointType.pointOfInterest => l10n.typePointOfInterest,
-  };
-}
 
 class TreasurePointsTab extends StatelessWidget {
   const TreasurePointsTab({super.key});
@@ -53,9 +40,7 @@ class TreasurePointsTab extends StatelessWidget {
                     child: ElevatedButton.icon(
                       onPressed: () => _showAddEditDialog(context),
                       icon: const Icon(Icons.add),
-                      label: Text(
-                        '${l10n.cancel.replaceAll(l10n.cancel, 'Add')} Point',
-                      ),
+                      label: const Text('Add Point'),
                     ),
                   ),
                   const SizedBox(width: 8),

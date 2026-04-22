@@ -29,6 +29,10 @@ class TreasureHuntState extends Equatable {
     return tp;
   }
 
+  bool get hasFoundAnyTreasurePoint {
+    return sortedTreasurePoints.any((p) => foundPointIds.contains(p.id));
+  }
+
   /// Returns the set of unlocked point IDs based on sequential logic.
   /// The first treasure point is always visible.
   /// Scanning the Nth treasure point unlocks the (N+1)th.
@@ -53,8 +57,7 @@ class TreasureHuntState extends Equatable {
     }
 
     // If user has scanned at least one treasure point, unlock all non-treasure points
-    final hasFoundAnyTreasure = sorted.any((p) => foundPointIds.contains(p.id));
-    if (hasFoundAnyTreasure) {
+    if (hasFoundAnyTreasurePoint) {
       for (final p in points) {
         if (p.type != PointType.treasurePoint) {
           unlocked.add(p.id);
@@ -68,6 +71,25 @@ class TreasureHuntState extends Equatable {
     return unlocked;
   }
 
+  /// Returns the set of point IDs that should be shown in the UI.
+  /// Skipping the treasure hunt reveals points of interest immediately,
+  /// while scan/QR progression still relies on [unlockedPointIds].
+  Set<String> visiblePointIds({required bool skipTreasureHunt}) {
+    final visible = <String>{...unlockedPointIds};
+
+    if (skipTreasureHunt) {
+      for (final point in points) {
+        if (point.type == PointType.pointOfInterest) {
+          visible.add(point.id);
+        }
+      }
+    }
+
+    return visible;
+  }
+
+  /// [errorMessage] and [lastScannedPointId] are transient UI-event flags.
+  /// They intentionally reset on unrelated emits so listeners fire once.
   TreasureHuntState copyWith({
     TreasureHuntStatus? status,
     List<TreasurePoint>? points,

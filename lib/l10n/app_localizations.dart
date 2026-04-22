@@ -871,6 +871,78 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Wszystkie wpisy naprawione pomyślnie'**
   String get adminAllEntriesFixed;
+
+  /// No description provided for @continueWithoutTreasureHunt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontynuuj bez gry terenowej'**
+  String get continueWithoutTreasureHunt;
+
+  /// No description provided for @skipTreasureHuntDialogTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pominąć grę terenową?'**
+  String get skipTreasureHuntDialogTitle;
+
+  /// No description provided for @skipTreasureHuntDialogBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nadal możesz przeglądać mapę, wiedzę i harmonogram. Zbieranie kodów QR oraz postęp gry pozostaną opcjonalne. Ominą Cię też rywalizacja, rankingi i nagrody powiązane z grą terenową.'**
+  String get skipTreasureHuntDialogBody;
+
+  /// No description provided for @skipTreasureHuntEnabledSnack.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odblokowanie gry terenowej jest teraz opcjonalne.'**
+  String get skipTreasureHuntEnabledSnack;
+
+  /// No description provided for @skipTreasureHuntSettingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomiń blokadę gry terenowej'**
+  String get skipTreasureHuntSettingTitle;
+
+  /// No description provided for @skipTreasureHuntSettingDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokazuj punkty na mapie, wiedzę i harmonogram bez skanowania pierwszego punktu skarbu.'**
+  String get skipTreasureHuntSettingDesc;
+
+  /// No description provided for @permissionDeniedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wymagane uprawnienie'**
+  String get permissionDeniedTitle;
+
+  /// No description provided for @permissionDeniedCameraBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostęp do kamery jest potrzebny do skanowania kodów QR podczas gry terenowej.'**
+  String get permissionDeniedCameraBody;
+
+  /// No description provided for @permissionDeniedLocationBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostęp do lokalizacji jest potrzebny, aby potwierdzić, że jesteś wystarczająco blisko punktu skarbu.'**
+  String get permissionDeniedLocationBody;
+
+  /// No description provided for @permissionDeniedOpenSettings.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz ustawienia'**
+  String get permissionDeniedOpenSettings;
+
+  /// No description provided for @permissionDeniedRetry.
+  ///
+  /// In pl, this message translates to:
+  /// **'Spróbuj ponownie'**
+  String get permissionDeniedRetry;
+
+  /// No description provided for @cameraLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uruchamianie kamery...'**
+  String get cameraLoading;
 }
 
 class _AppLocalizationsDelegate

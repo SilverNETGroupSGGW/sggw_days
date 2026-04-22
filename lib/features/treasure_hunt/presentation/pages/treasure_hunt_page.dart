@@ -1,36 +1,28 @@
 import 'dart:async';
 
 import 'package:confetti/confetti.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
-import 'package:sggw_days/features/treasure_hunt/data/models/treasure_scan_code.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_state.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/pages/qr_scanner_page.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/pages/scan_history_page.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/point_type_presentation.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/widgets/treasure_hunt_checklist_sheet.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/widgets/treasure_hunt_point_details_sheet.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/widgets/treasure_hunt_widgets.dart';
 import 'package:sggw_days/features/wiki/presentation/bloc/wiki_bloc.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
-
-IconData iconForPointType(PointType type) {
-  return switch (type) {
-    PointType.treasurePoint => Icons.emoji_events,
-    PointType.pointOfInterest => Icons.place,
-  };
-}
-
-Color colorForPointType(PointType type, ColorScheme colorScheme) {
-  return switch (type) {
-    PointType.treasurePoint => colorScheme.primary,
-    PointType.pointOfInterest => colorScheme.secondary,
-  };
-}
 
 class TreasureHuntPage extends StatefulWidget {
   const TreasureHuntPage({super.key});
@@ -42,10 +34,12 @@ class TreasureHuntPage extends StatefulWidget {
 class _TreasureHuntPageState extends State<TreasureHuntPage> {
   final MapController _mapController = MapController();
   final ConfettiController _confettiController = ConfettiController(
-    duration: const Duration(seconds: 3),
+    duration: const Duration(seconds: 2),
   );
   LatLng? _currentPosition;
   StreamSubscription<Position>? _positionStreamSubscription;
+  String? _selectedPointId;
+  bool _showCelebrationFlash = false;
   // SGGW coordinates
   static const LatLng sggwCenter = LatLng(52.1598, 21.0463);
 
@@ -105,6 +99,19 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final mapShadowColor = colorScheme.shadow.withValues(
+      alpha: theme.brightness == Brightness.dark ? 0.32 : 0.18,
+    );
+    final mapOutlineColor = colorScheme.outlineVariant.withValues(
+      alpha: theme.brightness == Brightness.dark ? 0.72 : 0.6,
+    );
+    final markerLabelBackgroundColor = colorScheme.surface.withValues(
+      alpha: 0.96,
+    );
+    final markerDistanceBackgroundColor = colorScheme.surfaceContainerHighest
+        .withValues(alpha: 0.96);
 
     return Scaffold(
       appBar: AppBar(
@@ -150,14 +157,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           ),
           IconButton(
             icon: const Icon(Icons.history),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ScanHistoryPage(),
-                ),
-              );
-            },
+            onPressed: () => _openScanHistoryPage(context),
           ),
         ],
       ),
@@ -175,7 +175,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                 .firstOrNull;
             if (scannedPoint != null &&
                 scannedPoint.type == PointType.treasurePoint) {
-              _confettiController.play();
+              unawaited(_playTreasureCelebration(context));
               _showPointCollectedDialog(context, scannedPoint);
             }
           }
@@ -191,7 +191,18 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
+          final skipTreasureHunt = context.select<SettingsCubit, bool>(
+            (c) => c.state.skipTreasureHunt,
+          );
           final hasScanned = state.foundPointIds.isNotEmpty;
+          final visiblePointIds = state.visiblePointIds(
+            skipTreasureHunt: skipTreasureHunt,
+          );
+          final showBanner = !hasScanned && !skipTreasureHunt;
+          final disableAnimations = MediaQuery.disableAnimationsOf(context);
+          final markerAnimationDuration = disableAnimations
+              ? Duration.zero
+              : const Duration(milliseconds: 180);
 
           return Stack(
             children: [
@@ -212,7 +223,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                   MarkerLayer(
                     markers: [
                       ...state.points
-                          .where((p) => state.unlockedPointIds.contains(p.id))
+                          .where((p) => visiblePointIds.contains(p.id))
                           .map((point) {
                             final isFound = state.foundPointIds.contains(
                               point.id,
@@ -221,77 +232,178 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                               point.latitude,
                               point.longitude,
                             );
-                            final colorScheme = Theme.of(context).colorScheme;
                             final typeColor = colorForPointType(
                               point.type,
                               colorScheme,
                             );
                             final isTracked = state.trackedPointId == point.id;
+                            final isSelected = _selectedPointId == point.id;
+                            final showMarkerLabel = isTracked || isSelected;
                             return Marker(
                               point: position,
-                              width: 60,
-                              height: 60,
-                              child: GestureDetector(
-                                onTap: () =>
-                                    _showPointDetails(context, point, isFound),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      decoration: isTracked
-                                          ? BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              boxShadow: [
+                              width: showMarkerLabel ? 148 : 76,
+                              height: showMarkerLabel ? 108 : 78,
+                              child: Semantics(
+                                button: true,
+                                label: point.name,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () =>
+                                      _handleMarkerTap(context, point, isFound),
+                                  child: AnimatedScale(
+                                    duration: markerAnimationDuration,
+                                    curve: Curves.easeOutBack,
+                                    scale: isTracked
+                                        ? 1.08
+                                        : (isSelected ? 1.04 : 1.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        AnimatedSwitcher(
+                                          duration: markerAnimationDuration,
+                                          child: !showMarkerLabel
+                                              ? const SizedBox.shrink()
+                                              : Container(
+                                                  key: ValueKey(
+                                                    'label-${point.id}',
+                                                  ),
+                                                  constraints:
+                                                      const BoxConstraints(
+                                                        maxWidth: 136,
+                                                      ),
+                                                  margin: const EdgeInsets.only(
+                                                    bottom: 6,
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 6,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        markerLabelBackgroundColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          999,
+                                                        ),
+                                                    border: Border.all(
+                                                      color: mapOutlineColor,
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: mapShadowColor,
+                                                        blurRadius: 10,
+                                                        offset: const Offset(
+                                                          0,
+                                                          4,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Text(
+                                                    point.name,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                    style: theme
+                                                        .textTheme
+                                                        .labelMedium
+                                                        ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          color: colorScheme
+                                                              .onSurface,
+                                                        ),
+                                                  ),
+                                                ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: colorScheme.surface,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: typeColor,
+                                              width: isSelected ? 2.6 : 2.2,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: mapShadowColor,
+                                                blurRadius: 6,
+                                                offset: const Offset(0, 3),
+                                              ),
+                                              if (isTracked || isSelected)
                                                 BoxShadow(
                                                   color: typeColor.withValues(
-                                                    alpha: 0.5,
+                                                    alpha: 0.28,
                                                   ),
-                                                  blurRadius: 12,
-                                                  spreadRadius: 4,
+                                                  blurRadius: 14,
+                                                  spreadRadius: 3,
+                                                ),
+                                            ],
+                                          ),
+                                          child: Icon(
+                                            isFound
+                                                ? Icons.check_circle
+                                                : iconForPointType(point.type),
+                                            color: isFound
+                                                ? typeColor.withValues(
+                                                    alpha: 0.82,
+                                                  )
+                                                : typeColor,
+                                            size: isTracked || isSelected
+                                                ? 28
+                                                : 24,
+                                          ),
+                                        ),
+                                        if (_currentPosition != null &&
+                                            !isFound)
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                              top: 4,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  markerDistanceBackgroundColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              border: Border.all(
+                                                color: mapOutlineColor,
+                                              ),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: mapShadowColor,
+                                                  blurRadius: 2,
+                                                  offset: const Offset(0, 1),
                                                 ),
                                               ],
-                                            )
-                                          : null,
-                                      child: Icon(
-                                        isFound
-                                            ? Icons.check_circle
-                                            : iconForPointType(point.type),
-                                        color: isFound
-                                            ? typeColor.withValues(alpha: 0.8)
-                                            : typeColor,
-                                        size: isTracked ? 38 : 32,
-                                      ),
-                                    ),
-                                    if (_currentPosition != null && !isFound)
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 4,
-                                          vertical: 1,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: colorScheme.surface.withValues(
-                                            alpha: 0.85,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          _formatDistance(
-                                            Geolocator.distanceBetween(
-                                              _currentPosition!.latitude,
-                                              _currentPosition!.longitude,
-                                              point.latitude,
-                                              point.longitude,
+                                            ),
+                                            child: Text(
+                                              _formatDistance(
+                                                Geolocator.distanceBetween(
+                                                  _currentPosition!.latitude,
+                                                  _currentPosition!.longitude,
+                                                  point.latitude,
+                                                  point.longitude,
+                                                ),
+                                              ),
+                                              style: theme.textTheme.labelSmall
+                                                  ?.copyWith(
+                                                    fontSize: 9,
+                                                    color:
+                                                        colorScheme.onSurface,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                             ),
                                           ),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelSmall
-                                              ?.copyWith(fontSize: 9),
-                                        ),
-                                      ),
-                                  ],
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             );
@@ -301,11 +413,23 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                           point: _currentPosition!,
                           width: 40,
                           height: 40,
-                          child: const _UserLocationMarker(),
+                          child: const UserLocationMarker(),
                         ),
                     ],
                   ),
                 ],
+              ),
+              IgnorePointer(
+                child: AnimatedOpacity(
+                  opacity: _showCelebrationFlash ? 1 : 0,
+                  duration: disableAnimations
+                      ? Duration.zero
+                      : const Duration(milliseconds: 220),
+                  curve: Curves.easeOut,
+                  child: ColoredBox(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                  ),
+                ),
               ),
               // Confetti overlay
               Align(
@@ -316,20 +440,20 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                   blastDirectionality: BlastDirectionality.explosive,
                   maxBlastForce: 20,
                   minBlastForce: 8,
-                  emissionFrequency: 0.05,
-                  numberOfParticles: 25,
+                  emissionFrequency: 0.04,
+                  numberOfParticles: 30,
                   gravity: 0.1,
-                  colors: const [
-                    Colors.green,
-                    Colors.blue,
-                    Colors.orange,
-                    Colors.purple,
-                    Colors.red,
-                    Colors.yellow,
+                  colors: [
+                    colorScheme.primary,
+                    colorScheme.secondary,
+                    colorScheme.tertiary,
+                    colorScheme.primaryContainer,
+                    colorScheme.secondaryContainer,
+                    colorScheme.surface,
                   ],
                 ),
               ),
-              if (!hasScanned)
+              if (showBanner)
                 Positioned(
                   top: 0,
                   left: 0,
@@ -339,11 +463,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                       margin: const EdgeInsets.all(12),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
+                        color: colorScheme.primaryContainer,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
+                            color: colorScheme.shadow.withValues(alpha: 0.1),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -383,6 +507,22 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                                       ),
                                 ),
                               ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Tooltip(
+                            message: AppLocalizations.of(
+                              context,
+                            )!.continueWithoutTreasureHunt,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.skip_next_outlined,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                              ),
+                              onPressed: () =>
+                                  _confirmSkipTreasureHunt(context),
                             ),
                           ),
                         ],
@@ -428,19 +568,23 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   }
 
   void _showChecklist(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
     final huntState = context.read<TreasureHuntBloc>().state;
+    final skipTreasureHunt = context
+        .read<SettingsCubit>()
+        .state
+        .skipTreasureHunt;
 
-    // Categorize points
-    final pois = huntState.points
-        .where((p) => p.type == PointType.pointOfInterest)
-        .toList();
     final treasurePoints = huntState.sortedTreasurePoints;
-    final foundIds = huntState.foundPointIds;
+    final foundIds = huntState.foundPointIds.toSet();
     final unlocked = huntState.unlockedPointIds;
+    final visiblePointIds = huntState.visiblePointIds(
+      skipTreasureHunt: skipTreasureHunt,
+    );
+    final visiblePois = huntState.points
+        .where((point) => point.type == PointType.pointOfInterest)
+        .where((point) => visiblePointIds.contains(point.id))
+        .toList();
 
-    // Next unfound treasure point
     final unfoundTreasure = treasurePoints
         .where((p) => !foundIds.contains(p.id) && unlocked.contains(p.id))
         .toList();
@@ -453,130 +597,21 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
 
     void trackAndClose(TreasurePoint point) {
       Navigator.pop(context);
-      context.read<TreasureHuntBloc>().add(TrackPoint(point.id));
-      _zoomToFitTracked(context, point, hasScanned: foundIds.isNotEmpty);
+      _trackPointAndZoom(context, point, hasScanned: foundIds.isNotEmpty);
     }
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.5,
-        minChildSize: 0.3,
-        maxChildSize: 0.85,
-        expand: false,
-        builder: (context, scrollController) => Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  const Icon(Icons.checklist),
-                  const SizedBox(width: 8),
-                  Text(l10n.checklist, style: theme.textTheme.titleLarge),
-                ],
-              ),
-            ),
-            const Divider(height: 1),
-            Expanded(
-              child: ListView(
-                controller: scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: [
-                  // Treasure Points section
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12, bottom: 4),
-                    child: Text(
-                      l10n.typeTreasurePoint,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: colorForPointType(
-                          PointType.treasurePoint,
-                          theme.colorScheme,
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Show found treasure points + next unfound one
-                  ...treasurePoints
-                      .where((p) => foundIds.contains(p.id))
-                      .map(
-                        (point) => _ChecklistTile(
-                          icon: Icons.emoji_events,
-                          color: colorForPointType(
-                            PointType.treasurePoint,
-                            theme.colorScheme,
-                          ),
-                          title: point.name,
-                          isFound: true,
-                          onTap: () => trackAndClose(point),
-                        ),
-                      ),
-                  if (nextTreasure != null)
-                    _ChecklistTile(
-                      icon: Icons.emoji_events,
-                      color: colorForPointType(
-                        PointType.treasurePoint,
-                        theme.colorScheme,
-                      ),
-                      title: nextTreasure.name,
-                      subtitle: l10n.treasurePointsRemaining(treasureRemaining),
-                      isFound: false,
-                      onTap: () => trackAndClose(nextTreasure),
-                    )
-                  else if (treasurePoints.every(
-                        (p) => foundIds.contains(p.id),
-                      ) &&
-                      treasurePoints.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: theme.colorScheme.primary,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            l10n.allTreasurePointsCollected,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  // Points of Interest section
-                  if (pois.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16, bottom: 4),
-                      child: Text(
-                        l10n.typePointOfInterest,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          color: colorForPointType(
-                            PointType.pointOfInterest,
-                            theme.colorScheme,
-                          ),
-                        ),
-                      ),
-                    ),
-                    ...pois.map(
-                      (point) => _ChecklistTile(
-                        icon: Icons.place,
-                        color: colorForPointType(
-                          PointType.pointOfInterest,
-                          theme.colorScheme,
-                        ),
-                        title: point.name,
-                        isFound: foundIds.contains(point.id),
-                        onTap: () => trackAndClose(point),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 16),
-                ],
-              ),
-            ),
-          ],
-        ),
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) => TreasureHuntChecklistSheet(
+        treasurePoints: treasurePoints,
+        visiblePointsOfInterest: visiblePois,
+        foundPointIds: foundIds,
+        nextTreasure: nextTreasure,
+        treasureRemaining: treasureRemaining,
+        onPointSelected: trackAndClose,
       ),
     );
   }
@@ -639,6 +674,45 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     );
   }
 
+  Future<void> _handleMarkerTap(
+    BuildContext context,
+    TreasurePoint point,
+    bool isFound,
+  ) async {
+    await HapticFeedback.selectionClick();
+    if (!mounted || !context.mounted) return;
+    setState(() {
+      _selectedPointId = point.id;
+    });
+    await _showPointDetails(context, point, isFound);
+  }
+
+  Future<void> _playTreasureCelebration(BuildContext context) async {
+    await HapticFeedback.heavyImpact();
+    unawaited(HapticFeedback.selectionClick());
+    if (!mounted || !context.mounted) {
+      return;
+    }
+    if (MediaQuery.disableAnimationsOf(context)) {
+      return;
+    }
+
+    _confettiController.play();
+    unawaited(_flashCelebration());
+  }
+
+  Future<void> _flashCelebration() async {
+    if (!mounted) return;
+    setState(() {
+      _showCelebrationFlash = true;
+    });
+    await Future<void>.delayed(const Duration(milliseconds: 240));
+    if (!mounted) return;
+    setState(() {
+      _showCelebrationFlash = false;
+    });
+  }
+
   void _zoomToFitTracked(
     BuildContext context,
     TreasurePoint point, {
@@ -678,24 +752,57 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     }
   }
 
-  void _showPointDetails(
+  void _trackPointAndZoom(
+    BuildContext context,
+    TreasurePoint point, {
+    required bool hasScanned,
+  }) {
+    HapticFeedback.lightImpact();
+    if (mounted) {
+      setState(() {
+        _selectedPointId = point.id;
+      });
+    }
+    context.read<TreasureHuntBloc>().add(TrackPoint(point.id));
+    _zoomToFitTracked(context, point, hasScanned: hasScanned);
+  }
+
+  void _openScanHistoryPage(BuildContext context) {
+    HapticFeedback.selectionClick();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ScanHistoryPage()),
+    );
+  }
+
+  Future<void> _showPointDetails(
     BuildContext context,
     TreasurePoint point,
     bool isFound,
   ) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
+    final huntState = context.read<TreasureHuntBloc>().state;
+    final skipTreasureHunt = context
+        .read<SettingsCubit>()
+        .state
+        .skipTreasureHunt;
+    final isVisible = huntState
+        .visiblePointIds(skipTreasureHunt: skipTreasureHunt)
+        .contains(point.id);
+    final isUnlocked = huntState.unlockedPointIds.contains(point.id);
+    final canScan =
+        point.type == PointType.treasurePoint && isUnlocked && !isFound;
+    final hasScanned = huntState.foundPointIds.isNotEmpty;
     String? distanceText;
+    double? distanceMeters;
     if (_currentPosition != null) {
-      final distance = Geolocator.distanceBetween(
+      distanceMeters = Geolocator.distanceBetween(
         _currentPosition!.latitude,
         _currentPosition!.longitude,
         point.latitude,
         point.longitude,
       );
-      distanceText = distance < 1000
-          ? '${distance.round()} m'
-          : '${(distance / 1000).toStringAsFixed(1)} km';
+      distanceText = _formatDistance(distanceMeters);
     }
 
     // Get related wikis and events
@@ -708,126 +815,76 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
         .where((e) => e.treasurePointIds.contains(point.id))
         .toList();
 
-    showDialog(
+    return showModalBottomSheet<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(
-              iconForPointType(point.type),
-              color: colorForPointType(point.type, theme.colorScheme),
-              size: 24,
-            ),
-            const SizedBox(width: 8),
-            Expanded(child: Text(point.name)),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(point.description),
-              if (distanceText != null) ...[
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.straighten,
-                      size: 16,
-                      color: theme.colorScheme.secondary,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${l10n.distance}: $distanceText',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.secondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-              if (isFound) ...[
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.check,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.pointFound,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-              if (relatedWikis.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                Text(l10n.relatedWiki, style: theme.textTheme.titleSmall),
-                const SizedBox(height: 4),
-                ...relatedWikis.map(
-                  (article) => ListTile(
-                    dense: true,
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.article,
-                      size: 20,
-                      color: theme.colorScheme.secondary,
-                    ),
-                    title: Text(
-                      article.title,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  ),
-                ),
-              ],
-              if (relatedEvents.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(l10n.relatedEvents, style: theme.textTheme.titleSmall),
-                const SizedBox(height: 4),
-                ...relatedEvents.map(
-                  (event) => ListTile(
-                    dense: true,
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.event,
-                      size: 20,
-                      color: theme.colorScheme.tertiary,
-                    ),
-                    title: Text(event.title, style: theme.textTheme.bodyMedium),
-                    subtitle: Text(
-                      '${event.startTime.hour.toString().padLeft(2, '0')}:${event.startTime.minute.toString().padLeft(2, '0')} - ${event.endTime.hour.toString().padLeft(2, '0')}:${event.endTime.minute.toString().padLeft(2, '0')}',
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ),
-                ),
-              ],
-            ],
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        void closeThen(VoidCallback action) {
+          Navigator.pop(sheetContext);
+          unawaited(
+            Future<void>.delayed(Duration.zero, () {
+              if (!mounted) return;
+              action();
+            }),
+          );
+        }
+
+        return TreasureHuntPointDetailsSheet(
+          point: point,
+          isFound: isFound,
+          canScan: canScan,
+          distanceText: distanceText,
+          distanceMeters: distanceMeters,
+          relatedWikis: relatedWikis,
+          relatedEvents: relatedEvents,
+          onTrack: () => closeThen(
+            () => _trackPointAndZoom(context, point, hasScanned: hasScanned),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.ok),
-          ),
-        ],
-      ),
+          onOpenWiki: () => closeThen(() => GoRouter.of(context).go('/wiki')),
+          onOpenTimetable: () =>
+              closeThen(() => GoRouter.of(context).go('/timetable')),
+          onSecondaryAction: !isVisible
+              ? null
+              : () => closeThen(() {
+                  if (canScan) {
+                    _openQRScanner(context);
+                    return;
+                  }
+                  if (isFound) {
+                    _openScanHistoryPage(context);
+                    return;
+                  }
+                  _showChecklist(context);
+                }),
+          secondaryActionIcon: canScan
+              ? Icons.qr_code_scanner
+              : (isFound ? Icons.history : Icons.checklist),
+          secondaryActionLabel: canScan
+              ? l10n.scanQr
+              : (isFound ? l10n.scanHistory : l10n.checklist),
+        );
+      },
     );
   }
 
   void _openQRScanner(BuildContext context) async {
-    // Get current location
+    final l10n = AppLocalizations.of(context)!;
+
+    // Ensure camera permission (re-ask instead of failing)
+    final cameraOk = await _ensurePermission(
+      context,
+      Permission.camera,
+      l10n.permissionDeniedCameraBody,
+    );
+    if (!context.mounted || !cameraOk) return;
+
+    // Ensure location permission (re-ask instead of failing)
+    final locationOk = await _ensureLocationPermission(context);
+    if (!context.mounted || !locationOk) return;
+
     try {
-      final permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        await Geolocator.requestPermission();
-      }
       final position = await Geolocator.getCurrentPosition();
 
       if (!context.mounted) return;
@@ -835,7 +892,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => _QRScannerPage(
+          builder: (context) => QrScannerPage(
             currentPosition: position,
             treasurePoints: context.read<TreasureHuntBloc>().state.points,
             unlockedPointIds: context
@@ -849,190 +906,140 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           ),
         ),
       );
-    } catch (e) {
+    } catch (_) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Unable to get location: $e'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
-      );
+      // Re-ask for location instead of showing an error.
+      await _ensureLocationPermission(context);
     }
   }
-}
 
-class _QRScannerPage extends StatelessWidget {
-  final Position currentPosition;
-  final List<TreasurePoint> treasurePoints;
-  final Set<String> unlockedPointIds;
-  final Function(String) onCodeScanned;
-
-  const _QRScannerPage({
-    required this.currentPosition,
-    required this.treasurePoints,
-    required this.unlockedPointIds,
-    required this.onCodeScanned,
-  });
-
-  double _calculateDistance(
-    double lat1,
-    double lon1,
-    double lat2,
-    double lon2,
-  ) {
-    return Geolocator.distanceBetween(lat1, lon1, lat2, lon2);
-  }
-
-  String? _extractPointId(String code) {
-    return tryExtractTreasurePointId(code);
-  }
-
-  TreasurePoint? _findPoint(String code) {
-    final pointId = _extractPointId(code);
-    if (pointId != null) {
-      return treasurePoints.where((p) => p.id == pointId).firstOrNull;
-    }
-    // Legacy: match by raw qrCode string
-    return treasurePoints.where((p) => p.qrCode == code).firstOrNull;
-  }
-
-  bool _isNearTreasurePoint(String qrCode) {
-    if (kDebugMode) return true;
-
-    const double maxDistance = 50.0; // meters
-
-    final point = _findPoint(qrCode);
-    if (point != null) {
-      final distance = _calculateDistance(
-        currentPosition.latitude,
-        currentPosition.longitude,
-        point.latitude,
-        point.longitude,
-      );
-      return distance <= maxDistance;
-    }
-    return false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Future<bool> _ensurePermission(
+    BuildContext context,
+    Permission permission,
+    String explanation,
+  ) async {
     final l10n = AppLocalizations.of(context)!;
+    var status = await permission.status;
+    if (status.isGranted) return true;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.scanQr)),
-      body: MobileScanner(
-        onDetect: (capture) {
-          final List<Barcode> barcodes = capture.barcodes;
-          for (final barcode in barcodes) {
-            if (barcode.rawValue != null) {
-              final code = barcode.rawValue!;
-              final point = _findPoint(code);
+    // First attempt: request directly.
+    status = await permission.request();
+    if (status.isGranted) return true;
 
-              if (point == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.invalidQrCode),
-                    backgroundColor: Theme.of(context).colorScheme.error,
-                  ),
-                );
-              } else if (!unlockedPointIds.contains(point.id)) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.pointLocked),
-                    backgroundColor: Theme.of(context).colorScheme.error,
-                  ),
-                );
-              } else if (_isNearTreasurePoint(code)) {
-                onCodeScanned(code);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.mustBeCloser),
-                    backgroundColor: Theme.of(context).colorScheme.error,
-                  ),
-                );
-              }
-              break;
-            }
-          }
-        },
-      ),
-    );
-  }
-}
-
-class _UserLocationMarker extends StatelessWidget {
-  const _UserLocationMarker();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.blue.withValues(alpha: 0.3),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 3),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
+    // If still not granted, keep re-asking via a dialog loop until the user
+    // explicitly cancels or grants it.
+    while (!status.isGranted) {
+      if (!context.mounted) return false;
+      final action = await showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          icon: const Icon(Icons.lock_outline, size: 48),
+          title: Text(l10n.permissionDeniedTitle),
+          content: Text(explanation),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, 'cancel'),
+              child: Text(l10n.cancel),
+            ),
+            if (status.isPermanentlyDenied)
+              FilledButton.tonal(
+                onPressed: () => Navigator.pop(ctx, 'settings'),
+                child: Text(l10n.permissionDeniedOpenSettings),
               ),
-            ],
-          ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, 'retry'),
+              child: Text(l10n.permissionDeniedRetry),
+            ),
+          ],
         ),
-      ),
-    );
+      );
+      if (action == 'settings') {
+        await openAppSettings();
+        status = await permission.status;
+      } else if (action == 'retry') {
+        status = await permission.request();
+      } else {
+        return false;
+      }
+    }
+    return status.isGranted;
   }
-}
 
-class _ChecklistTile extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final String title;
-  final String? subtitle;
-  final bool isFound;
-  final VoidCallback? onTap;
-
-  const _ChecklistTile({
-    required this.icon,
-    required this.color,
-    required this.title,
-    this.subtitle,
-    required this.isFound,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      dense: true,
-      contentPadding: EdgeInsets.zero,
-      onTap: onTap,
-      leading: Icon(
-        isFound ? Icons.check_circle : icon,
-        color: isFound ? color.withValues(alpha: 0.5) : color,
-        size: 24,
-      ),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          decoration: isFound ? TextDecoration.lineThrough : null,
-          color: isFound
-              ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)
-              : null,
+  Future<bool> _ensureLocationPermission(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    var perm = await Geolocator.checkPermission();
+    if (perm == LocationPermission.whileInUse ||
+        perm == LocationPermission.always) {
+      return true;
+    }
+    perm = await Geolocator.requestPermission();
+    if (perm == LocationPermission.whileInUse ||
+        perm == LocationPermission.always) {
+      return true;
+    }
+    while (perm != LocationPermission.whileInUse &&
+        perm != LocationPermission.always) {
+      if (!context.mounted) return false;
+      final action = await showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          icon: const Icon(Icons.lock_outline, size: 48),
+          title: Text(l10n.permissionDeniedTitle),
+          content: Text(l10n.permissionDeniedLocationBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, 'cancel'),
+              child: Text(l10n.cancel),
+            ),
+            if (perm == LocationPermission.deniedForever)
+              FilledButton.tonal(
+                onPressed: () => Navigator.pop(ctx, 'settings'),
+                child: Text(l10n.permissionDeniedOpenSettings),
+              ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, 'retry'),
+              child: Text(l10n.permissionDeniedRetry),
+            ),
+          ],
         ),
+      );
+      if (action == 'settings') {
+        await Geolocator.openAppSettings();
+        perm = await Geolocator.checkPermission();
+      } else if (action == 'retry') {
+        perm = await Geolocator.requestPermission();
+      } else {
+        return false;
+      }
+    }
+    return perm == LocationPermission.whileInUse ||
+        perm == LocationPermission.always;
+  }
+
+  Future<void> _confirmSkipTreasureHunt(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.skip_next_outlined, size: 48),
+        title: Text(l10n.skipTreasureHuntDialogTitle),
+        content: Text(l10n.skipTreasureHuntDialogBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.continueWithoutTreasureHunt),
+          ),
+        ],
       ),
-      subtitle: subtitle != null
-          ? Text(subtitle!, style: Theme.of(context).textTheme.bodySmall)
-          : null,
     );
+    if (confirmed != true || !context.mounted) return;
+    context.read<SettingsCubit>().setSkipTreasureHunt(true);
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.skipTreasureHuntEnabledSnack)));
   }
 }
