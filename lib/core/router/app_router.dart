@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sggw_days/core/router/error_page.dart';
 import 'package:sggw_days/features/admin/presentation/pages/admin_login_page.dart';
 import 'package:sggw_days/features/home/presentation/pages/home_page.dart';
+import 'package:sggw_days/features/settings/presentation/pages/privacy_policy_page.dart';
 import 'package:sggw_days/features/settings/presentation/pages/settings_page.dart';
 import 'package:sggw_days/features/timetable/presentation/pages/timetable_page.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/pages/scan_page.dart';
@@ -25,6 +26,10 @@ final appRouter = GoRouter(
       path: '/scan/:pointId',
       builder: (context, state) =>
           ScanPage(pointId: state.pathParameters['pointId']!),
+    ),
+    GoRoute(
+      path: '/privacy-policy',
+      builder: (context, state) => const PrivacyPolicyPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {

@@ -179,6 +179,12 @@ class SettingsPage extends StatelessWidget {
                 },
               ),
               ListTile(
+                leading: const Icon(Icons.privacy_tip_outlined),
+                title: Text(l10n.privacyPolicy),
+                subtitle: Text(l10n.privacyPolicyDesc),
+                onTap: () => context.push('/privacy-policy'),
+              ),
+              ListTile(
                 leading: const Icon(Icons.info),
                 title: Text(l10n.about),
                 subtitle: Text(l10n.aboutDesc),

@@ -131,6 +131,113 @@ class AppLocalizationsPl extends AppLocalizations {
   String get viewOnboardingDesc => 'Zobacz ponownie wprowadzenie do aplikacji';
 
   @override
+  String get privacyPolicy => 'Polityka prywatności';
+
+  @override
+  String get privacyPolicyDesc => 'Jak aplikacja korzysta z uprawnień i danych';
+
+  @override
+  String get privacyPolicyIntro =>
+      'Ta strona wyjaśnia, z jakich danych korzystają Dni SGGW, dlaczego aplikacja potrzebuje określonych uprawnień oraz jak obsługiwane są informacje zwykłych użytkowników i administratorów.';
+
+  @override
+  String get privacyPolicyLastUpdated =>
+      'Ostatnia aktualizacja: 22 kwietnia 2026';
+
+  @override
+  String get privacyPolicySectionCollectedTitle =>
+      'Do jakich danych aplikacja może mieć dostęp';
+
+  @override
+  String get privacyPolicyCollectedIntro =>
+      'Dni SGGW działają dla zwykłych odwiedzających bez zakładania konta, ale część funkcji korzysta z uprawnień urządzenia i usług chmurowych.';
+
+  @override
+  String get privacyPolicyCollectedCamera =>
+      'Dostęp do kamery służy wyłącznie do skanowania kodów QR podczas gry terenowej i powiązanych interakcji eventowych.';
+
+  @override
+  String get privacyPolicyCollectedLocation =>
+      'Dostęp do lokalizacji służy do sprawdzania, czy znajdujesz się fizycznie blisko punktu gry terenowej, zanim kod QR zostanie uznany.';
+
+  @override
+  String get privacyPolicyCollectedStorage =>
+      'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, dane z pamięci podręcznej oraz postęp w zbieraniu punktów.';
+
+  @override
+  String get privacyPolicyCollectedAdmin =>
+      'Funkcje administracyjne korzystają z logowania Google i usług Firebase oraz mogą przechowywać identyfikatory kont, edytowane treści i przesłane obrazy na potrzeby zarządzania wydarzeniem.';
+
+  @override
+  String get privacyPolicySectionUsageTitle => 'Jak dane są wykorzystywane';
+
+  @override
+  String get privacyPolicyUsageIntro =>
+      'Aplikacja wykorzystuje dane wyłącznie do dostarczenia głównych funkcji wydarzenia oraz obsługi narzędzi administracyjnych.';
+
+  @override
+  String get privacyPolicyUsageTreasureHunt =>
+      'Dane z kamery i lokalizacji są używane, aby odwiedzający mogli odkrywać punkty gry terenowej, potwierdzać skany i odblokowywać powiązane treści.';
+
+  @override
+  String get privacyPolicyUsageAppState =>
+      'Lokalna pamięć urządzenia służy do zapamiętywania preferencji, ukończenia wprowadzenia, danych z pamięci podręcznej oraz postępu skanowania między sesjami.';
+
+  @override
+  String get privacyPolicyUsageAdmin =>
+      'Jeśli jesteś uprawnionym administratorem, dane logowania i przesyłane treści są wykorzystywane do zarządzania wydarzeniami harmonogramu, artykułami wiki, punktami gry terenowej i obrazami.';
+
+  @override
+  String get privacyPolicySectionSharingTitle =>
+      'Udostępnianie i usługi zewnętrzne';
+
+  @override
+  String get privacyPolicySharingIntro =>
+      'Aplikacja korzysta z usług Google Firebase do uwierzytelniania, przechowywania danych w chmurze oraz hostowania obrazów dla funkcji administracyjnych.';
+
+  @override
+  String get privacyPolicySharingFirebase =>
+      'Dane przesłane przez narzędzia administracyjne mogą być przetwarzane przez Firebase Authentication, Cloud Firestore i Firebase Storage w celu działania aplikacji.';
+
+  @override
+  String get privacyPolicySharingLegal =>
+      'Informacje mogą też zostać ujawnione, jeśli wymaga tego prawo lub jest to konieczne dla ochrony bezpieczeństwa i integralności usługi.';
+
+  @override
+  String get privacyPolicySectionChoicesTitle => 'Twoje wybory';
+
+  @override
+  String get privacyPolicyChoicesIntro =>
+      'Masz kontrolę nad opcjonalnymi uprawnieniami oraz lokalnie zapisanymi danymi aplikacji.';
+
+  @override
+  String get privacyPolicyChoicesPermissions =>
+      'Możesz odmówić dostępu do kamery lub lokalizacji, ale funkcje gry terenowej zależne od tych uprawnień mogą wtedy nie działać poprawnie.';
+
+  @override
+  String get privacyPolicyChoicesAdmin =>
+      'Zwykli odwiedzający nie muszą tworzyć konta. Logowanie Google jest używane wyłącznie dla zatwierdzonego dostępu administratora.';
+
+  @override
+  String get privacyPolicyChoicesDevice =>
+      'Możesz usunąć lokalnie zapisane dane aplikacji, czyszcząc dane aplikacji na urządzeniu albo instalując ją ponownie.';
+
+  @override
+  String get privacyPolicySectionContactTitle => 'Kontakt';
+
+  @override
+  String get privacyPolicyContactIntro =>
+      'Jeśli masz pytania dotyczące prywatności w Dniach SGGW, skontaktuj się z organizatorami przez oficjalne kanały kontaktowe wydarzenia.';
+
+  @override
+  String get privacyPolicyContactDetails =>
+      'Przed szerszą publiczną publikacją zastąp ten tekst dedykowanym adresem e-mail lub formularzem kontaktowym dotyczącym prywatności dla wydarzenia.';
+
+  @override
+  String get privacyPolicyContactNote =>
+      'Ta polityka opisuje aktualne działanie aplikacji na potrzeby testów wewnętrznych i publicznego wykorzystania podczas wydarzenia. Powinna być aktualizowana przy każdej zmianie praktyk dotyczących danych.';
+
+  @override
   String get pageNotFound => 'Strona nie znaleziona';
 
   @override

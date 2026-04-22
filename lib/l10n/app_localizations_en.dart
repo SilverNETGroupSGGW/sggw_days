@@ -131,6 +131,112 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewOnboardingDesc => 'See the introduction again';
 
   @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get privacyPolicyDesc => 'How the app handles permissions and data';
+
+  @override
+  String get privacyPolicyIntro =>
+      'This page explains what data Dni SGGW uses, why the app needs certain permissions, and how information is handled for regular visitors and administrators.';
+
+  @override
+  String get privacyPolicyLastUpdated => 'Last updated: 22 April 2026';
+
+  @override
+  String get privacyPolicySectionCollectedTitle =>
+      'What data the app can access';
+
+  @override
+  String get privacyPolicyCollectedIntro =>
+      'Dni SGGW is designed to work without requiring an account for regular visitors, but some features rely on device permissions and cloud services.';
+
+  @override
+  String get privacyPolicyCollectedCamera =>
+      'Camera access is used only to scan QR codes during the treasure hunt and related event interactions.';
+
+  @override
+  String get privacyPolicyCollectedLocation =>
+      'Location access is used to verify that you are physically near a treasure hunt point before a QR code can be accepted.';
+
+  @override
+  String get privacyPolicyCollectedStorage =>
+      'The app stores settings, onboarding status, cached content, and collected progress locally on your device.';
+
+  @override
+  String get privacyPolicyCollectedAdmin =>
+      'Administrator features use Google sign-in together with Firebase services and may store account identifiers, edited content, and uploaded images for event management.';
+
+  @override
+  String get privacyPolicySectionUsageTitle => 'How the data is used';
+
+  @override
+  String get privacyPolicyUsageIntro =>
+      'The app uses data only to deliver the core event experience and to operate the administration tools.';
+
+  @override
+  String get privacyPolicyUsageTreasureHunt =>
+      'Camera and location data are used to let visitors discover treasure hunt points, validate scans, and unlock related content.';
+
+  @override
+  String get privacyPolicyUsageAppState =>
+      'Local device storage is used to remember your preferences, onboarding completion, cached data, and scan progress between sessions.';
+
+  @override
+  String get privacyPolicyUsageAdmin =>
+      'If you are an authorized administrator, sign-in data and uploaded content are used to manage timetable entries, wiki articles, treasure hunt points, and images.';
+
+  @override
+  String get privacyPolicySectionSharingTitle =>
+      'Sharing and third-party services';
+
+  @override
+  String get privacyPolicySharingIntro =>
+      'The app relies on Google Firebase services to provide authentication, cloud data storage, and image hosting for administration features.';
+
+  @override
+  String get privacyPolicySharingFirebase =>
+      'Data submitted through administrator tools may be processed by Firebase Authentication, Cloud Firestore, and Firebase Storage as part of operating the app.';
+
+  @override
+  String get privacyPolicySharingLegal =>
+      'Information may also be disclosed if required by law or when necessary to protect the security and integrity of the service.';
+
+  @override
+  String get privacyPolicySectionChoicesTitle => 'Your choices';
+
+  @override
+  String get privacyPolicyChoicesIntro =>
+      'You stay in control of optional permissions and locally stored app data.';
+
+  @override
+  String get privacyPolicyChoicesPermissions =>
+      'You can deny camera or location permissions, but treasure hunt features that depend on them may stop working correctly.';
+
+  @override
+  String get privacyPolicyChoicesAdmin =>
+      'Regular visitors do not need to create an account. Google sign-in is only used for approved administrator access.';
+
+  @override
+  String get privacyPolicyChoicesDevice =>
+      'You can clear locally stored app data by removing the app data from your device or reinstalling the application.';
+
+  @override
+  String get privacyPolicySectionContactTitle => 'Contact';
+
+  @override
+  String get privacyPolicyContactIntro =>
+      'If you have privacy-related questions about Dni SGGW, contact the organizers using the official event contact channels.';
+
+  @override
+  String get privacyPolicyContactDetails =>
+      'Before broader public release, replace this text with a dedicated contact email address or privacy contact form for the event.';
+
+  @override
+  String get privacyPolicyContactNote =>
+      'This policy is intended to describe the current app behavior for internal testing and public event use. It should be updated whenever the app\'s data practices change.';
+
+  @override
   String get pageNotFound => 'Page not found';
 
   @override

@@ -332,6 +332,174 @@ abstract class AppLocalizations {
   /// **'Zobacz ponownie wprowadzenie do aplikacji'**
   String get viewOnboardingDesc;
 
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In pl, this message translates to:
+  /// **'Polityka prywatności'**
+  String get privacyPolicy;
+
+  /// No description provided for @privacyPolicyDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jak aplikacja korzysta z uprawnień i danych'**
+  String get privacyPolicyDesc;
+
+  /// No description provided for @privacyPolicyIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ta strona wyjaśnia, z jakich danych korzystają Dni SGGW, dlaczego aplikacja potrzebuje określonych uprawnień oraz jak obsługiwane są informacje zwykłych użytkowników i administratorów.'**
+  String get privacyPolicyIntro;
+
+  /// No description provided for @privacyPolicyLastUpdated.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ostatnia aktualizacja: 22 kwietnia 2026'**
+  String get privacyPolicyLastUpdated;
+
+  /// No description provided for @privacyPolicySectionCollectedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do jakich danych aplikacja może mieć dostęp'**
+  String get privacyPolicySectionCollectedTitle;
+
+  /// No description provided for @privacyPolicyCollectedIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dni SGGW działają dla zwykłych odwiedzających bez zakładania konta, ale część funkcji korzysta z uprawnień urządzenia i usług chmurowych.'**
+  String get privacyPolicyCollectedIntro;
+
+  /// No description provided for @privacyPolicyCollectedCamera.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostęp do kamery służy wyłącznie do skanowania kodów QR podczas gry terenowej i powiązanych interakcji eventowych.'**
+  String get privacyPolicyCollectedCamera;
+
+  /// No description provided for @privacyPolicyCollectedLocation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostęp do lokalizacji służy do sprawdzania, czy znajdujesz się fizycznie blisko punktu gry terenowej, zanim kod QR zostanie uznany.'**
+  String get privacyPolicyCollectedLocation;
+
+  /// No description provided for @privacyPolicyCollectedStorage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, dane z pamięci podręcznej oraz postęp w zbieraniu punktów.'**
+  String get privacyPolicyCollectedStorage;
+
+  /// No description provided for @privacyPolicyCollectedAdmin.
+  ///
+  /// In pl, this message translates to:
+  /// **'Funkcje administracyjne korzystają z logowania Google i usług Firebase oraz mogą przechowywać identyfikatory kont, edytowane treści i przesłane obrazy na potrzeby zarządzania wydarzeniem.'**
+  String get privacyPolicyCollectedAdmin;
+
+  /// No description provided for @privacyPolicySectionUsageTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jak dane są wykorzystywane'**
+  String get privacyPolicySectionUsageTitle;
+
+  /// No description provided for @privacyPolicyUsageIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aplikacja wykorzystuje dane wyłącznie do dostarczenia głównych funkcji wydarzenia oraz obsługi narzędzi administracyjnych.'**
+  String get privacyPolicyUsageIntro;
+
+  /// No description provided for @privacyPolicyUsageTreasureHunt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dane z kamery i lokalizacji są używane, aby odwiedzający mogli odkrywać punkty gry terenowej, potwierdzać skany i odblokowywać powiązane treści.'**
+  String get privacyPolicyUsageTreasureHunt;
+
+  /// No description provided for @privacyPolicyUsageAppState.
+  ///
+  /// In pl, this message translates to:
+  /// **'Lokalna pamięć urządzenia służy do zapamiętywania preferencji, ukończenia wprowadzenia, danych z pamięci podręcznej oraz postępu skanowania między sesjami.'**
+  String get privacyPolicyUsageAppState;
+
+  /// No description provided for @privacyPolicyUsageAdmin.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jeśli jesteś uprawnionym administratorem, dane logowania i przesyłane treści są wykorzystywane do zarządzania wydarzeniami harmonogramu, artykułami wiki, punktami gry terenowej i obrazami.'**
+  String get privacyPolicyUsageAdmin;
+
+  /// No description provided for @privacyPolicySectionSharingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Udostępnianie i usługi zewnętrzne'**
+  String get privacyPolicySectionSharingTitle;
+
+  /// No description provided for @privacyPolicySharingIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aplikacja korzysta z usług Google Firebase do uwierzytelniania, przechowywania danych w chmurze oraz hostowania obrazów dla funkcji administracyjnych.'**
+  String get privacyPolicySharingIntro;
+
+  /// No description provided for @privacyPolicySharingFirebase.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dane przesłane przez narzędzia administracyjne mogą być przetwarzane przez Firebase Authentication, Cloud Firestore i Firebase Storage w celu działania aplikacji.'**
+  String get privacyPolicySharingFirebase;
+
+  /// No description provided for @privacyPolicySharingLegal.
+  ///
+  /// In pl, this message translates to:
+  /// **'Informacje mogą też zostać ujawnione, jeśli wymaga tego prawo lub jest to konieczne dla ochrony bezpieczeństwa i integralności usługi.'**
+  String get privacyPolicySharingLegal;
+
+  /// No description provided for @privacyPolicySectionChoicesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twoje wybory'**
+  String get privacyPolicySectionChoicesTitle;
+
+  /// No description provided for @privacyPolicyChoicesIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'Masz kontrolę nad opcjonalnymi uprawnieniami oraz lokalnie zapisanymi danymi aplikacji.'**
+  String get privacyPolicyChoicesIntro;
+
+  /// No description provided for @privacyPolicyChoicesPermissions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Możesz odmówić dostępu do kamery lub lokalizacji, ale funkcje gry terenowej zależne od tych uprawnień mogą wtedy nie działać poprawnie.'**
+  String get privacyPolicyChoicesPermissions;
+
+  /// No description provided for @privacyPolicyChoicesAdmin.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zwykli odwiedzający nie muszą tworzyć konta. Logowanie Google jest używane wyłącznie dla zatwierdzonego dostępu administratora.'**
+  String get privacyPolicyChoicesAdmin;
+
+  /// No description provided for @privacyPolicyChoicesDevice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Możesz usunąć lokalnie zapisane dane aplikacji, czyszcząc dane aplikacji na urządzeniu albo instalując ją ponownie.'**
+  String get privacyPolicyChoicesDevice;
+
+  /// No description provided for @privacyPolicySectionContactTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakt'**
+  String get privacyPolicySectionContactTitle;
+
+  /// No description provided for @privacyPolicyContactIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jeśli masz pytania dotyczące prywatności w Dniach SGGW, skontaktuj się z organizatorami przez oficjalne kanały kontaktowe wydarzenia.'**
+  String get privacyPolicyContactIntro;
+
+  /// No description provided for @privacyPolicyContactDetails.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed szerszą publiczną publikacją zastąp ten tekst dedykowanym adresem e-mail lub formularzem kontaktowym dotyczącym prywatności dla wydarzenia.'**
+  String get privacyPolicyContactDetails;
+
+  /// No description provided for @privacyPolicyContactNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ta polityka opisuje aktualne działanie aplikacji na potrzeby testów wewnętrznych i publicznego wykorzystania podczas wydarzenia. Powinna być aktualizowana przy każdej zmianie praktyk dotyczących danych.'**
+  String get privacyPolicyContactNote;
+
   /// No description provided for @pageNotFound.
   ///
   /// In pl, this message translates to:
