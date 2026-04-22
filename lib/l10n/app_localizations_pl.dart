@@ -231,7 +231,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacyPolicyContactDetails =>
-      'Przed szerszą publiczną publikacją zastąp ten tekst dedykowanym adresem e-mail lub formularzem kontaktowym dotyczącym prywatności dla wydarzenia.';
+      'Pytania dotyczące prywatności należy kierować przez oficjalne kanały kontaktowe Dni SGGW lub SGGW publikowane w materiałach wydarzenia i na publicznej stronie internetowej.';
 
   @override
   String get privacyPolicyContactNote =>

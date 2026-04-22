@@ -491,7 +491,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyContactDetails.
   ///
   /// In pl, this message translates to:
-  /// **'Przed szerszą publiczną publikacją zastąp ten tekst dedykowanym adresem e-mail lub formularzem kontaktowym dotyczącym prywatności dla wydarzenia.'**
+  /// **'Pytania dotyczące prywatności należy kierować przez oficjalne kanały kontaktowe Dni SGGW lub SGGW publikowane w materiałach wydarzenia i na publicznej stronie internetowej.'**
   String get privacyPolicyContactDetails;
 
   /// No description provided for @privacyPolicyContactNote.

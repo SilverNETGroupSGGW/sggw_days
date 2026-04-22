@@ -230,7 +230,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicyContactDetails =>
-      'Before broader public release, replace this text with a dedicated contact email address or privacy contact form for the event.';
+      'Privacy-related questions should be sent through the official SGGW Days or SGGW event contact channels published with the event materials and public website.';
 
   @override
   String get privacyPolicyContactNote =>

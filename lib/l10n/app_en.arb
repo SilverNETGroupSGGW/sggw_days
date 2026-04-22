@@ -65,7 +65,7 @@
   "privacyPolicyChoicesDevice": "You can clear locally stored app data by removing the app data from your device or reinstalling the application.",
   "privacyPolicySectionContactTitle": "Contact",
   "privacyPolicyContactIntro": "If you have privacy-related questions about Dni SGGW, contact the organizers using the official event contact channels.",
-  "privacyPolicyContactDetails": "Before broader public release, replace this text with a dedicated contact email address or privacy contact form for the event.",
+  "privacyPolicyContactDetails": "Privacy-related questions should be sent through the official SGGW Days or SGGW event contact channels published with the event materials and public website.",
   "privacyPolicyContactNote": "This policy is intended to describe the current app behavior for internal testing and public event use. It should be updated whenever the app's data practices change.",
   "pageNotFound": "Page not found",
   "goHome": "Go Home",
