@@ -42,7 +42,14 @@ android {
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            // Use the release keystore when provided via environment variables
+            // (CI/Play Store uploads); fall back to the debug signing config so
+            // local release builds work out of the box.
+            signingConfig = if (System.getenv("KEYSTORE_PATH") != null) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }
