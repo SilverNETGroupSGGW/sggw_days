@@ -47,5 +47,20 @@
 	<true/>
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
+	<key>GIDClientID</key>
+	<string>583939995714-79ch2uvg3patcbs256bv0512nmarqdcp.apps.googleusercontent.com</string>
+	<key>GIDServerClientID</key>
+	<string>583939995714-5i0saton2o44el8a9j53turn8bj04uqt.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.583939995714-79ch2uvg3patcbs256bv0512nmarqdcp</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

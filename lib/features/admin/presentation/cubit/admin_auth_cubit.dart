@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sggw_days/core/google_sign_in_config.dart';
 
 part 'admin_auth_state.dart';
 
@@ -36,11 +37,14 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
       if (kIsWeb) {
         userCred = await _auth.signInWithPopup(GoogleAuthProvider());
       } else {
+        await GoogleSignInConfig.ensureInitialized();
         final googleUser = await GoogleSignIn.instance.authenticate();
         final googleAuth = googleUser.authentication;
-        final credential = GoogleAuthProvider.credential(
-          idToken: googleAuth.idToken,
-        );
+        final idToken = googleAuth.idToken;
+        if (idToken == null || idToken.isEmpty) {
+          throw Exception('Google Sign-In did not return an ID token');
+        }
+        final credential = GoogleAuthProvider.credential(idToken: idToken);
         userCred = await _auth.signInWithCredential(credential);
       }
 
@@ -62,7 +66,10 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
   }
 
   Future<void> logout() async {
-    if (!kIsWeb) await GoogleSignIn.instance.signOut();
+    if (!kIsWeb) {
+      await GoogleSignInConfig.ensureInitialized();
+      await GoogleSignIn.instance.signOut();
+    }
     await _auth.signOut();
     emit(const AdminAuthState());
   }

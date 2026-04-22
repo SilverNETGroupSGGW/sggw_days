@@ -34,7 +34,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCbzOts0v_Y_kZc7ZBRk1FvkwGFJUkgF50',
-    appId: '1:583939995714:android:6d7f39be62d3d0350755db',
+    appId: '1:583939995714:android:7d3fc1983787b0610755db',
     messagingSenderId: '583939995714',
     projectId: 'sggw-days',
     storageBucket: 'sggw-days.firebasestorage.app',
@@ -42,10 +42,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCisIDKK2e5gOv9qPhTlXOqxMMaecXQfIQ',
-    appId: '1:583939995714:ios:3a42cd195f20776b0755db',
+    appId: '1:583939995714:ios:4e932895299047780755db',
     messagingSenderId: '583939995714',
     projectId: 'sggw-days',
     storageBucket: 'sggw-days.firebasestorage.app',
+    iosClientId:
+        '583939995714-79ch2uvg3patcbs256bv0512nmarqdcp.apps.googleusercontent.com',
     iosBundleId: 'com.example.sggwDays',
   );
 }
