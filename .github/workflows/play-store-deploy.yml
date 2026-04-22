@@ -42,7 +42,7 @@ jobs:
                   packageName: com.silvernet.sggw_days
                   releaseFiles: "build/app/outputs/bundle/release/app-release.aab"
                   tracks: internal
-                  status: completed
+                  status: draft
                   mappingFile: build/app/outputs/mapping/release/mapping.txt
 
             - name: Clean up sensitive files
