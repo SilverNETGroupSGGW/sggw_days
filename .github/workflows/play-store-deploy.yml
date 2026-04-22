@@ -22,7 +22,7 @@ concurrency:
     cancel-in-progress: true
 
 env:
-    GOOGLE_PLAY_CLOSED_TRACK: alpha
+    GOOGLE_PLAY_CLOSED_TRACK: Alpha
 
 jobs:
     validate:
@@ -33,7 +33,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v6
+              uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
@@ -67,28 +67,14 @@ jobs:
                   echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
               shell: bash
 
-            - name: Compute CI build number
-              id: versioning
-              env:
-                  RUN_NUMBER: ${{ github.run_number }}
-                  RUN_ATTEMPT: ${{ github.run_attempt }}
-              run: |
-                  set -euo pipefail
-
-                  # Google Play requires a unique, increasing versionCode for every upload.
-                  build_number=$((RUN_NUMBER * 100 + RUN_ATTEMPT))
-
-                  echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
-                  echo "Using Android build number: $build_number"
-
             - name: Build app bundle
               env:
                   KEYSTORE_PATH: ${{ github.workspace }}/android/app/upload-keystore.jks
                   KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
                   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
                   KEYSTORE_ALIAS_PASSWORD: ${{ secrets.KEYSTORE_ALIAS_PASSWORD }}
-              run: flutter build appbundle --release --build-number=${{
-                  steps.versioning.outputs.build_number }}
+              run: |
+                  flutter build appbundle --release
 
             - name: Generate Play release notes from commit messages
               id: release_notes
@@ -132,6 +118,7 @@ jobs:
                   packageName: com.silvernet.sggw_days
                   releaseFiles: "build/app/outputs/bundle/release/app-release.aab"
                   tracks: ${{ steps.resolve_track.outputs.play_track }}
+                  status: draft
                   whatsNewDirectory: ${{ steps.release_notes.outputs.whatsnew_dir }}
                   mappingFile: build/app/outputs/mapping/release/mapping.txt
 
