@@ -22,7 +22,7 @@ concurrency:
     cancel-in-progress: true
 
 env:
-    GOOGLE_PLAY_CLOSED_TRACK: Alpha
+    GOOGLE_PLAY_CLOSED_TRACK: alpha
 
 jobs:
     validate:
