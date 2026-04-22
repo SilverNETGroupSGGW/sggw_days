@@ -132,7 +132,7 @@ jobs:
                   packageName: com.silvernet.sggw_days
                   releaseFiles: "build/app/outputs/bundle/release/app-release.aab"
                   tracks: ${{ steps.resolve_track.outputs.play_track }}
-                  status: draft
+                  status: alpha
                   whatsNewDirectory: ${{ steps.release_notes.outputs.whatsnew_dir }}
                   mappingFile: build/app/outputs/mapping/release/mapping.txt
 
