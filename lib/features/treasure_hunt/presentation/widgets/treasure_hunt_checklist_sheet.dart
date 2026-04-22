@@ -67,18 +67,20 @@ class TreasureHuntChecklistSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-                ...treasurePoints.where((point) => foundPointIds.contains(point.id)).map(
-                  (point) => ChecklistTile(
-                    icon: Icons.emoji_events,
-                    color: colorForPointType(
-                      PointType.treasurePoint,
-                      theme.colorScheme,
+                ...treasurePoints
+                    .where((point) => foundPointIds.contains(point.id))
+                    .map(
+                      (point) => ChecklistTile(
+                        icon: Icons.emoji_events,
+                        color: colorForPointType(
+                          PointType.treasurePoint,
+                          theme.colorScheme,
+                        ),
+                        title: point.name,
+                        isFound: true,
+                        onTap: () => onPointSelected(point),
+                      ),
                     ),
-                    title: point.name,
-                    isFound: true,
-                    onTap: () => onPointSelected(point),
-                  ),
-                ),
                 if (nextTreasure != null)
                   ChecklistTile(
                     icon: Icons.emoji_events,
@@ -91,7 +93,9 @@ class TreasureHuntChecklistSheet extends StatelessWidget {
                     isFound: false,
                     onTap: () => onPointSelected(nextTreasure!),
                   )
-                else if (treasurePoints.every((point) => foundPointIds.contains(point.id)) &&
+                else if (treasurePoints.every(
+                      (point) => foundPointIds.contains(point.id),
+                    ) &&
                     treasurePoints.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),

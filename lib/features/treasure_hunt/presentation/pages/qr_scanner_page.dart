@@ -122,7 +122,9 @@ class _QrScannerPageState extends State<QrScannerPage> {
               valueListenable: _controller,
               builder: (context, state, _) {
                 final isReady =
-                    state.isInitialized && state.isRunning && state.error == null;
+                    state.isInitialized &&
+                    state.isRunning &&
+                    state.error == null;
                 if (isReady) {
                   return const SizedBox.shrink();
                 }

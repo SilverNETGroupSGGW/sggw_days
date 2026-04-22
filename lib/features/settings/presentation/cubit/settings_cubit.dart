@@ -16,32 +16,30 @@ class SettingsCubit extends Cubit<SettingsState> {
   static const _skipTreasureHuntKey = 'non_game_mode';
 
   final Box<dynamic> _settingsBox;
-    Box<dynamic> get settingsBox => _settingsBox;
+  Box<dynamic> get settingsBox => _settingsBox;
 
   SettingsCubit({required Box<dynamic> settingsBox})
     : _settingsBox = settingsBox,
       super(_restoreState(settingsBox));
 
-    static SettingsState _restoreState(Box<dynamic> settingsBox) {
+  static SettingsState _restoreState(Box<dynamic> settingsBox) {
     return SettingsState(
       locale: _readLocale(settingsBox),
       themeMode: _readThemeMode(settingsBox),
       useDynamicColors:
-        settingsBox.get(_dynamicColorsKey, defaultValue: false) as bool? ??
-        false,
+          settingsBox.get(_dynamicColorsKey, defaultValue: false) as bool? ??
+          false,
       textScaleFactor:
-        (settingsBox.get(_textScaleFactorKey, defaultValue: 1.0) as num?)
-          ?.toDouble() ??
-        1.0,
+          (settingsBox.get(_textScaleFactorKey, defaultValue: 1.0) as num?)
+              ?.toDouble() ??
+          1.0,
       boldText:
-        settingsBox.get(_boldTextKey, defaultValue: false) as bool? ??
-        false,
+          settingsBox.get(_boldTextKey, defaultValue: false) as bool? ?? false,
       skipTreasureHunt:
-        settingsBox.get(_skipTreasureHuntKey, defaultValue: false)
-          as bool? ??
-        false,
+          settingsBox.get(_skipTreasureHuntKey, defaultValue: false) as bool? ??
+          false,
     );
-    }
+  }
 
   static Locale? _readLocale(Box<dynamic> settingsBox) {
     final languageCode = settingsBox.get(_localeKey) as String?;
