@@ -21,9 +21,7 @@ class AdminRepository {
   // Treasure Points CRUD
   Future<TreasurePoint> createTreasurePoint(TreasurePoint point) async {
     try {
-      final data = point.toJson()
-        ..remove('id')
-        ..remove('isFound');
+      final data = point.toJson()..remove('id');
       final docRef = await _firestore.collection('treasure_points').add(data);
       return point.copyWith(id: docRef.id);
     } catch (e) {
@@ -33,9 +31,7 @@ class AdminRepository {
 
   Future<TreasurePoint> updateTreasurePoint(TreasurePoint point) async {
     try {
-      final data = point.toJson()
-        ..remove('id')
-        ..remove('isFound');
+      final data = point.toJson()..remove('id');
       await _firestore.collection('treasure_points').doc(point.id).set(data);
       return point;
     } catch (e) {
@@ -139,7 +135,7 @@ class AdminRepository {
       try {
         final parsed = TreasurePoint.fromJson(raw);
         final fixedData = _sanitizeTreasurePointData(raw, parsed);
-        final issues = _compareJson(raw, fixedData, excludeKeys: {'isFound'});
+        final issues = _compareJson(raw, fixedData);
         if (issues.isNotEmpty) {
           invalid.add(
             InvalidEntry(
@@ -174,10 +170,12 @@ class AdminRepository {
     for (final doc in snapshot.docs) {
       final raw = Map<String, dynamic>.from(doc.data());
       raw['id'] = doc.id;
+      final fixedData = _trySanitizeWikiArticleData(raw);
       try {
         final parsed = WikiArticle.fromJson(raw);
-        final roundTripped = parsed.toJson();
-        final issues = _compareJson(raw, roundTripped);
+        final issues = fixedData == null
+            ? <String>[]
+            : _compareJson(raw, fixedData);
         if (issues.isNotEmpty) {
           invalid.add(
             InvalidEntry(
@@ -185,18 +183,23 @@ class AdminRepository {
               collection: 'wiki_articles',
               rawData: raw,
               issues: issues,
-              fixedData: roundTripped,
+              fixedData: fixedData,
             ),
           );
         }
         valid.add(parsed);
       } catch (e) {
+        final issues = <String>['Parse error: $e'];
+        if (fixedData != null) {
+          issues.addAll(_compareJson(raw, fixedData));
+        }
         invalid.add(
           InvalidEntry(
             id: doc.id,
             collection: 'wiki_articles',
             rawData: raw,
-            issues: ['Parse error: $e'],
+            issues: issues,
+            fixedData: fixedData,
           ),
         );
       }
@@ -222,10 +225,12 @@ class AdminRepository {
             .toDate()
             .toIso8601String();
       }
+      final fixedData = _trySanitizeTimetableEventData(raw);
       try {
         final parsed = TimetableEvent.fromJson(raw);
-        final roundTripped = parsed.toJson();
-        final issues = _compareJson(raw, roundTripped);
+        final issues = fixedData == null
+            ? <String>[]
+            : _compareJson(raw, fixedData);
         if (issues.isNotEmpty) {
           invalid.add(
             InvalidEntry(
@@ -233,18 +238,23 @@ class AdminRepository {
               collection: 'timetable_events',
               rawData: raw,
               issues: issues,
-              fixedData: roundTripped,
+              fixedData: fixedData,
             ),
           );
         }
         valid.add(parsed);
       } catch (e) {
+        final issues = <String>['Parse error: $e'];
+        if (fixedData != null) {
+          issues.addAll(_compareJson(raw, fixedData));
+        }
         invalid.add(
           InvalidEntry(
             id: doc.id,
             collection: 'timetable_events',
             rawData: raw,
-            issues: ['Parse error: $e'],
+            issues: issues,
+            fixedData: fixedData,
           ),
         );
       }
@@ -260,6 +270,8 @@ class AdminRepository {
     final data = Map<String, dynamic>.from(fixedData)..remove('id');
     final normalizedData = switch (collection) {
       'treasure_points' => _sanitizeTreasurePointFixPayload(docId, data),
+      'wiki_articles' => _sanitizeWikiArticleFixPayload(docId, data),
+      'timetable_events' => _sanitizeTimetableEventFixPayload(docId, data),
       _ => data,
     };
     await _firestore.collection(collection).doc(docId).set(normalizedData);
@@ -290,9 +302,7 @@ class AdminRepository {
     Map<String, dynamic> raw,
     TreasurePoint parsed,
   ) {
-    final data = Map<String, dynamic>.from(parsed.toJson())
-      ..remove('id')
-      ..remove('isFound');
+    final data = Map<String, dynamic>.from(parsed.toJson())..remove('id');
 
     final name = _sanitizeRequiredText(
       data['name'],
@@ -334,9 +344,119 @@ class AdminRepository {
     return _sanitizeTreasurePointData(raw, parsed);
   }
 
+  Map<String, dynamic>? _trySanitizeWikiArticleData(Map<String, dynamic> raw) {
+    try {
+      return _sanitizeWikiArticleData(raw);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic> _sanitizeWikiArticleData(Map<String, dynamic> raw) {
+    final title = _sanitizeRequiredText(
+      raw['title'],
+      fallback: 'Untitled article',
+    );
+    final candidate = <String, dynamic>{
+      'id': (raw['id'] ?? '').toString(),
+      'title': title,
+      'content': _sanitizeRequiredText(raw['content'], fallback: title),
+      'category': _sanitizeRequiredText(raw['category'], fallback: 'General'),
+      'imageUrl': _sanitizeOptionalText(raw['imageUrl']),
+      'tags': _sanitizeStringList(raw['tags']),
+      'treasurePointIds': _sanitizeStringList(raw['treasurePointIds']),
+    };
+
+    final parsed = WikiArticle.fromJson(candidate);
+    return Map<String, dynamic>.from(parsed.toJson())..remove('id');
+  }
+
+  Map<String, dynamic> _sanitizeWikiArticleFixPayload(
+    String docId,
+    Map<String, dynamic> data,
+  ) {
+    final raw = Map<String, dynamic>.from(data)..['id'] = docId;
+    return _sanitizeWikiArticleData(raw);
+  }
+
+  Map<String, dynamic>? _trySanitizeTimetableEventData(
+    Map<String, dynamic> raw,
+  ) {
+    try {
+      return _sanitizeTimetableEventData(raw);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic> _sanitizeTimetableEventData(Map<String, dynamic> raw) {
+    final title = _sanitizeRequiredText(
+      raw['title'],
+      fallback: 'Untitled event',
+    );
+    final fallbackEndCandidate = _tryParseDateTime(raw['endTime']);
+    final fallbackStart = fallbackEndCandidate != null
+        ? fallbackEndCandidate.subtract(const Duration(hours: 1))
+        : _defaultEventStart();
+    final startTime = _sanitizeDateTime(
+      raw['startTime'],
+      fallback: fallbackStart,
+    );
+    final endTime = _sanitizeEndDateTime(raw['endTime'], startTime: startTime);
+    final candidate = <String, dynamic>{
+      'id': (raw['id'] ?? '').toString(),
+      'title': title,
+      'description': _sanitizeRequiredText(raw['description'], fallback: title),
+      'startTime': startTime.toIso8601String(),
+      'endTime': endTime.toIso8601String(),
+      'location': _sanitizeRequiredText(
+        raw['location'],
+        fallback: 'SGGW Campus',
+      ),
+      'imageUrl': _sanitizeOptionalText(raw['imageUrl']),
+      'tags': _sanitizeStringList(raw['tags']),
+      'treasurePointIds': _sanitizeStringList(raw['treasurePointIds']),
+    };
+
+    final parsed = TimetableEvent.fromJson(candidate);
+    return Map<String, dynamic>.from(parsed.toJson())..remove('id');
+  }
+
+  Map<String, dynamic> _sanitizeTimetableEventFixPayload(
+    String docId,
+    Map<String, dynamic> data,
+  ) {
+    final raw = Map<String, dynamic>.from(data)..['id'] = docId;
+    return _sanitizeTimetableEventData(raw);
+  }
+
   String _sanitizeRequiredText(Object? value, {required String fallback}) {
     final text = (value is String ? value : value?.toString() ?? '').trim();
     return text.isNotEmpty ? text : fallback;
+  }
+
+  String? _sanitizeOptionalText(Object? value) {
+    final text = (value is String ? value : value?.toString() ?? '').trim();
+    return text.isEmpty ? null : text;
+  }
+
+  List<String> _sanitizeStringList(Object? value) {
+    final Iterable<Object?> items = switch (value) {
+      Iterable<dynamic> iterable => iterable,
+      String stringValue => stringValue.split(','),
+      null => const <Object?>[],
+      _ => [value],
+    };
+
+    final sanitized = <String>[];
+    for (final item in items) {
+      final text = (item is String ? item : item?.toString() ?? '').trim();
+      if (text.isEmpty || sanitized.contains(text)) {
+        continue;
+      }
+      sanitized.add(text);
+    }
+    return sanitized;
   }
 
   String _sanitizeQrCode(Object? value, {String? docId}) {
@@ -382,5 +502,49 @@ class AdminRepository {
     }
 
     return parsed.clamp(min, max).toDouble();
+  }
+
+  DateTime _defaultEventStart() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, now.hour);
+  }
+
+  DateTime? _tryParseDateTime(Object? value) {
+    if (value is DateTime) {
+      return value;
+    }
+    if (value is Timestamp) {
+      return value.toDate();
+    }
+    if (value is num) {
+      return DateTime.fromMillisecondsSinceEpoch(value.toInt());
+    }
+    if (value is String) {
+      final text = value.trim();
+      if (text.isEmpty) {
+        return null;
+      }
+      final asEpoch = int.tryParse(text);
+      if (asEpoch != null) {
+        return DateTime.fromMillisecondsSinceEpoch(asEpoch);
+      }
+      return DateTime.tryParse(text);
+    }
+    return null;
+  }
+
+  DateTime _sanitizeDateTime(Object? value, {required DateTime fallback}) {
+    return _tryParseDateTime(value) ?? fallback;
+  }
+
+  DateTime _sanitizeEndDateTime(Object? value, {required DateTime startTime}) {
+    final endTime = _sanitizeDateTime(
+      value,
+      fallback: startTime.add(const Duration(hours: 1)),
+    );
+    if (!endTime.isAfter(startTime)) {
+      return startTime.add(const Duration(hours: 1));
+    }
+    return endTime;
   }
 }

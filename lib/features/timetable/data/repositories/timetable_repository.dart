@@ -34,15 +34,6 @@ class TimetableRepository {
     }
   }
 
-  Future<List<TimetableEvent>> getEventsByDate(DateTime date) async {
-    final events = await getEvents();
-    return events.where((event) {
-      return event.startTime.year == date.year &&
-          event.startTime.month == date.month &&
-          event.startTime.day == date.day;
-    }).toList();
-  }
-
   Future<void> _cacheData(List<Map<String, dynamic>> data) async {
     final box = await Hive.openBox('api_cache');
     await box.put(_cacheKey, jsonEncode(data));

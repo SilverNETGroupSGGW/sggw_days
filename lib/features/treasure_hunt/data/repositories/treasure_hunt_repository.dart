@@ -13,11 +13,11 @@ class TreasureHuntRepository {
   TreasureHuntRepository({FirebaseFirestore? firestore})
     : _firestore = firestore;
 
-  FirebaseFirestore get firestore => _firestore ?? FirebaseFirestore.instance;
+  FirebaseFirestore get _db => _firestore ?? FirebaseFirestore.instance;
 
   Future<List<TreasurePoint>> getTreasurePoints() async {
     try {
-      final snapshot = await firestore.collection('treasure_points').get();
+      final snapshot = await _db.collection('treasure_points').get();
       final points = <TreasurePoint>[];
       for (final doc in snapshot.docs) {
         try {

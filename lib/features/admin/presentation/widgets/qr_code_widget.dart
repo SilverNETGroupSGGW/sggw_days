@@ -65,5 +65,7 @@ class _QrPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _QrPainter oldDelegate) {
+    return oldDelegate.data != data || oldDelegate.color != color;
+  }
 }

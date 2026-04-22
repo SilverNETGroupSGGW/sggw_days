@@ -34,14 +34,6 @@ class WikiRepository {
     }
   }
 
-  Future<WikiArticle> getArticleById(String id) async {
-    final articles = await getArticles();
-    return articles.firstWhere(
-      (article) => article.id == id,
-      orElse: () => throw Exception('Article not found'),
-    );
-  }
-
   Future<void> _cacheData(List<Map<String, dynamic>> data) async {
     final box = await Hive.openBox('api_cache');
     await box.put(_cacheKey, jsonEncode(data));

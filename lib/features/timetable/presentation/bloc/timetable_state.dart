@@ -32,24 +32,30 @@ class TimetableState extends Equatable {
     List<model.TimetableEvent>? events,
     List<model.TimetableEvent>? filteredEvents,
     DateTime? selectedDate,
-    String? selectedTag,
+    Object? selectedTag = _noChange,
     List<String>? favoriteIds,
     bool? showFavoritesOnly,
     List<String>? checkedInIds,
-    String? errorMessage,
+    Object? errorMessage = _noChange,
   }) {
     return TimetableState(
       status: status ?? this.status,
       events: events ?? this.events,
       filteredEvents: filteredEvents ?? this.filteredEvents,
       selectedDate: selectedDate ?? this.selectedDate,
-      selectedTag: selectedTag,
+      selectedTag: identical(selectedTag, _noChange)
+          ? this.selectedTag
+          : selectedTag as String?,
       favoriteIds: favoriteIds ?? this.favoriteIds,
       showFavoritesOnly: showFavoritesOnly ?? this.showFavoritesOnly,
       checkedInIds: checkedInIds ?? this.checkedInIds,
-      errorMessage: errorMessage,
+      errorMessage: identical(errorMessage, _noChange)
+          ? this.errorMessage
+          : errorMessage as String?,
     );
   }
+
+  static const Object _noChange = Object();
 
   @override
   List<Object?> get props => [
