@@ -66,12 +66,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
   lint: ^2.8.0
   bloc_lint: ^0.4.0
   build_runner: ^2.13.1
   freezed: ^3.2.5
   json_serializable: ^6.13.1
   hive_ce_generator: ^1.11.1
+  image: ^4.8.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -111,3 +113,20 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: sggw.png
+  adaptive_icon_background: "#d8f4c5"
+  adaptive_icon_foreground: assets/icon/android_dynamic_foreground.png
+  adaptive_icon_monochrome: assets/icon/android_dynamic_foreground.png
+  remove_alpha_ios: true
+  macos:
+    generate: true
+  web:
+    generate: true
+    background_color: "#d8f4c5"
+    theme_color: "#d8f4c5"
+  windows:
+    generate: true
