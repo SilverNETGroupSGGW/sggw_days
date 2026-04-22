@@ -8,7 +8,13 @@
 		// Update 'context' if your Dockerfile is not in the root of the repository.
 		"context": ".."
 	},
-	"postCreateCommand": "flutter pub get",
+	"postCreateCommand": "bash .devcontainer/post-create.sh",
+	"remoteEnv": {
+		"ANDROID_HOME": "/home/vscode/android-sdk",
+		"ANDROID_SDK_ROOT": "/home/vscode/android-sdk",
+		"PUB_CACHE": "/home/vscode/.pub-cache",
+		"PATH": "/home/vscode/.pub-cache/bin:${containerEnv:PATH}"
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
