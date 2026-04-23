@@ -1,4 +1,4 @@
-name: Deploy to Google Play Store (Closed Testing)
+name: Deploy to Google Play Store
 
 on:
     push:
@@ -6,7 +6,15 @@ on:
     workflow_dispatch:
         inputs:
             play_track:
-                description: Closed testing track name from Google Play Console
+                description: Google Play track name. Use beta for public testing or a custom closed-testing track name.
+                required: false
+                type: string
+            release_status:
+                description: Google Play release status. Use completed for fully automatic tester rollout.
+                required: false
+                type: string
+            build_number:
+                description: Optional Android versionCode override. Defaults to a unique CI-generated value.
                 required: false
                 type: string
             commit_range:
@@ -22,7 +30,9 @@ concurrency:
     cancel-in-progress: true
 
 env:
-    GOOGLE_PLAY_CLOSED_TRACK: alpha
+    GOOGLE_PLAY_DEFAULT_TRACK: beta
+    GOOGLE_PLAY_DEFAULT_STATUS: completed
+    GOOGLE_PLAY_BUILD_NUMBER_OFFSET: 100000
 
 jobs:
     validate:
@@ -42,25 +52,58 @@ jobs:
               with:
                   java-version: "21"
 
-            - name: Resolve closed testing track
-              id: resolve_track
+            - name: Resolve Play release configuration
+              id: resolve_release
               env:
                   INPUT_TRACK: ${{ github.event.inputs.play_track }}
-                  DEFAULT_TRACK: ${{ env.GOOGLE_PLAY_CLOSED_TRACK }}
+                  DEFAULT_TRACK: ${{ env.GOOGLE_PLAY_DEFAULT_TRACK }}
+                  INPUT_STATUS: ${{ github.event.inputs.release_status }}
+                  DEFAULT_STATUS: ${{ env.GOOGLE_PLAY_DEFAULT_STATUS }}
+                  INPUT_BUILD_NUMBER: ${{ github.event.inputs.build_number }}
+                  BUILD_NUMBER_OFFSET: ${{ env.GOOGLE_PLAY_BUILD_NUMBER_OFFSET }}
+                  RUN_NUMBER: ${{ github.run_number }}
+                  RUN_ATTEMPT: ${{ github.run_attempt }}
               run: |
                   set -euo pipefail
 
                   play_track="${INPUT_TRACK:-$DEFAULT_TRACK}"
+                  release_status="${INPUT_STATUS:-$DEFAULT_STATUS}"
+
+                  if [ -n "${INPUT_BUILD_NUMBER:-}" ]; then
+                      build_number="$INPUT_BUILD_NUMBER"
+                  else
+                      build_number=$((BUILD_NUMBER_OFFSET + (RUN_NUMBER * 100) + RUN_ATTEMPT))
+                  fi
 
                   if [ -z "$play_track" ]; then
-                      echo "A closed testing track name is required."
-                      echo "Set GOOGLE_PLAY_CLOSED_TRACK at the top of this workflow for push-based deploys,"
+                      echo "A Google Play track name is required."
+                      echo "Set GOOGLE_PLAY_DEFAULT_TRACK at the top of this workflow for push-based deploys,"
                       echo "or provide the play_track workflow_dispatch input for manual runs."
-                      echo "Google Play closed testing tracks use custom names, so this workflow cannot infer one automatically."
+                      exit 1
+                  fi
+
+                  case "$release_status" in
+                      completed|inProgress|halted|draft)
+                          ;;
+                      *)
+                          echo "Unsupported Google Play release status: $release_status"
+                          exit 1
+                          ;;
+                  esac
+
+                  if ! [[ "$build_number" =~ ^[0-9]+$ ]]; then
+                      echo "Android build number must be a positive integer, got: $build_number"
+                      exit 1
+                  fi
+
+                  if [ "$build_number" -le 0 ] || [ "$build_number" -gt 2100000000 ]; then
+                      echo "Android build number must be between 1 and 2100000000, got: $build_number"
                       exit 1
                   fi
 
                   echo "play_track=$play_track" >> "$GITHUB_OUTPUT"
+                  echo "release_status=$release_status" >> "$GITHUB_OUTPUT"
+                  echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
 
             - name: Create keystore from secret
               run: |
@@ -73,8 +116,9 @@ jobs:
                   KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
                   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
                   KEYSTORE_ALIAS_PASSWORD: ${{ secrets.KEYSTORE_ALIAS_PASSWORD }}
+                  BUILD_NUMBER: ${{ steps.resolve_release.outputs.build_number }}
               run: |
-                  flutter build appbundle --release
+                  flutter build appbundle --release --build-number "$BUILD_NUMBER"
 
             - name: Generate Play release notes from commit messages
               id: release_notes
@@ -111,14 +155,14 @@ jobs:
                   echo "whatsnew_dir=$whatsnew_dir" >> "$GITHUB_OUTPUT"
                   echo "commit_range=$commit_range" >> "$GITHUB_OUTPUT"
 
-            - name: Upload to Google Play (Closed Testing)
+            - name: Upload to Google Play
               uses: r0adkll/upload-google-play@v1
               with:
                   serviceAccountJsonPlainText: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS }}
                   packageName: com.silvernet.sggw_days
                   releaseFiles: "build/app/outputs/bundle/release/app-release.aab"
-                  tracks: ${{ steps.resolve_track.outputs.play_track }}
-                  status: draft
+                  tracks: ${{ steps.resolve_release.outputs.play_track }}
+                  status: ${{ steps.resolve_release.outputs.release_status }}
                   whatsNewDirectory: ${{ steps.release_notes.outputs.whatsnew_dir }}
                   mappingFile: build/app/outputs/mapping/release/mapping.txt
 

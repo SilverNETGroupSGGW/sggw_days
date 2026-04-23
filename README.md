@@ -8,7 +8,7 @@ The repository deploys Firebase automatically with GitHub Actions:
 
 - Pull requests run [firebase-hosting-pull-request.yml](.github/workflows/firebase-hosting-pull-request.yml) to validate the project, build a debug Android APK artifact, and create Hosting preview channels for branches in this repository.
 - Pushes to `main` and manual workflow dispatch run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml), which validates the Flutter project, builds the web app, and deploys Firebase Hosting plus Firestore and Storage rules to the `sggw-days` project.
-- Pushes to `main` and manual workflow dispatch can also run [play-store-deploy.yml](.github/workflows/play-store-deploy.yml) to build an Android App Bundle and upload it to a Google Play closed testing track.
+- Pushes to `main` and manual workflow dispatch can also run [play-store-deploy.yml](.github/workflows/play-store-deploy.yml) to build an Android App Bundle and upload it to Google Play. The workflow defaults to the public testing track and can be overridden for closed testing when needed.
 
 Required repository secret:
 
@@ -23,10 +23,16 @@ Additional secrets required by the Google Play workflow:
 
 Additional configuration required by the Google Play workflow:
 
-- `GOOGLE_PLAY_CLOSED_TRACK`: The workflow currently defaults this to `alpha` at the top of [play-store-deploy.yml](.github/workflows/play-store-deploy.yml). Change it there if you want a different testing track.
-- Manual runs can override the workflow default with the `play_track` workflow input.
+- `GOOGLE_PLAY_DEFAULT_TRACK`: The workflow currently defaults this to `beta` at the top of [play-store-deploy.yml](.github/workflows/play-store-deploy.yml). `beta` is the Google Play open/public testing track. Override it with a custom track name if you want closed testing instead.
+- `GOOGLE_PLAY_DEFAULT_STATUS`: The workflow currently defaults this to `completed`, so successful uploads are published to the target testing track without manual Play Console promotion.
+- `GOOGLE_PLAY_BUILD_NUMBER_OFFSET`: The workflow generates a unique Android `versionCode` from the GitHub Actions run number and run attempt, plus this offset. Increase the offset if your Play Console already contains larger version codes.
+- Manual runs can override the workflow defaults with the `play_track`, `release_status`, and `build_number` workflow inputs.
 - Release notes are generated automatically from commit subjects and uploaded through the Play release-notes mechanism as `whatsnew-en-US`.
 - Manual runs can also override the default commit range with the `commit_range` workflow input. On pushes to `main`, the workflow uses the pushed commit range automatically.
+
+Flutter-specific versioning note:
+
+- Flutter maps `pubspec.yaml` version metadata to Android `versionName` and `versionCode`. The workflow passes `--build-number` to `flutter build appbundle`, which is the Flutter-supported way to assign a unique Android `versionCode` in CI without manually editing `pubspec.yaml` for every release.
 
 Google Play upload prerequisite:
 
