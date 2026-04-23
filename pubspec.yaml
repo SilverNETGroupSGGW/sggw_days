@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.1
 
 environment:
   sdk: ^3.10.7
@@ -82,50 +82,20 @@ flutter:
   generate: true
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
-
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: sggw.png
-  adaptive_icon_background: "#d8f4c5"
+  image_path: assets/icon/app_icon_master.png
+  adaptive_icon_background: "#c8f0b4"
   adaptive_icon_foreground: assets/icon/android_dynamic_foreground.png
-  adaptive_icon_monochrome: assets/icon/android_dynamic_foreground.png
+  adaptive_icon_foreground_inset: 0
+  adaptive_icon_monochrome: assets/icon/android_dynamic_monochrome.png
   remove_alpha_ios: true
   macos:
     generate: true
   web:
     generate: true
-    background_color: "#d8f4c5"
-    theme_color: "#d8f4c5"
+    background_color: "#c8f0b4"
+    theme_color: "#c8f0b4"
   windows:
     generate: true

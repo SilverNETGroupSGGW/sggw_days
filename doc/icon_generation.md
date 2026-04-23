@@ -1,0 +1,34 @@
+# App Icon Generation
+
+Source of truth: `assets/icon/source/app_icon.svg`
+
+## Source analysis
+
+- Rendered analysis size: 4096x4096
+- Opaque bounds: left 1613, top 904, width 991, height 1767
+- Horizontal alignment group: `pinpoint` → left 1613, top 1457, width 875, height 1214
+- Horizontal anchor within full artwork: 44.1% of the artwork width
+- Occupancy ratio: width 24.2%, height 43.1%
+- Background used for flattened icons: `#C8F0B4`
+
+## Generated outputs
+
+- Master icon: `assets/icon/app_icon_master.png`
+- Android adaptive foreground: `assets/icon/android_dynamic_foreground.png`
+- Android adaptive monochrome: `assets/icon/android_dynamic_monochrome.png`
+- Browser favicon SVG: `web/favicon.svg`
+- Safari pinned-tab mask: `web/safari-pinned-tab.svg`
+
+## Validation
+
+- Android foreground max dimension: 626 px (61.1% of canvas, target <= 61.1%)
+- Master icon canvas: 1024x1024
+
+## Regenerate
+
+```bash
+dart run tool/generate_app_icons.dart
+dart run flutter_launcher_icons
+```
+
+Preview-only assets are intentionally excluded. The generator emits only production icon sources used by the app and web browser metadata.
