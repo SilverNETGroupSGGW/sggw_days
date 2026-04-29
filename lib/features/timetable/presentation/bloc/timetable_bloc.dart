@@ -14,7 +14,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
   TimetableBloc({required TimetableRepository repository})
     : _repository = repository,
-      super(TimetableState(selectedDate: DateTime.now())) {
+      super(const TimetableState()) {
     on<LoadTimetableEvents>(_onLoadTimetableEvents);
     on<FilterEventsByDate>(_onFilterEventsByDate);
     on<FilterEventsByTag>(_onFilterEventsByTag);
@@ -151,9 +151,10 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     _TimetableEventsUpdated event,
     Emitter<TimetableState> emit,
   ) {
+    final selectedDate = state.selectedDate ?? _firstEventDate(event.events);
     final filtered = _filterEvents(
       event.events,
-      state.selectedDate,
+      selectedDate,
       state.selectedTag,
       state.favoriteIds,
       state.showFavoritesOnly,
@@ -164,9 +165,18 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
         status: TimetableStatus.success,
         events: event.events,
         filteredEvents: filtered,
+        selectedDate: selectedDate,
         errorMessage: null,
       ),
     );
+  }
+
+  DateTime? _firstEventDate(List<model.TimetableEvent> events) {
+    if (events.isEmpty) return null;
+    final sorted = List<model.TimetableEvent>.from(events)
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+    final first = sorted.first.startTime;
+    return DateTime(first.year, first.month, first.day);
   }
 
   void _onTimetableEventsFailed(

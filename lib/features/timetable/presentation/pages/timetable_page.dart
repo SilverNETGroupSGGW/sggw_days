@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
+    as model;
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_event.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_state.dart';
@@ -79,30 +81,174 @@ class _TimetablePageState extends State<TimetablePage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state.filteredEvents.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.event_busy, size: 100),
-                  const SizedBox(height: 16),
-                  Text(
-                    '${l10n.noEventsOn} ${DateFormat.yMMMd().format(state.selectedDate!)}',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ],
-              ),
-            );
-          }
+          final content = state.filteredEvents.isEmpty
+              ? _buildEmptyState(context, state)
+              : _showTimeline
+              ? _buildTimelineView(context, state)
+              : _buildListView(context, state);
 
-          if (_showTimeline) {
-            return _buildTimelineView(context, state);
-          }
-
-          return _buildListView(context, state);
+          return Column(
+            children: [
+              _buildDateSelector(context, state),
+              Expanded(child: content),
+            ],
+          );
         },
       ),
     );
+  }
+
+  Widget _buildDateSelector(BuildContext context, TimetableState state) {
+    final theme = Theme.of(context);
+    final dates = _eventDates(state.events);
+
+    if (dates.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Material(
+      color: theme.colorScheme.surface,
+      child: SizedBox(
+        height: 88,
+        child: ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          scrollDirection: Axis.horizontal,
+          itemCount: dates.length,
+          separatorBuilder: (_, _) => const SizedBox(width: 8),
+          itemBuilder: (context, index) {
+            final date = dates[index];
+            final selected = _isSameDay(date, state.selectedDate);
+            final eventCount = state.events
+                .where((event) => _isSameDay(event.startTime, date))
+                .length;
+
+            return InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () {
+                context.read<TimetableBloc>().add(FilterEventsByDate(date));
+              },
+              child: SizedBox(
+                width: 84,
+                height: 72,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      width: 84,
+                      height: 72,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? theme.colorScheme.primaryContainer
+                            : theme.colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: selected
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.outlineVariant,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            DateFormat.E().format(date),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: selected
+                                  ? theme.colorScheme.onPrimaryContainer
+                                  : theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          Text(
+                            DateFormat.d().format(date),
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Text(
+                            DateFormat.MMM().format(date),
+                            style: theme.textTheme.labelSmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surface.withValues(
+                            alpha: 0.86,
+                          ),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 1,
+                          ),
+                          child: Text(
+                            '$eventCount',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context, TimetableState state) {
+    final l10n = AppLocalizations.of(context)!;
+    final selectedDate = state.selectedDate ?? DateTime.now();
+    final message = state.showFavoritesOnly
+        ? l10n.noFavoriteEventsOn
+        : l10n.noEventsOn;
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.event_busy, size: 100),
+          const SizedBox(height: 16),
+          Text(
+            '$message ${DateFormat.yMMMd().format(selectedDate)}',
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<DateTime> _eventDates(List<model.TimetableEvent> events) {
+    final dates = <DateTime>{
+      for (final event in events)
+        DateTime(
+          event.startTime.year,
+          event.startTime.month,
+          event.startTime.day,
+        ),
+    }.toList()..sort();
+    return dates;
+  }
+
+  bool _isSameDay(DateTime? a, DateTime? b) {
+    return a != null &&
+        b != null &&
+        a.year == b.year &&
+        a.month == b.month &&
+        a.day == b.day;
   }
 
   Widget _buildListView(BuildContext context, TimetableState state) {
@@ -324,79 +470,94 @@ class _TimetablePageState extends State<TimetablePage> {
     }
   }
 
-  void _showEventDetails(BuildContext context, dynamic event) {
+  void _showEventDetails(BuildContext context, model.TimetableEvent event) {
     final l10n = AppLocalizations.of(context)!;
     final isCheckedIn = context
         .read<TimetableBloc>()
         .state
         .checkedInIds
-        .contains(event.id as String);
+        .contains(event.id);
 
-    showDialog(
+    showModalBottomSheet<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(event.title as String),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(event.description as String),
-            const SizedBox(height: 16),
-            Row(
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        final theme = Theme.of(sheetContext);
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(
+              20,
+              0,
+              20,
+              20 + MediaQuery.of(sheetContext).viewInsets.bottom,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.access_time, size: 16),
-                const SizedBox(width: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        event.title,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(sheetContext),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _EventImageBanner(imageUrl: event.imageUrl),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _InfoChip(
+                      icon: Icons.access_time,
+                      label:
+                          '${DateFormat.Hm().format(event.startTime)} - ${DateFormat.Hm().format(event.endTime)}',
+                    ),
+                    _InfoChip(icon: Icons.location_on, label: event.location),
+                    if (isCheckedIn)
+                      _InfoChip(
+                        icon: Icons.check_circle,
+                        label: l10n.checkedIn,
+                      ),
+                  ],
+                ),
+                if (event.tags.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: event.tags
+                        .map(
+                          (tag) => Chip(
+                            label: Text(tag),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+                const SizedBox(height: 18),
                 Text(
-                  '${DateFormat.Hm().format(event.startTime)} - ${DateFormat.Hm().format(event.endTime)}',
+                  event.description,
+                  style: theme.textTheme.bodyLarge?.copyWith(height: 1.45),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(Icons.location_on, size: 16),
-                const SizedBox(width: 8),
-                Expanded(child: Text(event.location as String)),
-              ],
-            ),
-            if (isCheckedIn) ...[
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Icon(
-                    Icons.check_circle,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    l10n.checkedIn,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            if (event.imageUrl != null) ...[
-              const SizedBox(height: 16),
-              Image.network(
-                event.imageUrl as String,
-                height: 150,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ],
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.ok),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -434,6 +595,79 @@ class _TimetablePageState extends State<TimetablePage> {
             },
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _EventImageBanner extends StatelessWidget {
+  final String? imageUrl;
+
+  const _EventImageBanner({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    if (imageUrl == null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          width: double.infinity,
+          height: 124,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest,
+            ),
+            child: Icon(
+              Icons.event_note_outlined,
+              size: 48,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Image.network(
+          imageUrl!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest,
+            ),
+            child: Icon(
+              Icons.broken_image_outlined,
+              size: 48,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _InfoChip({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Chip(
+      avatar: Icon(icon, size: 16, color: theme.colorScheme.primary),
+      label: Text(label),
+      visualDensity: VisualDensity.compact,
+      backgroundColor: theme.colorScheme.surfaceContainerHighest.withValues(
+        alpha: 0.65,
       ),
     );
   }

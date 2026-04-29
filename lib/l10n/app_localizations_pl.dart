@@ -285,6 +285,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noEventsOn => 'Brak wydarzeń na';
 
   @override
+  String get noFavoriteEventsOn => 'Brak ulubionych wydarzeń na';
+
+  @override
   String get campusBuildings => 'Budynki kampusu';
 
   @override

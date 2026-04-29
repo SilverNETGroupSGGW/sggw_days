@@ -590,6 +590,12 @@ abstract class AppLocalizations {
   /// **'Brak wydarzeń na'**
   String get noEventsOn;
 
+  /// No description provided for @noFavoriteEventsOn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak ulubionych wydarzeń na'**
+  String get noFavoriteEventsOn;
+
   /// No description provided for @campusBuildings.
   ///
   /// In pl, this message translates to:
