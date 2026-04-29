@@ -15,8 +15,10 @@ const _analysisOutputPath = 'doc/icon_generation.md';
 
 const _analysisRasterSize = 4096;
 const _outputSize = 1024;
-const _androidSafeRatio = 74 / 108;
-const _masterRatio = 0.66;
+const _androidAdaptiveLayerRatio = 82 / 108;
+const _androidAdaptiveInsetPercent = 10;
+const _androidMaskedSafeRatio = 66 / 108;
+const _masterRatio = 0.56;
 const _horizontalAlignmentGroupLabel = 'pinpoint';
 
 void main() {
@@ -48,13 +50,13 @@ void main() {
   );
   final androidForeground = _composeTransparentLayer(
     glyphCrop,
-    maxDimensionRatio: _androidSafeRatio,
+    maxDimensionRatio: _androidAdaptiveLayerRatio,
     color: _color(_foregroundColor),
     horizontalAnchorX: horizontalAnchorX,
   );
   final androidMonochrome = _composeTransparentLayer(
     glyphCrop,
-    maxDimensionRatio: _androidSafeRatio,
+    maxDimensionRatio: _androidAdaptiveLayerRatio,
     color: _color(0xFF000000),
     horizontalAnchorX: horizontalAnchorX,
   );
@@ -269,6 +271,12 @@ void _writeAnalysis({
   final sourceWidthRatio = sourceBounds.width / renderedSize;
   final sourceHeightRatio = sourceBounds.height / renderedSize;
   final androidBounds = _findOpaqueBounds(androidForeground);
+  final androidSourceMaxDimension = math.max(
+    androidBounds.width,
+    androidBounds.height,
+  );
+  final effectiveAndroidMaxDimension =
+      androidSourceMaxDimension * (1 - (_androidAdaptiveInsetPercent / 50));
   final analysis = StringBuffer()
     ..writeln('# App Icon Generation')
     ..writeln()
@@ -304,7 +312,10 @@ void _writeAnalysis({
     ..writeln('## Validation')
     ..writeln()
     ..writeln(
-      '- Android foreground max dimension: ${math.max(androidBounds.width, androidBounds.height)} px (${(math.max(androidBounds.width, androidBounds.height) / _outputSize * 100).toStringAsFixed(1)}% of canvas, target <= ${(_androidSafeRatio * 100).toStringAsFixed(1)}%)',
+      '- Android foreground source max dimension: $androidSourceMaxDimension px (${(androidSourceMaxDimension / _outputSize * 100).toStringAsFixed(1)}% of canvas, target <= ${(_androidAdaptiveLayerRatio * 100).toStringAsFixed(1)}%)',
+    )
+    ..writeln(
+      '- Android foreground after $_androidAdaptiveInsetPercent% launcher inset: ${effectiveAndroidMaxDimension.round()} px (${(effectiveAndroidMaxDimension / _outputSize * 100).toStringAsFixed(1)}% of canvas, target <= ${(_androidMaskedSafeRatio * 100).toStringAsFixed(1)}%)',
     )
     ..writeln('- Master icon canvas: ${masterIcon.width}x${masterIcon.height}')
     ..writeln()

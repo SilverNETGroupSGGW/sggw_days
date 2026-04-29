@@ -14,6 +14,8 @@ _TreasurePoint _$TreasurePointFromJson(Map<String, dynamic> json) =>
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
       qrCode: json['qrCode'] as String,
+      imageUrl: json['imageUrl'] as String?,
+      iconName: json['iconName'] as String?,
       type:
           $enumDecodeNullable(
             _$PointTypeEnumMap,
@@ -32,6 +34,8 @@ Map<String, dynamic> _$TreasurePointToJson(_TreasurePoint instance) =>
       'latitude': instance.latitude,
       'longitude': instance.longitude,
       'qrCode': instance.qrCode,
+      'imageUrl': instance.imageUrl,
+      'iconName': instance.iconName,
       'type': _$PointTypeEnumMap[instance.type]!,
       'order': instance.order,
     };

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sggw_days/core/theme/dynamic_color_availability.dart';
 import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
 import 'package:sggw_days/features/notifications/data/notification_repository.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
@@ -99,6 +100,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final reminderService = context.read<EventReminderService>();
+    final supportsDynamicColors = DynamicColorAvailability.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settings)),
@@ -234,17 +236,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   }
                 },
               ),
-              SwitchListTile(
-                secondary: const Icon(Icons.palette_outlined),
-                title: Text(l10n.colorScheme),
-                subtitle: Text(
-                  state.useDynamicColors ? l10n.dynamicColors : l10n.sggwColors,
+              if (supportsDynamicColors)
+                SwitchListTile(
+                  secondary: const Icon(Icons.palette_outlined),
+                  title: Text(l10n.colorScheme),
+                  subtitle: Text(
+                    state.useDynamicColors
+                        ? l10n.dynamicColors
+                        : l10n.sggwColors,
+                  ),
+                  value: state.useDynamicColors,
+                  onChanged: (value) {
+                    context.read<SettingsCubit>().toggleDynamicColors(value);
+                  },
                 ),
-                value: state.useDynamicColors,
-                onChanged: (value) {
-                  context.read<SettingsCubit>().toggleDynamicColors(value);
-                },
-              ),
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.text_fields),

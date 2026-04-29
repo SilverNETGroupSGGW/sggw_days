@@ -11,6 +11,7 @@ abstract class WikiArticle with _$WikiArticle {
     required String content,
     required String category,
     String? imageUrl,
+    String? iconName,
     @Default([]) List<String> tags,
     @Default([]) List<String> treasurePointIds,
   }) = _WikiArticle;

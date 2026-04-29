@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +10,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import 'package:sggw_days/core/connectivity/connectivity_cubit.dart';
 import 'package:sggw_days/core/router/app_router.dart';
+import 'package:sggw_days/core/theme/dynamic_color_availability.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
 import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
@@ -52,18 +53,28 @@ void main() async {
   await Hive.initFlutter();
   final progressBox = await Hive.openBox<List<String>>('progress');
   final settingsBox = await Hive.openBox('settings');
+  final onboardingCompleted =
+      settingsBox.get('onboarding_completed', defaultValue: false) as bool;
 
-  runApp(MyApp(progressBox: progressBox, settingsBox: settingsBox));
+  runApp(
+    MyApp(
+      progressBox: progressBox,
+      settingsBox: settingsBox,
+      initialOnboardingCompleted: onboardingCompleted,
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
   final Box<List<String>> progressBox;
   final Box<dynamic> settingsBox;
+  final bool initialOnboardingCompleted;
 
   const MyApp({
     super.key,
     required this.progressBox,
     required this.settingsBox,
+    required this.initialOnboardingCompleted,
   });
 
   @override
@@ -71,30 +82,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool _onboardingCompleted = false;
-  bool _loading = true;
-  bool _minimumSplashElapsed = false;
+  late bool _onboardingCompleted;
 
   @override
   void initState() {
     super.initState();
-    unawaited(_holdSplashBriefly());
-    _checkOnboarding();
-  }
-
-  Future<void> _holdSplashBriefly() async {
-    await Future<void>.delayed(const Duration(milliseconds: 650));
-    if (!mounted) return;
-    setState(() => _minimumSplashElapsed = true);
-  }
-
-  Future<void> _checkOnboarding() async {
-    setState(() {
-      _onboardingCompleted =
-          widget.settingsBox.get('onboarding_completed', defaultValue: false)
-              as bool;
-      _loading = false;
-    });
+    _onboardingCompleted = widget.initialOnboardingCompleted;
   }
 
   void _completeOnboarding() {
@@ -105,10 +98,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading || !_minimumSplashElapsed) {
-      return const MaterialApp(home: _BrandSplash());
-    }
-
     if (!_onboardingCompleted) {
       return MaterialApp(
         localizationsDelegates: const [
@@ -192,91 +181,52 @@ class _MyAppState extends State<MyApp> {
         ],
         child: DynamicColorBuilder(
           builder: (lightDynamic, darkDynamic) {
+            final supportsDynamicColors =
+                lightDynamic != null && darkDynamic != null;
             return BlocBuilder<SettingsCubit, SettingsState>(
               builder: (context, settings) {
-                return MaterialApp.router(
-                  title: 'Dni SGGW',
-                  theme: AppTheme.light(
-                    useDynamicColors: settings.useDynamicColors,
-                    dynamicColorScheme: lightDynamic,
-                    boldText: settings.boldText,
+                final useDynamicColors =
+                    settings.useDynamicColors && supportsDynamicColors;
+                return DynamicColorAvailability(
+                  isSupported: supportsDynamicColors,
+                  child: MaterialApp.router(
+                    title: 'Dni SGGW',
+                    theme: AppTheme.light(
+                      useDynamicColors: useDynamicColors,
+                      dynamicColorScheme: lightDynamic,
+                      boldText: settings.boldText,
+                    ),
+                    darkTheme: AppTheme.dark(
+                      useDynamicColors: useDynamicColors,
+                      dynamicColorScheme: darkDynamic,
+                      boldText: settings.boldText,
+                    ),
+                    themeMode: settings.themeMode,
+                    localizationsDelegates: [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: const [Locale('pl'), Locale('en')],
+                    locale: settings.locale,
+                    routerConfig: appRouter,
+                    builder: (context, child) {
+                      final mediaQuery = MediaQuery.of(context);
+                      return MediaQuery(
+                        data: mediaQuery.copyWith(
+                          textScaler: TextScaler.linear(
+                            settings.textScaleFactor,
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
                   ),
-                  darkTheme: AppTheme.dark(
-                    useDynamicColors: settings.useDynamicColors,
-                    dynamicColorScheme: darkDynamic,
-                    boldText: settings.boldText,
-                  ),
-                  themeMode: settings.themeMode,
-                  localizationsDelegates: [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: const [Locale('pl'), Locale('en')],
-                  locale: settings.locale,
-                  routerConfig: appRouter,
-                  builder: (context, child) {
-                    final mediaQuery = MediaQuery.of(context);
-                    return MediaQuery(
-                      data: mediaQuery.copyWith(
-                        textScaler: TextScaler.linear(settings.textScaleFactor),
-                      ),
-                      child: child!,
-                    );
-                  },
                 );
               },
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _BrandSplash extends StatelessWidget {
-  const _BrandSplash();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFC8F0B4),
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/icon/app_icon_master.png',
-                  width: 112,
-                  height: 112,
-                ),
-                const SizedBox(height: 28),
-                const Text(
-                  'WZIM SGGW',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF003228),
-                    fontSize: 26,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Silver.NET Science Club',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF003228),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );

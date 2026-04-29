@@ -33,23 +33,21 @@ The file should look like this, with every real fingerprint value in the array:
 
 ```json
 [
-	{
-		"relation": ["delegate_permission/common.handle_all_urls"],
-		"target": {
-			"namespace": "android_app",
-			"package_name": "com.silvernet.sggw_days",
-			"sha256_cert_fingerprints": [
-				"AA:BB:CC:DD:...:99"
-			]
-		}
-	}
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.silvernet.sggw_days",
+      "sha256_cert_fingerprints": ["AA:BB:CC:DD:...:99"]
+    }
+  }
 ]
 ```
 
 After deployment, verify from a connected Android device with:
 
 ```bash
-flutter build web --release
+flutter build web --release --no-tree-shake-icons
 dart run tool/prepare_web_deploy.dart
 adb shell pm get-app-links com.silvernet.sggw_days
 adb shell pm verify-app-links --re-verify com.silvernet.sggw_days

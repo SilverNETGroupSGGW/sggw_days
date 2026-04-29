@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
+import 'package:sggw_days/core/icons/material_symbol_field.dart';
 import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
@@ -50,7 +52,12 @@ class TimetableEventsTab extends StatelessWidget {
                             vertical: 8,
                           ),
                           child: ListTile(
-                            leading: const Icon(Icons.event),
+                            leading: Icon(
+                              materialSymbolForName(
+                                event.iconName,
+                                fallback: Icons.event,
+                              ),
+                            ),
                             title: Text(event.title),
                             subtitle: Text(
                               '${event.location}\n${event.startTime.toLocal()} - ${event.endTime.toLocal()}',
@@ -95,6 +102,9 @@ class TimetableEventsTab extends StatelessWidget {
     );
     final tagsController = TextEditingController(
       text: event?.tags.join(', ') ?? '',
+    );
+    final iconNameController = TextEditingController(
+      text: normalizeMaterialSymbolName(event?.iconName) ?? '',
     );
 
     DateTime startTime = event?.startTime ?? DateTime.now();
@@ -201,6 +211,14 @@ class TimetableEventsTab extends StatelessWidget {
                         ),
                       ],
                     ),
+                  const SizedBox(height: 8),
+                  MaterialSymbolField(
+                    controller: iconNameController,
+                    fallbackIcon: Icons.event,
+                    labelText: 'Fallback Material Symbol',
+                    emptyHelperText:
+                        'Leave empty to use the default event icon.',
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: tagsController,
@@ -373,11 +391,27 @@ class TimetableEventsTab extends StatelessWidget {
                         setState(() => isUploading = false);
                       }
 
+                      if (!dialogContext.mounted) return;
+
                       final tags = tagsController.text
                           .split(',')
                           .map((e) => e.trim())
                           .where((e) => e.isNotEmpty)
                           .toList();
+                      final requestedIconName = iconNameController.text.trim();
+                      final iconName = normalizeMaterialSymbolName(
+                        requestedIconName,
+                      );
+                      if (requestedIconName.isNotEmpty && iconName == null) {
+                        ScaffoldMessenger.of(dialogContext).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Choose a valid Material Symbol name or leave it empty.',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
 
                       final newEvent = TimetableEvent(
                         id: event?.id ?? '',
@@ -387,6 +421,7 @@ class TimetableEventsTab extends StatelessWidget {
                         endTime: endTime,
                         location: location,
                         imageUrl: imageUrl,
+                        iconName: iconName,
                         tags: tags,
                         treasurePointIds: selectedPointIds,
                       );

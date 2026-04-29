@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WikiArticle {
 
- String get id; String get title; String get content; String get category; String? get imageUrl; List<String> get tags; List<String> get treasurePointIds;
+ String get id; String get title; String get content; String get category; String? get imageUrl; String? get iconName; List<String> get tags; List<String> get treasurePointIds;
 /// Create a copy of WikiArticle
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $WikiArticleCopyWith<WikiArticle> get copyWith => _$WikiArticleCopyWithImpl<Wiki
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WikiArticle&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.category, category) || other.category == category)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.tags, tags)&&const DeepCollectionEquality().equals(other.treasurePointIds, treasurePointIds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WikiArticle&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.category, category) || other.category == category)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.iconName, iconName) || other.iconName == iconName)&&const DeepCollectionEquality().equals(other.tags, tags)&&const DeepCollectionEquality().equals(other.treasurePointIds, treasurePointIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,content,category,imageUrl,const DeepCollectionEquality().hash(tags),const DeepCollectionEquality().hash(treasurePointIds));
+int get hashCode => Object.hash(runtimeType,id,title,content,category,imageUrl,iconName,const DeepCollectionEquality().hash(tags),const DeepCollectionEquality().hash(treasurePointIds));
 
 @override
 String toString() {
-  return 'WikiArticle(id: $id, title: $title, content: $content, category: $category, imageUrl: $imageUrl, tags: $tags, treasurePointIds: $treasurePointIds)';
+  return 'WikiArticle(id: $id, title: $title, content: $content, category: $category, imageUrl: $imageUrl, iconName: $iconName, tags: $tags, treasurePointIds: $treasurePointIds)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $WikiArticleCopyWith<$Res>  {
   factory $WikiArticleCopyWith(WikiArticle value, $Res Function(WikiArticle) _then) = _$WikiArticleCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String content, String category, String? imageUrl, List<String> tags, List<String> treasurePointIds
+ String id, String title, String content, String category, String? imageUrl, String? iconName, List<String> tags, List<String> treasurePointIds
 });
 
 
@@ -65,13 +65,14 @@ class _$WikiArticleCopyWithImpl<$Res>
 
 /// Create a copy of WikiArticle
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? content = null,Object? category = null,Object? imageUrl = freezed,Object? tags = null,Object? treasurePointIds = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? content = null,Object? category = null,Object? imageUrl = freezed,Object? iconName = freezed,Object? tags = null,Object? treasurePointIds = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,iconName: freezed == iconName ? _self.iconName : iconName // ignore: cast_nullable_to_non_nullable
 as String?,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
 as List<String>,treasurePointIds: null == treasurePointIds ? _self.treasurePointIds : treasurePointIds // ignore: cast_nullable_to_non_nullable
 as List<String>,
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String content,  String category,  String? imageUrl,  List<String> tags,  List<String> treasurePointIds)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String content,  String category,  String? imageUrl,  String? iconName,  List<String> tags,  List<String> treasurePointIds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WikiArticle() when $default != null:
-return $default(_that.id,_that.title,_that.content,_that.category,_that.imageUrl,_that.tags,_that.treasurePointIds);case _:
+return $default(_that.id,_that.title,_that.content,_that.category,_that.imageUrl,_that.iconName,_that.tags,_that.treasurePointIds);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.id,_that.title,_that.content,_that.category,_that.imageUrl
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String content,  String category,  String? imageUrl,  List<String> tags,  List<String> treasurePointIds)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String content,  String category,  String? imageUrl,  String? iconName,  List<String> tags,  List<String> treasurePointIds)  $default,) {final _that = this;
 switch (_that) {
 case _WikiArticle():
-return $default(_that.id,_that.title,_that.content,_that.category,_that.imageUrl,_that.tags,_that.treasurePointIds);case _:
+return $default(_that.id,_that.title,_that.content,_that.category,_that.imageUrl,_that.iconName,_that.tags,_that.treasurePointIds);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.id,_that.title,_that.content,_that.category,_that.imageUrl
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String content,  String category,  String? imageUrl,  List<String> tags,  List<String> treasurePointIds)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String content,  String category,  String? imageUrl,  String? iconName,  List<String> tags,  List<String> treasurePointIds)?  $default,) {final _that = this;
 switch (_that) {
 case _WikiArticle() when $default != null:
-return $default(_that.id,_that.title,_that.content,_that.category,_that.imageUrl,_that.tags,_that.treasurePointIds);case _:
+return $default(_that.id,_that.title,_that.content,_that.category,_that.imageUrl,_that.iconName,_that.tags,_that.treasurePointIds);case _:
   return null;
 
 }
@@ -215,7 +216,7 @@ return $default(_that.id,_that.title,_that.content,_that.category,_that.imageUrl
 @JsonSerializable()
 
 class _WikiArticle implements WikiArticle {
-  const _WikiArticle({required this.id, required this.title, required this.content, required this.category, this.imageUrl, final  List<String> tags = const [], final  List<String> treasurePointIds = const []}): _tags = tags,_treasurePointIds = treasurePointIds;
+  const _WikiArticle({required this.id, required this.title, required this.content, required this.category, this.imageUrl, this.iconName, final  List<String> tags = const [], final  List<String> treasurePointIds = const []}): _tags = tags,_treasurePointIds = treasurePointIds;
   factory _WikiArticle.fromJson(Map<String, dynamic> json) => _$WikiArticleFromJson(json);
 
 @override final  String id;
@@ -223,6 +224,7 @@ class _WikiArticle implements WikiArticle {
 @override final  String content;
 @override final  String category;
 @override final  String? imageUrl;
+@override final  String? iconName;
  final  List<String> _tags;
 @override@JsonKey() List<String> get tags {
   if (_tags is EqualUnmodifiableListView) return _tags;
@@ -251,16 +253,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WikiArticle&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.category, category) || other.category == category)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._treasurePointIds, _treasurePointIds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WikiArticle&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.category, category) || other.category == category)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.iconName, iconName) || other.iconName == iconName)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._treasurePointIds, _treasurePointIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,content,category,imageUrl,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_treasurePointIds));
+int get hashCode => Object.hash(runtimeType,id,title,content,category,imageUrl,iconName,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_treasurePointIds));
 
 @override
 String toString() {
-  return 'WikiArticle(id: $id, title: $title, content: $content, category: $category, imageUrl: $imageUrl, tags: $tags, treasurePointIds: $treasurePointIds)';
+  return 'WikiArticle(id: $id, title: $title, content: $content, category: $category, imageUrl: $imageUrl, iconName: $iconName, tags: $tags, treasurePointIds: $treasurePointIds)';
 }
 
 
@@ -271,7 +273,7 @@ abstract mixin class _$WikiArticleCopyWith<$Res> implements $WikiArticleCopyWith
   factory _$WikiArticleCopyWith(_WikiArticle value, $Res Function(_WikiArticle) _then) = __$WikiArticleCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String content, String category, String? imageUrl, List<String> tags, List<String> treasurePointIds
+ String id, String title, String content, String category, String? imageUrl, String? iconName, List<String> tags, List<String> treasurePointIds
 });
 
 
@@ -288,13 +290,14 @@ class __$WikiArticleCopyWithImpl<$Res>
 
 /// Create a copy of WikiArticle
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? content = null,Object? category = null,Object? imageUrl = freezed,Object? tags = null,Object? treasurePointIds = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? content = null,Object? category = null,Object? imageUrl = freezed,Object? iconName = freezed,Object? tags = null,Object? treasurePointIds = null,}) {
   return _then(_WikiArticle(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,iconName: freezed == iconName ? _self.iconName : iconName // ignore: cast_nullable_to_non_nullable
 as String?,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
 as List<String>,treasurePointIds: null == treasurePointIds ? _self._treasurePointIds : treasurePointIds // ignore: cast_nullable_to_non_nullable
 as List<String>,

@@ -12,7 +12,9 @@ const _adaptiveIconXmlPath =
 const _launcherColorsPath = 'android/app/src/main/res/values/colors.xml';
 
 const _outputSize = 1024;
-const _androidSafeRatio = 74 / 108;
+const _androidAdaptiveLayerRatio = 82 / 108;
+const _androidAdaptiveInsetPercent = 10;
+const _androidMaskedSafeRatio = 66 / 108;
 const _expectedBackgroundHex = '#c8f0b4';
 const _expectedBackgroundColor = _Rgba(0xC8, 0xF0, 0xB4, 0xFF);
 const _expectedForegroundColor = _Rgba(0x00, 0x32, 0x28, 0xFF);
@@ -119,7 +121,7 @@ void _validateAndroidXml(List<String> checks) {
     '@color/ic_launcher_background',
     '@drawable/ic_launcher_foreground',
     '@drawable/ic_launcher_monochrome',
-    'android:inset="0%"',
+    'android:inset="$_androidAdaptiveInsetPercent%"',
   ];
 
   for (final snippet in requiredSnippets) {
@@ -278,10 +280,19 @@ void _expectOpaquePixelColor(
 void _expectAdaptiveSafeBounds(String path, img.Image image) {
   final bounds = _findOpaqueBounds(image);
   final maxDimension = math.max(bounds.width, bounds.height);
-  final allowedMaxDimension = (_outputSize * _androidSafeRatio).ceil();
+  final allowedMaxDimension = (_outputSize * _androidAdaptiveLayerRatio).ceil();
   if (maxDimension > allowedMaxDimension) {
     throw StateError(
       '$path visible content is $maxDimension px, expected <= $allowedMaxDimension px.',
+    );
+  }
+
+  final effectiveMaxDimension =
+      maxDimension * (1 - (_androidAdaptiveInsetPercent / 50));
+  final allowedEffectiveMaxDimension = _outputSize * _androidMaskedSafeRatio;
+  if (effectiveMaxDimension > allowedEffectiveMaxDimension.ceil()) {
+    throw StateError(
+      '$path effective launcher content is ${effectiveMaxDimension.toStringAsFixed(1)} px after $_androidAdaptiveInsetPercent% inset, expected <= ${allowedEffectiveMaxDimension.toStringAsFixed(1)} px.',
     );
   }
 }

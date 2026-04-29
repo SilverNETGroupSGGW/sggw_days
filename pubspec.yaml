@@ -64,12 +64,15 @@ dependencies:
   firebase_messaging: ^16.2.0
   flutter_local_notifications: ^21.0.0
   timezone: ^0.11.0
+  material_symbols_icons: ^4.2928.1
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
   lint: ^2.8.0
   bloc_lint: ^0.4.0
   build_runner: ^2.13.1
@@ -85,8 +88,6 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
-  assets:
-    - assets/icon/app_icon_master.png
 
 flutter_launcher_icons:
   android: true
@@ -94,7 +95,7 @@ flutter_launcher_icons:
   image_path: assets/icon/app_icon_master.png
   adaptive_icon_background: "#c8f0b4"
   adaptive_icon_foreground: assets/icon/android_dynamic_foreground.png
-  adaptive_icon_foreground_inset: 0
+  adaptive_icon_foreground_inset: 10
   adaptive_icon_monochrome: assets/icon/android_dynamic_monochrome.png
   remove_alpha_ios: true
   macos:
@@ -105,3 +106,22 @@ flutter_launcher_icons:
     theme_color: "#c8f0b4"
   windows:
     generate: true
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: true
+  color: "#003228"
+  color_dark: "#003228"
+  image: assets/icon/native_splash_mark.png
+  image_dark: assets/icon/native_splash_mark.png
+  branding: assets/icon/native_splash_branding.png
+  branding_dark: assets/icon/native_splash_branding.png
+  branding_bottom_padding: 24
+  android_12:
+    color: "#003228"
+    color_dark: "#003228"
+    image: assets/icon/native_splash_mark.png
+    image_dark: assets/icon/native_splash_mark.png
+    branding: assets/icon/native_splash_branding.png
+    branding_dark: assets/icon/native_splash_branding.png

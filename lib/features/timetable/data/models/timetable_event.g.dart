@@ -15,6 +15,7 @@ _TimetableEvent _$TimetableEventFromJson(Map<String, dynamic> json) =>
       endTime: DateTime.parse(json['endTime'] as String),
       location: json['location'] as String,
       imageUrl: json['imageUrl'] as String?,
+      iconName: json['iconName'] as String?,
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
           const [],
@@ -34,6 +35,7 @@ Map<String, dynamic> _$TimetableEventToJson(_TimetableEvent instance) =>
       'endTime': instance.endTime.toIso8601String(),
       'location': instance.location,
       'imageUrl': instance.imageUrl,
+      'iconName': instance.iconName,
       'tags': instance.tags,
       'treasurePointIds': instance.treasurePointIds,
     };

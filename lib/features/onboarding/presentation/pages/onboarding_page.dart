@@ -89,32 +89,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     widget.onComplete();
   }
 
-  Future<void> _confirmSkipTreasureHunt() async {
-    final l10n = AppLocalizations.of(context)!;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        icon: const Icon(Icons.skip_next_outlined, size: 48),
-        title: Text(l10n.skipTreasureHuntDialogTitle),
-        content: Text(l10n.skipTreasureHuntDialogBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.continueWithoutTreasureHunt),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || !mounted) return;
-    await widget.settingsBox.put('non_game_mode', true);
-    if (!mounted) return;
-    await _completeOnboarding();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -263,12 +237,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  TextButton.icon(
-                    onPressed: _confirmSkipTreasureHunt,
-                    icon: const Icon(Icons.skip_next_outlined),
-                    label: Text(l10n.continueWithoutTreasureHunt),
-                  ),
                 ],
               ),
             ),
@@ -340,6 +308,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         showSkipButton: false,
         next: Text(l10n.next),
         showDoneButton: false,
+        animationDuration: 220,
+        curve: Curves.easeOutCubic,
+        scrollPhysics: const ClampingScrollPhysics(),
         dotsDecorator: DotsDecorator(
           size: const Size.square(10.0),
           activeSize: const Size(20.0, 10.0),

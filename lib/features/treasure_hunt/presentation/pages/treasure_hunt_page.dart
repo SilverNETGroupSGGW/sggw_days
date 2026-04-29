@@ -12,10 +12,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
-import 'package:sggw_days/features/treasure_hunt/presentation/marker_cluster.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_state.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/marker_cluster.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/pages/qr_scanner_page.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/pages/scan_history_page.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/point_type_presentation.dart';
@@ -473,6 +473,10 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     final clusterColor = hasUnfoundTreasure
         ? colorScheme.primary
         : colorScheme.secondary;
+    final representativePoint = cluster.points.firstWhere(
+      (point) => point.type == PointType.treasurePoint,
+      orElse: () => cluster.points.first,
+    );
 
     return Marker(
       point: cluster.center,
@@ -505,7 +509,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Icon(Icons.layers_rounded, color: clusterColor, size: 20),
+                  Icon(
+                    iconForPoint(representativePoint),
+                    color: clusterColor,
+                    size: 20,
+                  ),
                   Positioned(
                     right: 1,
                     top: 0,
@@ -637,7 +645,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                     ],
                   ),
                   child: Icon(
-                    isFound ? Icons.check_circle : iconForPointType(point.type),
+                    isFound ? Icons.check_circle : iconForPoint(point),
                     color: isFound
                         ? typeColor.withValues(alpha: 0.82)
                         : typeColor,
@@ -716,7 +724,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
               margin: const EdgeInsets.only(bottom: 8),
               child: ListTile(
                 leading: Icon(
-                  isFound ? Icons.check_circle : iconForPointType(point.type),
+                  isFound ? Icons.check_circle : iconForPoint(point),
                   color: color,
                 ),
                 title: Text(point.name),

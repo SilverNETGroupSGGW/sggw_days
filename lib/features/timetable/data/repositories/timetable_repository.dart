@@ -106,6 +106,7 @@ class TimetableRepository {
     data['startTime'] = _toIsoString(data['startTime']);
     data['endTime'] = _toIsoString(data['endTime']);
     data['imageUrl'] = _toNullableString(data['imageUrl']);
+    data['iconName'] = _toNullableString(data['iconName']);
     data['tags'] = _toStringList(data['tags']);
     data['treasurePointIds'] = _toStringList(data['treasurePointIds']);
 

@@ -515,7 +515,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eventRemindersSettingDesc =>
-      'Notify me 30 minutes before favourited timetable events.';
+      'Notify me 15 minutes before favourited timetable events.';
+
+  @override
+  String get eventTags => 'Tags';
 
   @override
   String get eventRemindersUnsupportedDesc => 'Mobile app only.';

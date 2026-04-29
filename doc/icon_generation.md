@@ -21,7 +21,8 @@ Source of truth: `assets/icon/source/app_icon.svg`
 
 ## Validation
 
-- Android foreground max dimension: 702 px (68.6% of canvas, target <= 68.5%)
+- Android foreground source max dimension: 777 px (75.9% of canvas, target <= 75.9%)
+- Android foreground after 10% launcher inset: 622 px (60.7% of canvas, target <= 61.1%)
 - Master icon canvas: 1024x1024
 
 ## Regenerate

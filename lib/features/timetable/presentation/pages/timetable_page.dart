@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
     as model;
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
@@ -263,9 +265,12 @@ class _TimetablePageState extends State<TimetablePage> {
             leading: Stack(
               children: [
                 CircleAvatar(
-                  child: Text(
-                    DateFormat.Hm().format(event.startTime),
-                    style: const TextStyle(fontSize: 10),
+                  child: Icon(
+                    materialSymbolForName(
+                      event.iconName,
+                      fallback: Symbols.event,
+                    ),
+                    size: 20,
                   ),
                 ),
                 if (isCheckedIn)
@@ -382,6 +387,15 @@ class _TimetablePageState extends State<TimetablePage> {
                           children: [
                             Row(
                               children: [
+                                Icon(
+                                  materialSymbolForName(
+                                    event.iconName,
+                                    fallback: Symbols.event,
+                                  ),
+                                  size: 20,
+                                  color: theme.colorScheme.primary,
+                                ),
+                                const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
                                     event.title,
@@ -513,7 +527,10 @@ class _TimetablePageState extends State<TimetablePage> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                _EventImageBanner(imageUrl: event.imageUrl),
+                _EventImageBanner(
+                  imageUrl: event.imageUrl,
+                  iconName: event.iconName,
+                ),
                 const SizedBox(height: 16),
                 Wrap(
                   spacing: 8,
@@ -534,6 +551,13 @@ class _TimetablePageState extends State<TimetablePage> {
                 ),
                 if (event.tags.isNotEmpty) ...[
                   const SizedBox(height: 12),
+                  Text(
+                    l10n.eventTags,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -601,8 +625,9 @@ class _TimetablePageState extends State<TimetablePage> {
 
 class _EventImageBanner extends StatelessWidget {
   final String? imageUrl;
+  final String? iconName;
 
-  const _EventImageBanner({required this.imageUrl});
+  const _EventImageBanner({required this.imageUrl, required this.iconName});
 
   @override
   Widget build(BuildContext context) {
@@ -619,7 +644,7 @@ class _EventImageBanner extends StatelessWidget {
               color: theme.colorScheme.surfaceContainerHighest,
             ),
             child: Icon(
-              Icons.event_note_outlined,
+              materialSymbolForName(iconName, fallback: Symbols.event_note),
               size: 48,
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -640,7 +665,7 @@ class _EventImageBanner extends StatelessWidget {
               color: theme.colorScheme.surfaceContainerHighest,
             ),
             child: Icon(
-              Icons.broken_image_outlined,
+              materialSymbolForName(iconName, fallback: Symbols.event_note),
               size: 48,
               color: theme.colorScheme.onSurfaceVariant,
             ),

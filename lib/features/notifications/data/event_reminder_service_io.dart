@@ -14,7 +14,7 @@ class EventReminderService {
   static const _broadcastChannelName = 'Event broadcasts';
   static const _broadcastChannelDescription =
       'Important messages from event organisers';
-  static const _leadTime = Duration(minutes: 30);
+  static const _leadTime = Duration(minutes: 15);
 
   final Box<dynamic> _settingsBox;
   final FlutterLocalNotificationsPlugin _notifications;

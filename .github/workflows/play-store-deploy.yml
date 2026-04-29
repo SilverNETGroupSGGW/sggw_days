@@ -118,7 +118,7 @@ jobs:
                   KEYSTORE_ALIAS_PASSWORD: ${{ secrets.KEYSTORE_ALIAS_PASSWORD }}
                   BUILD_NUMBER: ${{ steps.resolve_release.outputs.build_number }}
               run: |
-                  flutter build appbundle --release --build-number "$BUILD_NUMBER"
+                  flutter build appbundle --release --no-tree-shake-icons --build-number "$BUILD_NUMBER"
 
             - name: Generate Play release notes from commit messages
               id: release_notes

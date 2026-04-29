@@ -13,6 +13,7 @@ abstract class TimetableEvent with _$TimetableEvent {
     required DateTime endTime,
     required String location,
     String? imageUrl,
+    String? iconName,
     @Default([]) List<String> tags,
     @Default([]) List<String> treasurePointIds,
   }) = _TimetableEvent;

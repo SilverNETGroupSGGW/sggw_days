@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/point_type_presentation.dart';
@@ -86,9 +87,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                           ],
                         ),
                         child: Icon(
-                          isFound
-                              ? Icons.check_circle
-                              : iconForPointType(point.type),
+                          isFound ? Icons.check_circle : iconForPoint(point),
                           color: typeColor,
                         ),
                       ),
@@ -120,7 +119,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                               runSpacing: 8,
                               children: [
                                 PointInfoChip(
-                                  icon: iconForPointType(point.type),
+                                  icon: iconForPoint(point),
                                   label: labelForPointType(point.type, l10n),
                                   color: typeColor,
                                 ),
@@ -150,7 +149,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                                     icon: Icons.event_outlined,
                                     label:
                                         '${relatedEvents.length} ${l10n.relatedEvents}',
-                                    color: theme.colorScheme.tertiary,
+                                    color: theme.colorScheme.primary,
                                   ),
                               ],
                             ),
@@ -161,6 +160,31 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
+                if (point.imageUrl != null) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: Image.network(
+                        point.imageUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                color:
+                                    theme.colorScheme.surfaceContainerHighest,
+                              ),
+                              child: Icon(
+                                iconForPoint(point),
+                                size: 48,
+                                color: typeColor,
+                              ),
+                            ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                ],
                 if (distanceMeters != null &&
                     distanceMeters! <= 80 &&
                     canScan) ...[
@@ -205,7 +229,10 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                         (article) => Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: PointPreviewTile(
-                            icon: Icons.article_outlined,
+                            icon: materialSymbolForName(
+                              article.iconName,
+                              fallback: Icons.article_outlined,
+                            ),
                             accentColor: theme.colorScheme.secondary,
                             title: article.title,
                             subtitle: article.category,
@@ -228,8 +255,11 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                         (event) => Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: PointPreviewTile(
-                            icon: Icons.event_outlined,
-                            accentColor: theme.colorScheme.tertiary,
+                            icon: materialSymbolForName(
+                              event.iconName,
+                              fallback: Icons.event_outlined,
+                            ),
+                            accentColor: theme.colorScheme.primary,
                             title: event.title,
                             subtitle: _formatEventWindow(event),
                             detail: event.location,

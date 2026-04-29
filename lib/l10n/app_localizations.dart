@@ -1013,8 +1013,14 @@ abstract class AppLocalizations {
   /// No description provided for @eventRemindersSettingDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Powiadom mnie 30 minut przed ulubionymi wydarzeniami z harmonogramu.'**
+  /// **'Powiadom mnie 15 minut przed ulubionymi wydarzeniami z harmonogramu.'**
   String get eventRemindersSettingDesc;
+
+  /// No description provided for @eventTags.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tagi'**
+  String get eventTags;
 
   /// No description provided for @eventRemindersUnsupportedDesc.
   ///

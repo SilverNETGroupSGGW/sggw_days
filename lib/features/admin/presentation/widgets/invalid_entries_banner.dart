@@ -67,11 +67,56 @@ class InvalidEntriesBanner extends StatelessWidget {
                 ),
               ),
             ),
-          ...entries.map(
-            (entry) => _InvalidEntryTile(entry: entry, collection: collection),
-          ),
+          _InvalidEntriesList(entries: entries, collection: collection),
           const SizedBox(height: 8),
         ],
+      ),
+    );
+  }
+}
+
+class _InvalidEntriesList extends StatefulWidget {
+  const _InvalidEntriesList({required this.entries, required this.collection});
+
+  final List<InvalidEntry> entries;
+  final String collection;
+
+  @override
+  State<_InvalidEntriesList> createState() => _InvalidEntriesListState();
+}
+
+class _InvalidEntriesListState extends State<_InvalidEntriesList> {
+  final ScrollController _controller = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.42,
+      ),
+      child: Scrollbar(
+        controller: _controller,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          controller: _controller,
+          padding: const EdgeInsets.only(right: 12),
+          child: Column(
+            children: widget.entries
+                .map(
+                  (entry) => _InvalidEntryTile(
+                    entry: entry,
+                    collection: widget.collection,
+                  ),
+                )
+                .toList(),
+          ),
+        ),
       ),
     );
   }

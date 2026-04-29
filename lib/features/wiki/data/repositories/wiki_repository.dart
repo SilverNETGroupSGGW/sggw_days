@@ -110,6 +110,7 @@ class WikiRepository {
     }
 
     data['imageUrl'] = _toNullableString(data['imageUrl']);
+    data['iconName'] = _toNullableString(data['iconName']);
     data['tags'] = _toStringList(data['tags']);
     data['treasurePointIds'] = _toStringList(data['treasurePointIds']);
 

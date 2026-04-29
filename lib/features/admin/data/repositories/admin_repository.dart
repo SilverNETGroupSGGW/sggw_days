@@ -344,6 +344,8 @@ class AdminRepository {
       data['description'],
       fallback: name,
     );
+    data['imageUrl'] = _sanitizeOptionalText(data['imageUrl']);
+    data['iconName'] = _sanitizeOptionalText(data['iconName']);
     data['qrCode'] = _sanitizeQrCode(
       data['qrCode'],
       docId: raw['id'] as String?,
@@ -393,6 +395,7 @@ class AdminRepository {
       'content': _sanitizeRequiredText(raw['content'], fallback: title),
       'category': _sanitizeRequiredText(raw['category'], fallback: 'General'),
       'imageUrl': _sanitizeOptionalText(raw['imageUrl']),
+      'iconName': _sanitizeOptionalText(raw['iconName']),
       'tags': _sanitizeStringList(raw['tags']),
       'treasurePointIds': _sanitizeStringList(raw['treasurePointIds']),
     };
@@ -444,6 +447,7 @@ class AdminRepository {
         fallback: 'SGGW Campus',
       ),
       'imageUrl': _sanitizeOptionalText(raw['imageUrl']),
+      'iconName': _sanitizeOptionalText(raw['iconName']),
       'tags': _sanitizeStringList(raw['tags']),
       'treasurePointIds': _sanitizeStringList(raw['treasurePointIds']),
     };

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
 import 'package:sggw_days/features/wiki/presentation/bloc/wiki_bloc.dart';
 import 'package:sggw_days/features/wiki/presentation/bloc/wiki_event.dart';
@@ -86,7 +87,7 @@ class _WikiPageState extends State<WikiPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: FilterChip(
+                        child: _CategoryFilterChip(
                           label: Text(l10n.allCategories),
                           selected: state.selectedCategory == null,
                           onSelected: (_) {
@@ -99,7 +100,7 @@ class _WikiPageState extends State<WikiPage> {
                       ...categories.map((category) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: FilterChip(
+                          child: _CategoryFilterChip(
                             label: Text(category),
                             selected: state.selectedCategory == category,
                             onSelected: (_) {
@@ -133,6 +134,7 @@ class _WikiPageState extends State<WikiPage> {
                         child: ListTile(
                           leading: _ArticleThumbnail(
                             imageUrl: article.imageUrl,
+                            iconName: article.iconName,
                           ),
                           title: Text(article.title),
                           subtitle: Text(
@@ -181,7 +183,10 @@ class _ArticleDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _ArticleHero(imageUrl: article.imageUrl),
+            _ArticleHero(
+              imageUrl: article.imageUrl,
+              iconName: article.iconName,
+            ),
             const SizedBox(height: 16),
             Wrap(
               spacing: 8,
@@ -246,8 +251,9 @@ class _ArticleDetailsPage extends StatelessWidget {
 
 class _ArticleThumbnail extends StatelessWidget {
   final String? imageUrl;
+  final String? iconName;
 
-  const _ArticleThumbnail({required this.imageUrl});
+  const _ArticleThumbnail({required this.imageUrl, required this.iconName});
 
   @override
   Widget build(BuildContext context) {
@@ -258,12 +264,20 @@ class _ArticleThumbnail extends StatelessWidget {
       child: SizedBox.square(
         dimension: 56,
         child: imageUrl == null
-            ? _ArticlePlaceholderIcon(theme: theme, iconSize: 28)
+            ? _ArticlePlaceholderIcon(
+                theme: theme,
+                iconName: iconName,
+                iconSize: 28,
+              )
             : Image.network(
                 imageUrl!,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
-                    _ArticlePlaceholderIcon(theme: theme, iconSize: 28),
+                    _ArticlePlaceholderIcon(
+                      theme: theme,
+                      iconName: iconName,
+                      iconSize: 28,
+                    ),
               ),
       ),
     );
@@ -272,8 +286,9 @@ class _ArticleThumbnail extends StatelessWidget {
 
 class _ArticleHero extends StatelessWidget {
   final String? imageUrl;
+  final String? iconName;
 
-  const _ArticleHero({required this.imageUrl});
+  const _ArticleHero({required this.imageUrl, required this.iconName});
 
   @override
   Widget build(BuildContext context) {
@@ -285,7 +300,11 @@ class _ArticleHero extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           height: 120,
-          child: _ArticlePlaceholderIcon(theme: theme, iconSize: 48),
+          child: _ArticlePlaceholderIcon(
+            theme: theme,
+            iconName: iconName,
+            iconSize: 48,
+          ),
         ),
       );
     }
@@ -297,8 +316,11 @@ class _ArticleHero extends StatelessWidget {
         child: Image.network(
           imageUrl!,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) =>
-              _ArticlePlaceholderIcon(theme: theme, iconSize: 48),
+          errorBuilder: (context, error, stackTrace) => _ArticlePlaceholderIcon(
+            theme: theme,
+            iconName: iconName,
+            iconSize: 48,
+          ),
         ),
       ),
     );
@@ -307,9 +329,14 @@ class _ArticleHero extends StatelessWidget {
 
 class _ArticlePlaceholderIcon extends StatelessWidget {
   final ThemeData theme;
+  final String? iconName;
   final double iconSize;
 
-  const _ArticlePlaceholderIcon({required this.theme, required this.iconSize});
+  const _ArticlePlaceholderIcon({
+    required this.theme,
+    required this.iconName,
+    required this.iconSize,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -318,9 +345,35 @@ class _ArticlePlaceholderIcon extends StatelessWidget {
         color: theme.colorScheme.surfaceContainerHighest,
       ),
       child: Icon(
-        Icons.article_outlined,
+        materialSymbolForName(iconName, fallback: Icons.article_outlined),
         size: iconSize,
         color: theme.colorScheme.onSurfaceVariant,
+      ),
+    );
+  }
+}
+
+class _CategoryFilterChip extends StatelessWidget {
+  const _CategoryFilterChip({
+    required this.label,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final Widget label;
+  final bool selected;
+  final ValueChanged<bool> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FilterChip(
+        label: label,
+        selected: selected,
+        showCheckmark: false,
+        visualDensity: VisualDensity.standard,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        onSelected: onSelected,
       ),
     );
   }

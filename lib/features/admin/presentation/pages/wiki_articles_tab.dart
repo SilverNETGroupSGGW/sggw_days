@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
+import 'package:sggw_days/core/icons/material_symbol_field.dart';
 import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
@@ -49,7 +51,12 @@ class WikiArticlesTab extends StatelessWidget {
                             vertical: 8,
                           ),
                           child: ListTile(
-                            leading: const Icon(Icons.article),
+                            leading: Icon(
+                              materialSymbolForName(
+                                article.iconName,
+                                fallback: Icons.article,
+                              ),
+                            ),
                             title: Text(article.title),
                             subtitle: Text(
                               'Category: ${article.category} | Tags: ${article.tags.join(", ")}',
@@ -95,6 +102,9 @@ class WikiArticlesTab extends StatelessWidget {
     );
     final tagsController = TextEditingController(
       text: article?.tags.join(', ') ?? '',
+    );
+    final iconNameController = TextEditingController(
+      text: normalizeMaterialSymbolName(article?.iconName) ?? '',
     );
 
     List<String> selectedPointIds = List<String>.from(
@@ -193,6 +203,14 @@ class WikiArticlesTab extends StatelessWidget {
                         ),
                       ],
                     ),
+                  const SizedBox(height: 8),
+                  MaterialSymbolField(
+                    controller: iconNameController,
+                    fallbackIcon: Icons.article,
+                    labelText: 'Fallback Material Symbol',
+                    emptyHelperText:
+                        'Leave empty to use the default article icon.',
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: tagsController,
@@ -300,11 +318,27 @@ class WikiArticlesTab extends StatelessWidget {
                         setState(() => isUploading = false);
                       }
 
+                      if (!dialogContext.mounted) return;
+
                       final tags = tagsController.text
                           .split(',')
                           .map((e) => e.trim())
                           .where((e) => e.isNotEmpty)
                           .toList();
+                      final requestedIconName = iconNameController.text.trim();
+                      final iconName = normalizeMaterialSymbolName(
+                        requestedIconName,
+                      );
+                      if (requestedIconName.isNotEmpty && iconName == null) {
+                        ScaffoldMessenger.of(dialogContext).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Choose a valid Material Symbol name or leave it empty.',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
 
                       final newArticle = WikiArticle(
                         id: article?.id ?? '',
@@ -312,6 +346,7 @@ class WikiArticlesTab extends StatelessWidget {
                         content: content,
                         category: category,
                         imageUrl: imageUrl,
+                        iconName: iconName,
                         tags: tags,
                         treasurePointIds: selectedPointIds,
                       );

@@ -19,6 +19,8 @@ abstract class TreasurePoint with _$TreasurePoint {
     required double latitude,
     required double longitude,
     required String qrCode,
+    String? imageUrl,
+    String? iconName,
     @Default(PointType.pointOfInterest)
     @JsonKey(unknownEnumValue: PointType.pointOfInterest)
     PointType type,

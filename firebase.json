@@ -1,75 +1,71 @@
 {
-	"firestore": {
-		"rules": "firestore.rules"
-	},
-	"functions": [
-		{
-			"source": "functions",
-			"codebase": "default"
-		}
-	],
-	"storage": [
-		{
-			"target": "main",
-			"rules": "storage.rules"
-		}
-	],
-	"flutter": {
-		"platforms": {
-			"android": {
-				"default": {
-					"projectId": "sggw-days",
-					"appId": "1:583939995714:android:7d3fc1983787b0610755db",
-					"fileOutput": "android/app/google-services.json"
-				}
-			},
-			"dart": {
-				"lib/firebase_options.dart": {
-					"projectId": "sggw-days",
-					"configurations": {
-						"android": "1:583939995714:android:7d3fc1983787b0610755db",
-						"ios": "1:583939995714:ios:4e932895299047780755db",
-						"web": "1:583939995714:web:64bb87337df191160755db"
-					}
-				}
-			}
-		}
-	},
-	"hosting": {
-		"public": "build/web",
-		"ignore": [
-			"firebase.json",
-			"**/.*",
-			"**/node_modules/**"
-		],
-		"headers": [
-			{
-				"source": "**",
-				"headers": [
-					{
-						"key": "Referrer-Policy",
-						"value": "strict-origin-when-cross-origin"
-					},
-					{
-						"key": "X-Content-Type-Options",
-						"value": "nosniff"
-					},
-					{
-						"key": "X-Frame-Options",
-						"value": "DENY"
-					},
-					{
-						"key": "Permissions-Policy",
-						"value": "camera=(self), geolocation=(self), microphone=()"
-					}
-				]
-			}
-		],
-		"rewrites": [
-			{
-				"source": "**",
-				"destination": "/index.html"
-			}
-		]
-	}
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default"
+    }
+  ],
+  "storage": [
+    {
+      "target": "main",
+      "rules": "storage.rules"
+    }
+  ],
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "sggw-days",
+          "appId": "1:583939995714:android:7d3fc1983787b0610755db",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "sggw-days",
+          "configurations": {
+            "android": "1:583939995714:android:7d3fc1983787b0610755db",
+            "ios": "1:583939995714:ios:4e932895299047780755db",
+            "web": "1:583939995714:web:64bb87337df191160755db"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "DENY"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "camera=(self), geolocation=(self), microphone=()"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }

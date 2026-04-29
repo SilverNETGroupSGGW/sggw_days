@@ -109,6 +109,8 @@ class TreasureHuntRepository {
     data['longitude'] = _toDouble(data['longitude']);
     data['order'] = _toInt(data['order']) ?? 0;
     data['type'] = _normalizePointType(data['type']);
+    data['imageUrl'] = _toNullableString(data['imageUrl']);
+    data['iconName'] = _toNullableString(data['iconName']);
 
     return data;
   }
@@ -138,5 +140,10 @@ class TreasureHuntRepository {
     }
 
     return _fallbackPointType;
+  }
+
+  String? _toNullableString(Object? value) {
+    final text = (value is String ? value : value?.toString() ?? '').trim();
+    return text.isEmpty ? null : text;
   }
 }

@@ -517,7 +517,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get eventRemindersSettingDesc =>
-      'Powiadom mnie 30 minut przed ulubionymi wydarzeniami z harmonogramu.';
+      'Powiadom mnie 15 minut przed ulubionymi wydarzeniami z harmonogramu.';
+
+  @override
+  String get eventTags => 'Tagi';
 
   @override
   String get eventRemindersUnsupportedDesc => 'Tylko w aplikacji mobilnej.';

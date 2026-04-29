@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
+import 'package:sggw_days/core/icons/material_symbol_field.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
@@ -66,7 +68,7 @@ class TreasurePointsTab extends StatelessWidget {
                             vertical: 8,
                           ),
                           child: ExpansionTile(
-                            leading: Icon(iconForPointType(point.type)),
+                            leading: Icon(iconForPoint(point)),
                             title: Text(point.name),
                             subtitle: Text(labelForPointType(point.type, l10n)),
                             trailing: Row(
@@ -92,6 +94,14 @@ class TreasurePointsTab extends StatelessWidget {
                                   children: [
                                     Text('Description: ${point.description}'),
                                     const SizedBox(height: 8),
+                                    if (point.imageUrl != null) ...[
+                                      Text('Image: ${point.imageUrl}'),
+                                      const SizedBox(height: 8),
+                                    ],
+                                    if (point.iconName != null) ...[
+                                      Text('Symbol: ${point.iconName}'),
+                                      const SizedBox(height: 8),
+                                    ],
                                     Text('QR Code: ${point.qrCode}'),
                                     const SizedBox(height: 8),
                                     Text(
@@ -135,6 +145,9 @@ class TreasurePointsTab extends StatelessWidget {
     final descController = TextEditingController(
       text: point?.description ?? '',
     );
+    final imageUrlController = TextEditingController(
+      text: point?.imageUrl ?? '',
+    );
     final latController = TextEditingController(
       text: point?.latitude.toString() ?? '',
     );
@@ -142,6 +155,9 @@ class TreasurePointsTab extends StatelessWidget {
       text: point?.longitude.toString() ?? '',
     );
     PointType selectedType = point?.type ?? PointType.pointOfInterest;
+    final iconNameController = TextEditingController(
+      text: normalizeMaterialSymbolName(point?.iconName) ?? '',
+    );
 
     showDialog(
       context: context,
@@ -203,6 +219,20 @@ class TreasurePointsTab extends StatelessWidget {
                               labelText: 'Description',
                             ),
                             maxLines: 2,
+                          ),
+                          TextField(
+                            controller: imageUrlController,
+                            decoration: const InputDecoration(
+                              labelText: 'Image URL (optional)',
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          MaterialSymbolField(
+                            controller: iconNameController,
+                            fallbackIcon: Icons.place,
+                            labelText: 'Fallback Material Symbol',
+                            emptyHelperText:
+                                'Leave empty to use the default point icon.',
                           ),
                           const SizedBox(height: 8),
                           Row(
@@ -292,6 +322,7 @@ class TreasurePointsTab extends StatelessWidget {
                         onPressed: () {
                           final name = nameController.text.trim();
                           final description = descController.text.trim();
+                          final imageUrl = imageUrlController.text.trim();
                           final latitude = double.tryParse(
                             latController.text.trim(),
                           );
@@ -336,6 +367,38 @@ class TreasurePointsTab extends StatelessWidget {
                             return;
                           }
 
+                          if (imageUrl.isNotEmpty) {
+                            final imageUri = Uri.tryParse(imageUrl);
+                            final isValidHttpsImage =
+                                imageUri != null &&
+                                imageUri.scheme == 'https' &&
+                                imageUri.host.isNotEmpty;
+                            if (!isValidHttpsImage) {
+                              ScaffoldMessenger.of(dialogContext).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Image URL must use HTTPS.'),
+                                ),
+                              );
+                              return;
+                            }
+                          }
+                          final requestedIconName = iconNameController.text
+                              .trim();
+                          final iconName = normalizeMaterialSymbolName(
+                            requestedIconName,
+                          );
+                          if (requestedIconName.isNotEmpty &&
+                              iconName == null) {
+                            ScaffoldMessenger.of(dialogContext).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Choose a valid Material Symbol name or leave it empty.',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
                           final newPoint = TreasurePoint(
                             id: point?.id ?? '',
                             name: name,
@@ -343,6 +406,8 @@ class TreasurePointsTab extends StatelessWidget {
                             latitude: latitude,
                             longitude: longitude,
                             qrCode: point?.qrCode ?? '',
+                            imageUrl: imageUrl.isEmpty ? null : imageUrl,
+                            iconName: iconName,
                             type: selectedType,
                             order: point?.order ?? 0,
                           );

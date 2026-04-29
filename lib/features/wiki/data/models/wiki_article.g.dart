@@ -12,6 +12,7 @@ _WikiArticle _$WikiArticleFromJson(Map<String, dynamic> json) => _WikiArticle(
   content: json['content'] as String,
   category: json['category'] as String,
   imageUrl: json['imageUrl'] as String?,
+  iconName: json['iconName'] as String?,
   tags:
       (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
@@ -29,6 +30,7 @@ Map<String, dynamic> _$WikiArticleToJson(_WikiArticle instance) =>
       'content': instance.content,
       'category': instance.category,
       'imageUrl': instance.imageUrl,
+      'iconName': instance.iconName,
       'tags': instance.tags,
       'treasurePointIds': instance.treasurePointIds,
     };
