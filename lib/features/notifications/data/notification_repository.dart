@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +23,8 @@ class NotificationRepository {
   final FirebaseFirestore _firestore;
   final FirebaseMessaging _messaging;
   final Box<dynamic> _settingsBox;
+  Future<void> _tokenWriteQueue = Future<void>.value();
+  StreamSubscription<String>? _tokenRefreshSubscription;
 
   NotificationRepository({
     required Box<dynamic> settingsBox,
@@ -33,6 +36,17 @@ class NotificationRepository {
 
   bool get pushNotificationsEnabled =>
       _settingsBox.get(_pushEnabledKey, defaultValue: false) as bool? ?? false;
+
+  void startTokenRefreshListener() {
+    _tokenRefreshSubscription ??= _messaging.onTokenRefresh.listen((token) {
+      if (!pushNotificationsEnabled) return;
+      unawaited(_saveTokenQueued(token, enabled: true));
+    });
+  }
+
+  Future<void> dispose() async {
+    await _tokenRefreshSubscription?.cancel();
+  }
 
   Future<NotificationRegistrationResult> enablePushNotifications() async {
     final permission = await _messaging.requestPermission(
@@ -57,8 +71,8 @@ class NotificationRepository {
       );
     }
 
-    await _saveToken(token, enabled: true);
     await _settingsBox.put(_pushEnabledKey, true);
+    await _saveTokenQueued(token, enabled: true);
     return const NotificationRegistrationResult(enabled: true);
   }
 
@@ -66,15 +80,16 @@ class NotificationRepository {
     await _settingsBox.put(_pushEnabledKey, false);
     final token = await _resolveToken(silent: true);
     if (token != null && token.isNotEmpty) {
-      await _saveToken(token, enabled: false);
+      await _saveTokenQueued(token, enabled: false);
     }
   }
 
   Future<void> refreshRegistrationIfEnabled() async {
+    startTokenRefreshListener();
     if (!pushNotificationsEnabled) return;
     final token = await _resolveToken(silent: true);
     if (token == null || token.isEmpty) return;
-    await _saveToken(token, enabled: true);
+    await _saveTokenQueued(token, enabled: true);
   }
 
   Future<String?> _resolveToken({bool silent = false}) async {
@@ -88,6 +103,20 @@ class NotificationRepository {
       if (silent) return null;
       rethrow;
     }
+  }
+
+  Future<void> _saveTokenQueued(String token, {required bool enabled}) async {
+    final write = _tokenWriteQueue.catchError((_) {}).then((_) async {
+      try {
+        await _saveToken(token, enabled: enabled);
+      } on FirebaseException catch (error) {
+        debugPrint('Notification token sync failed: ${error.code}');
+      } catch (error) {
+        debugPrint('Notification token sync failed: $error');
+      }
+    });
+    _tokenWriteQueue = write;
+    await write;
   }
 
   Future<void> _saveToken(String token, {required bool enabled}) async {

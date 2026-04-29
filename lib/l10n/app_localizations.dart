@@ -284,6 +284,36 @@ abstract class AppLocalizations {
   /// **'Kamera pozwala skanować QR-y. Lokalizacja pomaga sprawdzić, czy naprawdę jesteś przy punkcie gry.'**
   String get onboardingPermissionsDesc;
 
+  /// No description provided for @onboardingNotificationsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bądź na bieżąco'**
+  String get onboardingNotificationsTitle;
+
+  /// No description provided for @onboardingNotificationsDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiadomienia są opcjonalne. Włącz je, aby dostawać komunikaty organizatorów i przypomnienia o wydarzeniach.'**
+  String get onboardingNotificationsDesc;
+
+  /// No description provided for @allowNotifications.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włącz powiadomienia'**
+  String get allowNotifications;
+
+  /// No description provided for @continueWithoutNotifications.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontynuuj bez powiadomień'**
+  String get continueWithoutNotifications;
+
+  /// No description provided for @continueToMap.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przejdź do mapy'**
+  String get continueToMap;
+
   /// No description provided for @getStarted.
   ///
   /// In pl, this message translates to:

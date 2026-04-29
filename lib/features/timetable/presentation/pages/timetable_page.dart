@@ -103,7 +103,7 @@ class _TimetablePageState extends State<TimetablePage> {
     return Material(
       color: theme.colorScheme.surface,
       child: SizedBox(
-        height: 88,
+        height: 94,
         child: ListView.separated(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           scrollDirection: Axis.horizontal,
@@ -122,16 +122,16 @@ class _TimetablePageState extends State<TimetablePage> {
                 context.read<TimetableBloc>().add(FilterEventsByDate(date));
               },
               child: SizedBox(
-                width: 84,
-                height: 72,
+                width: 76,
+                height: 78,
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
-                      width: 84,
-                      height: 72,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      width: 76,
+                      height: 78,
+                      padding: const EdgeInsets.symmetric(vertical: 6),
                       decoration: BoxDecoration(
                         color: selected
                             ? theme.colorScheme.primaryContainer
@@ -145,6 +145,7 @@ class _TimetablePageState extends State<TimetablePage> {
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             DateFormat.E().format(date),
@@ -152,17 +153,21 @@ class _TimetablePageState extends State<TimetablePage> {
                               color: selected
                                   ? theme.colorScheme.onPrimaryContainer
                                   : theme.colorScheme.onSurfaceVariant,
+                              height: 1,
                             ),
                           ),
                           Text(
                             DateFormat.d().format(date),
-                            style: theme.textTheme.titleLarge?.copyWith(
+                            style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w800,
+                              height: 1.1,
                             ),
                           ),
                           Text(
                             DateFormat.MMM().format(date),
-                            style: theme.textTheme.labelSmall,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              height: 1,
+                            ),
                           ),
                         ],
                       ),

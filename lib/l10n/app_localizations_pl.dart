@@ -107,6 +107,22 @@ class AppLocalizationsPl extends AppLocalizations {
       'Kamera pozwala skanować QR-y. Lokalizacja pomaga sprawdzić, czy naprawdę jesteś przy punkcie gry.';
 
   @override
+  String get onboardingNotificationsTitle => 'Bądź na bieżąco';
+
+  @override
+  String get onboardingNotificationsDesc =>
+      'Powiadomienia są opcjonalne. Włącz je, aby dostawać komunikaty organizatorów i przypomnienia o wydarzeniach.';
+
+  @override
+  String get allowNotifications => 'Włącz powiadomienia';
+
+  @override
+  String get continueWithoutNotifications => 'Kontynuuj bez powiadomień';
+
+  @override
+  String get continueToMap => 'Przejdź do mapy';
+
+  @override
   String get getStarted => 'Rozpocznij';
 
   @override

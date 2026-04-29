@@ -5,6 +5,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 const db = admin.firestore();
+const BROADCAST_CHANNEL_ID = 'event_broadcasts';
 
 exports.sendNotificationBroadcast = onDocumentCreated(
   'notification_broadcasts/{broadcastId}',
@@ -53,6 +54,11 @@ exports.sendNotificationBroadcast = onDocumentCreated(
       const response = await admin.messaging().sendEachForMulticast({
         tokens: chunk.map((entry) => entry.token),
         notification: { title, body },
+        android: {
+          notification: {
+            channelId: BROADCAST_CHANNEL_ID,
+          },
+        },
         data: {
           broadcastId: event.params.broadcastId,
           type: 'admin_broadcast',

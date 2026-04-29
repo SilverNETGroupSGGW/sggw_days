@@ -19,6 +19,44 @@ The Firebase service account also needs permission to deploy Cloud Functions for
 
 Firebase Authentication must have Anonymous sign-in enabled for public leaderboard publishing. The app uses anonymous Firebase user IDs to make sure each device can update only its own aggregate leaderboard score.
 
+## Android App Links Verification
+
+Android only marks `https://sggw-days.web.app/scan/...` links as verified when Firebase Hosting serves a Digital Asset Links file at `https://sggw-days.web.app/.well-known/assetlinks.json`.
+
+The repository includes [web/.well-known/assetlinks.json](web/.well-known/assetlinks.json) with the dev-container debug signing fingerprint so debug installs built here can be verified after Hosting deployment. Before a production deploy, add the exact SHA-256 certificate fingerprint Android will see:
+
+- Google Play installs: use Play Console → Setup → App signing → App signing key certificate → SHA-256 certificate fingerprint.
+- Local debug installs: `keytool -list -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey`.
+- Direct release APK/AAB installs outside Play: use the release signing certificate fingerprint for that build.
+
+The file should look like this, with every real fingerprint value in the array:
+
+```json
+[
+	{
+		"relation": ["delegate_permission/common.handle_all_urls"],
+		"target": {
+			"namespace": "android_app",
+			"package_name": "com.silvernet.sggw_days",
+			"sha256_cert_fingerprints": [
+				"AA:BB:CC:DD:...:99"
+			]
+		}
+	}
+]
+```
+
+After deployment, verify from a connected Android device with:
+
+```bash
+flutter build web --release
+dart run tool/prepare_web_deploy.dart
+adb shell pm get-app-links com.silvernet.sggw_days
+adb shell pm verify-app-links --re-verify com.silvernet.sggw_days
+```
+
+The `prepare_web_deploy.dart` step copies `web/.well-known` into `build/web/.well-known`; Flutter does not copy dot-directories there by default. The Firebase Hosting workflows run this step automatically after web builds.
+
 Additional secrets required by the Google Play workflow:
 
 - `KEYSTORE_BASE64`: Base64-encoded Android upload keystore.

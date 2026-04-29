@@ -7,7 +7,7 @@ class UserLocationMarker extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final locationColor = colorScheme.tertiary;
+    const locationColor = Color(0xFF1A73E8);
     final haloColor = locationColor.withValues(
       alpha: theme.brightness == Brightness.dark ? 0.3 : 0.2,
     );

@@ -12,7 +12,7 @@ const _adaptiveIconXmlPath =
 const _launcherColorsPath = 'android/app/src/main/res/values/colors.xml';
 
 const _outputSize = 1024;
-const _androidSafeRatio = 66 / 108;
+const _androidSafeRatio = 74 / 108;
 const _expectedBackgroundHex = '#c8f0b4';
 const _expectedBackgroundColor = _Rgba(0xC8, 0xF0, 0xB4, 0xFF);
 const _expectedForegroundColor = _Rgba(0x00, 0x32, 0x28, 0xFF);

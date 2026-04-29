@@ -23,6 +23,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
       GlobalKey<IntroductionScreenState>();
   bool _permissionsGranted = false;
   bool _requestingPermissions = false;
+  bool _notificationsHandled = false;
+  bool _requestingNotifications = false;
 
   @override
   void initState() {
@@ -33,9 +35,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Future<void> _checkPermissions() async {
     final cameraStatus = await Permission.camera.status;
     final locationStatus = await Permission.location.status;
+    final notificationStatus = await Permission.notification.status;
     if (!mounted) return;
     setState(() {
       _permissionsGranted = cameraStatus.isGranted && locationStatus.isGranted;
+      _notificationsHandled = notificationStatus.isGranted;
     });
   }
 
@@ -56,9 +60,25 @@ class _OnboardingPageState extends State<OnboardingPage> {
       setState(() {
         _permissionsGranted = granted;
       });
+      _introKey.currentState?.next();
     } finally {
       if (mounted) {
         setState(() => _requestingPermissions = false);
+      }
+    }
+  }
+
+  Future<void> _requestNotificationsAndComplete() async {
+    if (_requestingNotifications) return;
+    setState(() => _requestingNotifications = true);
+    try {
+      await Permission.notification.request();
+      if (!mounted) return;
+      setState(() => _notificationsHandled = true);
+      await _completeOnboarding();
+    } finally {
+      if (mounted) {
+        setState(() => _requestingNotifications = false);
       }
     }
   }
@@ -253,11 +273,73 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ),
           ),
+          PageViewModel(
+            title: l10n.onboardingNotificationsTitle,
+            body: l10n.onboardingNotificationsDesc,
+            image: Center(
+              child: Icon(
+                Icons.notifications_active_outlined,
+                size: 120,
+                color: colorScheme.primary,
+              ),
+            ),
+            decoration: PageDecoration(
+              titleTextStyle: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
+              bodyTextStyle: TextStyle(
+                fontSize: 16,
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+              footerFlex: 0,
+            ),
+            footer: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 48,
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: _requestingNotifications
+                          ? null
+                          : _requestNotificationsAndComplete,
+                      icon: _requestingNotifications
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Icon(
+                              _notificationsHandled
+                                  ? Icons.check_circle
+                                  : Icons.notifications_active_outlined,
+                            ),
+                      label: Text(
+                        _notificationsHandled
+                            ? l10n.continueToMap
+                            : l10n.allowNotifications,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: _requestingNotifications
+                        ? null
+                        : _completeOnboarding,
+                    child: Text(l10n.continueWithoutNotifications),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
-        onDone: _completeOnboarding,
         showSkipButton: false,
         next: Text(l10n.next),
-        done: Text(l10n.getStarted),
+        showDoneButton: false,
         dotsDecorator: DotsDecorator(
           size: const Size.square(10.0),
           activeSize: const Size(20.0, 10.0),

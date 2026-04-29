@@ -15,8 +15,8 @@ const _analysisOutputPath = 'doc/icon_generation.md';
 
 const _analysisRasterSize = 4096;
 const _outputSize = 1024;
-const _androidSafeRatio = 66 / 108;
-const _masterRatio = 0.72;
+const _androidSafeRatio = 74 / 108;
+const _masterRatio = 0.66;
 const _horizontalAlignmentGroupLabel = 'pinpoint';
 
 void main() {

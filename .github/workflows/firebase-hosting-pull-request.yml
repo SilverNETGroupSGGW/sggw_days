@@ -51,6 +51,9 @@ jobs:
           flutter build web --wasm --release --base-href "/"
           --dart-define=FIREBASE_WEB_PUSH_VAPID_KEY=${{ secrets.FIREBASE_WEB_PUSH_VAPID_KEY }}
 
+      - name: Prepare web preview files
+        run: dart run tool/prepare_web_deploy.dart
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

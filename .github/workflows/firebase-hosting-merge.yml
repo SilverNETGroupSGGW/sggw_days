@@ -32,6 +32,9 @@ jobs:
           flutter build web --wasm --release --base-href "/"
           --dart-define=FIREBASE_WEB_PUSH_VAPID_KEY=${{ secrets.FIREBASE_WEB_PUSH_VAPID_KEY }}
 
+      - name: Prepare web deploy files
+        run: dart run tool/prepare_web_deploy.dart
+
       - name: Prepare Firebase service account
         run: |
           printf '%s' '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS }}' > "$RUNNER_TEMP/firebase-service-account.json"

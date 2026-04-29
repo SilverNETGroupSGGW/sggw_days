@@ -107,6 +107,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Camera lets you scan QR codes. Location helps confirm you are actually by a hunt point.';
 
   @override
+  String get onboardingNotificationsTitle => 'Stay in the loop';
+
+  @override
+  String get onboardingNotificationsDesc =>
+      'Notifications are optional. Turn them on to receive organiser updates and event reminders.';
+
+  @override
+  String get allowNotifications => 'Allow notifications';
+
+  @override
+  String get continueWithoutNotifications => 'Continue without notifications';
+
+  @override
+  String get continueToMap => 'Continue to map';
+
+  @override
   String get getStarted => 'Get Started';
 
   @override

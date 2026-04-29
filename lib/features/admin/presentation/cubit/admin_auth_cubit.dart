@@ -47,7 +47,11 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
 
       await _finishAdminSignIn(userCred.user);
     } catch (e, stackTrace) {
-      debugPrint('Google admin sign-in failed: $e\n$stackTrace');
+      if (_isGoogleSignInCancellation(e)) {
+        debugPrint('Google admin sign-in cancelled.');
+      } else {
+        debugPrint('Google admin sign-in failed: $e\n$stackTrace');
+      }
       await _auth.signOut();
       emit(state.copyWith(isLoading: false, error: _friendlyAuthMessage(e)));
     }
@@ -112,6 +116,9 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
   }
 
   String _friendlyAuthMessage(Object error) {
+    if (_isGoogleSignInCancellation(error)) {
+      return 'Sign-in was cancelled.';
+    }
     if (error is FirebaseAuthException) {
       return switch (error.code) {
         'popup-closed-by-user' => 'Sign-in was cancelled.',
@@ -130,6 +137,11 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
       return 'Google did not return an ID token for this app configuration.';
     }
     return text.replaceFirst('Exception: ', '');
+  }
+
+  bool _isGoogleSignInCancellation(Object error) {
+    return error is GoogleSignInException &&
+        error.code == GoogleSignInExceptionCode.canceled;
   }
 
   Future<void> logout() async {

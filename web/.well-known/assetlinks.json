@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.silvernet.sggw_days",
+      "sha256_cert_fingerprints": [
+        "D9:6B:8C:97:40:4F:27:68:48:EA:4E:57:41:17:A6:C4:CA:09:14:70:E0:84:8C:1E:AF:18:F2:1C:01:CA:40:9B"
+      ]
+    }
+  }
+]

@@ -10,6 +10,10 @@ class EventReminderService {
   static const _channelId = 'event_reminders';
   static const _channelName = 'Event reminders';
   static const _channelDescription = 'Reminders before favourited events start';
+  static const broadcastChannelId = 'event_broadcasts';
+  static const _broadcastChannelName = 'Event broadcasts';
+  static const _broadcastChannelDescription =
+      'Important messages from event organisers';
   static const _leadTime = Duration(minutes: 30);
 
   final Box<dynamic> _settingsBox;
@@ -56,7 +60,34 @@ class EventReminderService {
       ),
     );
 
+    await _createAndroidChannels();
+
     _initialized = true;
+  }
+
+  Future<void> _createAndroidChannels() async {
+    final android = _notifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (android == null) return;
+
+    await android.createNotificationChannel(
+      const AndroidNotificationChannel(
+        _channelId,
+        _channelName,
+        description: _channelDescription,
+        importance: Importance.high,
+      ),
+    );
+    await android.createNotificationChannel(
+      const AndroidNotificationChannel(
+        broadcastChannelId,
+        _broadcastChannelName,
+        description: _broadcastChannelDescription,
+        importance: Importance.high,
+      ),
+    );
   }
 
   Future<bool> enableReminders() async {

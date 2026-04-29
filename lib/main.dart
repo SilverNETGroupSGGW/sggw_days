@@ -73,11 +73,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _onboardingCompleted = false;
   bool _loading = true;
+  bool _minimumSplashElapsed = false;
 
   @override
   void initState() {
     super.initState();
+    unawaited(_holdSplashBriefly());
     _checkOnboarding();
+  }
+
+  Future<void> _holdSplashBriefly() async {
+    await Future<void>.delayed(const Duration(milliseconds: 650));
+    if (!mounted) return;
+    setState(() => _minimumSplashElapsed = true);
   }
 
   Future<void> _checkOnboarding() async {
@@ -97,10 +105,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
-      return const MaterialApp(
-        home: Scaffold(body: Center(child: CircularProgressIndicator())),
-      );
+    if (_loading || !_minimumSplashElapsed) {
+      return const MaterialApp(home: _BrandSplash());
     }
 
     if (!_onboardingCompleted) {
@@ -145,9 +151,11 @@ class _MyAppState extends State<MyApp> {
             final repository = NotificationRepository(
               settingsBox: widget.settingsBox,
             );
+            repository.startTokenRefreshListener();
             unawaited(repository.refreshRegistrationIfEnabled());
             return repository;
           },
+          dispose: (repository) => unawaited(repository.dispose()),
         ),
       ],
       child: MultiBlocProvider(
@@ -221,6 +229,54 @@ class _MyAppState extends State<MyApp> {
               },
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _BrandSplash extends StatelessWidget {
+  const _BrandSplash();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFC8F0B4),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/icon/app_icon_master.png',
+                  width: 112,
+                  height: 112,
+                ),
+                const SizedBox(height: 28),
+                const Text(
+                  'WZIM SGGW',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFF003228),
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Silver.NET Science Club',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFF003228),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

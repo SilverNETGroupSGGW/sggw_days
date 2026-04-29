@@ -40,6 +40,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   LatLng? _currentPosition;
   StreamSubscription<Position>? _positionStreamSubscription;
   String? _selectedPointId;
+  double _currentZoom = 16;
   bool _showCelebrationFlash = false;
   bool _completionCelebrated = false;
   // SGGW coordinates
@@ -234,6 +235,10 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                   initialZoom: 16.0,
                   minZoom: 14.0,
                   maxZoom: 19.0,
+                  onPositionChanged: (camera, hasGesture) {
+                    if ((_currentZoom - camera.zoom).abs() < 0.15) return;
+                    setState(() => _currentZoom = camera.zoom);
+                  },
                 ),
                 children: [
                   TileLayer(
@@ -300,11 +305,6 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                     colorScheme.surface,
                   ],
                 ),
-              ),
-              const Positioned(
-                left: 12,
-                bottom: 12,
-                child: SafeArea(child: _MapBrandBadge()),
               ),
               if (showBanner)
                 Positioned(
@@ -426,7 +426,10 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     required Color mapOutlineColor,
     required Color mapShadowColor,
   }) {
-    final clusters = clusterTreasurePoints(points);
+    final clusters = clusterTreasurePoints(
+      points,
+      radiusMeters: _clusterRadiusForZoom(_currentZoom),
+    );
 
     return clusters.map((cluster) {
       if (cluster.isCluster) {
@@ -473,8 +476,8 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
 
     return Marker(
       point: cluster.center,
-      width: 76,
-      height: 76,
+      width: 56,
+      height: 56,
       child: Semantics(
         button: true,
         label:
@@ -485,8 +488,8 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
               _showPointCluster(context, cluster.points, foundPointIds),
           child: Center(
             child: Container(
-              width: 58,
-              height: 58,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: colorScheme.surface,
                 shape: BoxShape.circle,
@@ -502,10 +505,10 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Icon(Icons.layers_rounded, color: clusterColor, size: 28),
+                  Icon(Icons.layers_rounded, color: clusterColor, size: 20),
                   Positioned(
-                    right: 6,
-                    top: 5,
+                    right: 1,
+                    top: 0,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: colorScheme.primaryContainer,
@@ -515,7 +518,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 5,
-                          vertical: 1,
+                          vertical: 0,
                         ),
                         child: Text(
                           '${cluster.points.length}',
@@ -554,11 +557,12 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     final isTracked = trackedPointId == point.id;
     final isSelected = _selectedPointId == point.id;
     final showMarkerLabel = isTracked || isSelected;
+    final showDistance = isTracked && _currentPosition != null;
 
     return Marker(
       point: LatLng(point.latitude, point.longitude),
-      width: 148,
-      height: 112,
+      width: 116,
+      height: 96,
       child: Semantics(
         button: true,
         label: point.name,
@@ -568,7 +572,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           child: AnimatedScale(
             duration: markerAnimationDuration,
             curve: Curves.easeOutBack,
-            scale: isTracked ? 1.08 : (isSelected ? 1.04 : 1.0),
+            scale: isTracked ? 1.06 : (isSelected ? 1.03 : 1.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -578,11 +582,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                     duration: markerAnimationDuration,
                     opacity: showMarkerLabel ? 1 : 0,
                     child: Container(
-                      constraints: const BoxConstraints(maxWidth: 136),
+                      constraints: const BoxConstraints(maxWidth: 104),
                       margin: const EdgeInsets.only(bottom: 6),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
+                        horizontal: 8,
+                        vertical: 5,
                       ),
                       decoration: BoxDecoration(
                         color: markerLabelBackgroundColor,
@@ -610,13 +614,13 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: colorScheme.surface,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: typeColor,
-                      width: isSelected ? 2.6 : 2.2,
+                      width: isSelected ? 2.4 : 2,
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -637,12 +641,12 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                     color: isFound
                         ? typeColor.withValues(alpha: 0.82)
                         : typeColor,
-                    size: isTracked || isSelected ? 28 : 24,
+                    size: isTracked || isSelected ? 24 : 21,
                   ),
                 ),
                 SizedBox(
-                  height: 26,
-                  child: _currentPosition != null && !isFound
+                  height: 22,
+                  child: showDistance
                       ? Container(
                           margin: const EdgeInsets.only(top: 4),
                           padding: const EdgeInsets.symmetric(
@@ -734,6 +738,14 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   String _formatDistance(double meters) {
     if (meters < 1000) return '${meters.round()} m';
     return '${(meters / 1000).toStringAsFixed(1)} km';
+  }
+
+  double _clusterRadiusForZoom(double zoom) {
+    if (zoom >= 18.25) return 7;
+    if (zoom >= 17.25) return 11;
+    if (zoom >= 16.25) return 18;
+    if (zoom >= 15.25) return 30;
+    return 48;
   }
 
   void _showChecklist(BuildContext context) {
@@ -1235,53 +1247,5 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(l10n.skipTreasureHuntEnabledSnack)));
-  }
-}
-
-class _MapBrandBadge extends StatelessWidget {
-  const _MapBrandBadge();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Tooltip(
-      message: 'SGGW Days',
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface.withValues(alpha: 0.94),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: theme.colorScheme.outlineVariant),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.shadow.withValues(alpha: 0.16),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/icon/app_icon_master.png',
-                width: 24,
-                height: 24,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'SGGW',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.onSurface,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
