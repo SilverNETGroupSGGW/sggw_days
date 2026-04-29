@@ -23,9 +23,25 @@ jobs:
             exit 1
           fi
 
+      - name: Verify launcher icons are up to date
+        run: |
+          if ! command -v rsvg-convert >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y librsvg2-bin
+          fi
+          dart run tool/generate_app_icons.dart
+          dart run flutter_launcher_icons
+          dart run tool/validate_android_icons.dart
+          if [ -n "$(git status --short --untracked-files=all)" ]; then
+            echo "Launcher icons are out of date. Regenerate icons locally, then commit the results."
+            git status --short --untracked-files=all
+            git diff
+            exit 1
+          fi
+
       - name: Check formatting
         run: |
-          paths="lib"
+          paths="lib tool"
           if [ -d test ]; then
             paths="$paths test"
           fi

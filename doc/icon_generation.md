@@ -29,6 +29,7 @@ Source of truth: `assets/icon/source/app_icon.svg`
 ```bash
 dart run tool/generate_app_icons.dart
 dart run flutter_launcher_icons
+dart run tool/validate_android_icons.dart
 ```
 
 Preview-only assets are intentionally excluded. The generator emits only production icon sources used by the app and web browser metadata.

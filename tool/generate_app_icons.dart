@@ -313,6 +313,7 @@ void _writeAnalysis({
     ..writeln('```bash')
     ..writeln('dart run tool/generate_app_icons.dart')
     ..writeln('dart run flutter_launcher_icons')
+    ..writeln('dart run tool/validate_android_icons.dart')
     ..writeln('```')
     ..writeln()
     ..writeln(

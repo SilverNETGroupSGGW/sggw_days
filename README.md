@@ -40,6 +40,18 @@ Google Play upload prerequisite:
 
 Storage rules are deployed through the explicit Firebase Storage target `main`, mapped in [.firebaserc](.firebaserc) to the bucket `sggw-days.firebasestorage.app`. The service account behind `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS` also needs Firebase Security Rules permissions including `firebaserules.rulesets.test` for the Firebase CLI deploy path.
 
+## App Icon Validation
+
+The launcher icon source of truth is [assets/icon/source/app_icon.svg](assets/icon/source/app_icon.svg). Regenerate and validate production icon assets with:
+
+```bash
+dart run tool/generate_app_icons.dart
+dart run flutter_launcher_icons
+dart run tool/validate_android_icons.dart
+```
+
+The validator checks the source SVG alignment group, generated 1024px icon sources, Android adaptive icon XML, monochrome/foreground layers, and density-specific launcher resources. CI runs the same validation and fails if generated icon files are out of date.
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
