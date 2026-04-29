@@ -379,6 +379,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get allTreasurePointsCollected => 'Wszystkie punkty skarbowe zebrane!';
 
   @override
+  String get groupedPoints => 'Punkty w tym miejscu';
+
+  @override
   String get relatedWiki => 'Powiązane artykuły';
 
   @override
@@ -416,6 +419,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get pointLocked => 'Ten punkt nie jest jeszcze odblokowany';
+
+  @override
+  String get pointDescriptionLockedTitle => 'Zeskanuj, żeby odkryć';
+
+  @override
+  String get pointDescriptionLockedBody =>
+      'Opis odblokuje się po zeskanowaniu kodu QR przy tym punkcie.';
+
+  @override
+  String get treasureHuntCompleteEasterEgg =>
+      'Trasa po kampusie ukończona. Zapytaj ekipę o zieloną odznakę.';
 
   @override
   String treasurePointNumber(int number) {

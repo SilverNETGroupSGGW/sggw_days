@@ -764,6 +764,12 @@ abstract class AppLocalizations {
   /// **'Wszystkie punkty skarbowe zebrane!'**
   String get allTreasurePointsCollected;
 
+  /// No description provided for @groupedPoints.
+  ///
+  /// In pl, this message translates to:
+  /// **'Punkty w tym miejscu'**
+  String get groupedPoints;
+
   /// No description provided for @relatedWiki.
   ///
   /// In pl, this message translates to:
@@ -835,6 +841,24 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Ten punkt nie jest jeszcze odblokowany'**
   String get pointLocked;
+
+  /// No description provided for @pointDescriptionLockedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zeskanuj, żeby odkryć'**
+  String get pointDescriptionLockedTitle;
+
+  /// No description provided for @pointDescriptionLockedBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opis odblokuje się po zeskanowaniu kodu QR przy tym punkcie.'**
+  String get pointDescriptionLockedBody;
+
+  /// No description provided for @treasureHuntCompleteEasterEgg.
+  ///
+  /// In pl, this message translates to:
+  /// **'Trasa po kampusie ukończona. Zapytaj ekipę o zieloną odznakę.'**
+  String get treasureHuntCompleteEasterEgg;
 
   /// No description provided for @treasurePointNumber.
   ///

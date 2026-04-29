@@ -125,6 +125,7 @@
   },
   "nextTreasurePoint": "Next Treasure Point",
   "allTreasurePointsCollected": "All treasure points collected!",
+  "groupedPoints": "Points in this spot",
   "relatedWiki": "Related Articles",
   "relatedEvents": "Related Events",
   "tutorialTitle": "Start Exploring!",
@@ -144,6 +145,9 @@
   "reorderPoints": "Reorder Points",
   "trackOnMap": "Track on Map",
   "pointLocked": "This point is not yet unlocked",
+  "pointDescriptionLockedTitle": "Scan to reveal",
+  "pointDescriptionLockedBody": "This description unlocks after you scan the QR code at the point.",
+  "treasureHuntCompleteEasterEgg": "The campus trail is complete. Ask the team about the green badge.",
   "treasurePointNumber": "Treasure Point #{number}",
   "@treasurePointNumber": {
     "placeholders": {

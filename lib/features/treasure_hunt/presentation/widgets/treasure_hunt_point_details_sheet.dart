@@ -43,6 +43,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final typeColor = colorForPointType(point.type, theme.colorScheme);
+    final showDescription = point.type != PointType.treasurePoint || isFound;
 
     return FractionallySizedBox(
       heightFactor: 0.86,
@@ -160,18 +161,6 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
-                Text(l10n.about, style: theme.textTheme.titleMedium),
-                const SizedBox(height: 8),
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      point.description,
-                      style: theme.textTheme.bodyLarge,
-                    ),
-                  ),
-                ),
                 if (distanceMeters != null &&
                     distanceMeters! <= 80 &&
                     canScan) ...[
@@ -203,7 +192,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                   ),
                 ],
                 if (relatedWikis.isNotEmpty) ...[
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 14),
                   SectionHeader(
                     title: l10n.relatedWiki,
                     actionLabel: l10n.wiki,
@@ -249,6 +238,49 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                         ),
                       ),
                 ],
+                const SizedBox(height: 18),
+                Text(l10n.about, style: theme.textTheme.titleMedium),
+                const SizedBox(height: 8),
+                Card(
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: showDescription
+                        ? Text(
+                            point.description,
+                            style: theme.textTheme.bodyLarge,
+                          )
+                        : Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.lock_outline,
+                                color: theme.colorScheme.primary,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      l10n.pointDescriptionLockedTitle,
+                                      style: theme.textTheme.titleSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      l10n.pointDescriptionLockedBody,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                  ),
+                ),
               ],
             ),
           ),

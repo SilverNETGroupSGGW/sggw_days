@@ -12,14 +12,12 @@ class QrScannerPage extends StatefulWidget {
   final Position currentPosition;
   final List<TreasurePoint> treasurePoints;
   final Set<String> unlockedPointIds;
-  final ValueChanged<String> onCodeScanned;
 
   const QrScannerPage({
     super.key,
     required this.currentPosition,
     required this.treasurePoints,
     required this.unlockedPointIds,
-    required this.onCodeScanned,
   });
 
   @override
@@ -28,6 +26,9 @@ class QrScannerPage extends StatefulWidget {
 
 class _QrScannerPageState extends State<QrScannerPage> {
   late final MobileScannerController _controller;
+  bool _allowPop = false;
+  bool _hasHandledScan = false;
+  bool _isClosing = false;
 
   @override
   void initState() {
@@ -64,24 +65,51 @@ class _QrScannerPageState extends State<QrScannerPage> {
     return distance <= maxDistance;
   }
 
+  Future<void> _closeScanner([String? scannedCode]) async {
+    if (!mounted || _isClosing) return;
+    _isClosing = true;
+    setState(() => _allowPop = true);
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    await _controller.stop();
+    if (!mounted) return;
+    Navigator.of(context).pop(scannedCode);
+  }
+
+  void _completeScan(String code) {
+    if (_hasHandledScan) return;
+    _hasHandledScan = true;
+    unawaited(_closeScanner(code));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     return PopScope<void>(
+      canPop: _allowPop,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
           unawaited(_controller.stop());
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: Text(l10n.scanQr)),
+        appBar: AppBar(
+          title: Text(l10n.scanQr),
+          leading: IconButton(
+            tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+            icon: const Icon(Icons.close),
+            onPressed: () => unawaited(_closeScanner()),
+          ),
+          automaticallyImplyLeading: false,
+        ),
         body: Stack(
           fit: StackFit.expand,
           children: [
             MobileScanner(
               controller: _controller,
               onDetect: (capture) {
+                if (_hasHandledScan || _isClosing) return;
                 final barcodes = capture.barcodes;
                 for (final barcode in barcodes) {
                   final rawValue = barcode.rawValue;
@@ -105,7 +133,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
                       ),
                     );
                   } else if (_isNearTreasurePoint(point)) {
-                    widget.onCodeScanned(rawValue);
+                    _completeScan(rawValue);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

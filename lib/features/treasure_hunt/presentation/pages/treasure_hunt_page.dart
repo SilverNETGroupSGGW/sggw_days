@@ -12,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/marker_cluster.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_state.dart';
@@ -40,6 +41,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   StreamSubscription<Position>? _positionStreamSubscription;
   String? _selectedPointId;
   bool _showCelebrationFlash = false;
+  bool _completionCelebrated = false;
   // SGGW coordinates
   static const LatLng sggwCenter = LatLng(52.1598, 21.0463);
 
@@ -168,6 +170,16 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
               SnackBar(content: Text(state.errorMessage ?? 'Error')),
             );
           }
+          final allPointsFound =
+              state.points.isNotEmpty &&
+              state.points.every(
+                (point) => state.foundPointIds.contains(point.id),
+              ) &&
+              state.status == TreasureHuntStatus.success;
+          if (!allPointsFound) {
+            _completionCelebrated = false;
+          }
+
           // Show confetti + congratulation popup when a treasure point is scanned
           if (state.lastScannedPointId != null) {
             final scannedPoint = state.points
@@ -176,13 +188,20 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
             if (scannedPoint != null &&
                 scannedPoint.type == PointType.treasurePoint) {
               unawaited(_playTreasureCelebration(context));
-              _showPointCollectedDialog(context, scannedPoint);
+              _showPointCollectedDialog(
+                context,
+                scannedPoint,
+                allPointsFound: allPointsFound,
+              );
+              if (allPointsFound) {
+                _completionCelebrated = true;
+              }
+              return;
             }
           }
           // Check if all points found
-          if (state.points.isNotEmpty &&
-              state.foundPointIds.length == state.points.length &&
-              state.status == TreasureHuntStatus.success) {
+          if (allPointsFound && !_completionCelebrated) {
+            _completionCelebrated = true;
             _showCelebration(context);
           }
         },
@@ -203,6 +222,9 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           final markerAnimationDuration = disableAnimations
               ? Duration.zero
               : const Duration(milliseconds: 180);
+          final visiblePoints = state.points
+              .where((point) => visiblePointIds.contains(point.id))
+              .toList();
 
           return Stack(
             children: [
@@ -221,193 +243,20 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                     userAgentPackageName: 'com.sggw.days',
                   ),
                   MarkerLayer(
+                    rotate: true,
                     markers: [
-                      ...state.points
-                          .where((p) => visiblePointIds.contains(p.id))
-                          .map((point) {
-                            final isFound = state.foundPointIds.contains(
-                              point.id,
-                            );
-                            final position = LatLng(
-                              point.latitude,
-                              point.longitude,
-                            );
-                            final typeColor = colorForPointType(
-                              point.type,
-                              colorScheme,
-                            );
-                            final isTracked = state.trackedPointId == point.id;
-                            final isSelected = _selectedPointId == point.id;
-                            final showMarkerLabel = isTracked || isSelected;
-                            return Marker(
-                              point: position,
-                              width: showMarkerLabel ? 148 : 76,
-                              height: showMarkerLabel ? 108 : 78,
-                              child: Semantics(
-                                button: true,
-                                label: point.name,
-                                child: GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () =>
-                                      _handleMarkerTap(context, point, isFound),
-                                  child: AnimatedScale(
-                                    duration: markerAnimationDuration,
-                                    curve: Curves.easeOutBack,
-                                    scale: isTracked
-                                        ? 1.08
-                                        : (isSelected ? 1.04 : 1.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        AnimatedSwitcher(
-                                          duration: markerAnimationDuration,
-                                          child: !showMarkerLabel
-                                              ? const SizedBox.shrink()
-                                              : Container(
-                                                  key: ValueKey(
-                                                    'label-${point.id}',
-                                                  ),
-                                                  constraints:
-                                                      const BoxConstraints(
-                                                        maxWidth: 136,
-                                                      ),
-                                                  margin: const EdgeInsets.only(
-                                                    bottom: 6,
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 6,
-                                                      ),
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        markerLabelBackgroundColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          999,
-                                                        ),
-                                                    border: Border.all(
-                                                      color: mapOutlineColor,
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: mapShadowColor,
-                                                        blurRadius: 10,
-                                                        offset: const Offset(
-                                                          0,
-                                                          4,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: Text(
-                                                    point.name,
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textAlign: TextAlign.center,
-                                                    style: theme
-                                                        .textTheme
-                                                        .labelMedium
-                                                        ?.copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          color: colorScheme
-                                                              .onSurface,
-                                                        ),
-                                                  ),
-                                                ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.all(6),
-                                          decoration: BoxDecoration(
-                                            color: colorScheme.surface,
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: typeColor,
-                                              width: isSelected ? 2.6 : 2.2,
-                                            ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: mapShadowColor,
-                                                blurRadius: 6,
-                                                offset: const Offset(0, 3),
-                                              ),
-                                              if (isTracked || isSelected)
-                                                BoxShadow(
-                                                  color: typeColor.withValues(
-                                                    alpha: 0.28,
-                                                  ),
-                                                  blurRadius: 14,
-                                                  spreadRadius: 3,
-                                                ),
-                                            ],
-                                          ),
-                                          child: Icon(
-                                            isFound
-                                                ? Icons.check_circle
-                                                : iconForPointType(point.type),
-                                            color: isFound
-                                                ? typeColor.withValues(
-                                                    alpha: 0.82,
-                                                  )
-                                                : typeColor,
-                                            size: isTracked || isSelected
-                                                ? 28
-                                                : 24,
-                                          ),
-                                        ),
-                                        if (_currentPosition != null &&
-                                            !isFound)
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                              top: 4,
-                                            ),
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 6,
-                                              vertical: 2,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  markerDistanceBackgroundColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              border: Border.all(
-                                                color: mapOutlineColor,
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: mapShadowColor,
-                                                  blurRadius: 2,
-                                                  offset: const Offset(0, 1),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Text(
-                                              _formatDistance(
-                                                Geolocator.distanceBetween(
-                                                  _currentPosition!.latitude,
-                                                  _currentPosition!.longitude,
-                                                  point.latitude,
-                                                  point.longitude,
-                                                ),
-                                              ),
-                                              style: theme.textTheme.labelSmall
-                                                  ?.copyWith(
-                                                    fontSize: 9,
-                                                    color:
-                                                        colorScheme.onSurface,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
+                      ..._buildClusteredMarkers(
+                        context: context,
+                        points: visiblePoints,
+                        foundPointIds: state.foundPointIds.toSet(),
+                        trackedPointId: state.trackedPointId,
+                        markerAnimationDuration: markerAnimationDuration,
+                        markerLabelBackgroundColor: markerLabelBackgroundColor,
+                        markerDistanceBackgroundColor:
+                            markerDistanceBackgroundColor,
+                        mapOutlineColor: mapOutlineColor,
+                        mapShadowColor: mapShadowColor,
+                      ),
                       if (_currentPosition != null)
                         Marker(
                           point: _currentPosition!,
@@ -452,6 +301,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                     colorScheme.surface,
                   ],
                 ),
+              ),
+              const Positioned(
+                left: 12,
+                bottom: 12,
+                child: SafeArea(child: _MapBrandBadge()),
               ),
               if (showBanner)
                 Positioned(
@@ -562,6 +416,322 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     );
   }
 
+  List<Marker> _buildClusteredMarkers({
+    required BuildContext context,
+    required List<TreasurePoint> points,
+    required Set<String> foundPointIds,
+    required String? trackedPointId,
+    required Duration markerAnimationDuration,
+    required Color markerLabelBackgroundColor,
+    required Color markerDistanceBackgroundColor,
+    required Color mapOutlineColor,
+    required Color mapShadowColor,
+  }) {
+    final clusters = clusterTreasurePoints(points);
+
+    return clusters.map((cluster) {
+      if (cluster.isCluster) {
+        return _buildClusterMarker(
+          context: context,
+          cluster: cluster,
+          foundPointIds: foundPointIds,
+          mapOutlineColor: mapOutlineColor,
+          mapShadowColor: mapShadowColor,
+        );
+      }
+
+      return _buildPointMarker(
+        context: context,
+        point: cluster.points.single,
+        foundPointIds: foundPointIds,
+        trackedPointId: trackedPointId,
+        markerAnimationDuration: markerAnimationDuration,
+        markerLabelBackgroundColor: markerLabelBackgroundColor,
+        markerDistanceBackgroundColor: markerDistanceBackgroundColor,
+        mapOutlineColor: mapOutlineColor,
+        mapShadowColor: mapShadowColor,
+      );
+    }).toList();
+  }
+
+  Marker _buildClusterMarker({
+    required BuildContext context,
+    required TreasurePointCluster cluster,
+    required Set<String> foundPointIds,
+    required Color mapOutlineColor,
+    required Color mapShadowColor,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final hasUnfoundTreasure = cluster.points.any(
+      (point) =>
+          point.type == PointType.treasurePoint &&
+          !foundPointIds.contains(point.id),
+    );
+    final clusterColor = hasUnfoundTreasure
+        ? colorScheme.primary
+        : colorScheme.secondary;
+
+    return Marker(
+      point: cluster.center,
+      width: 76,
+      height: 76,
+      child: Semantics(
+        button: true,
+        label:
+            '${cluster.points.length} ${AppLocalizations.of(context)!.points}',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () =>
+              _showPointCluster(context, cluster.points, foundPointIds),
+          child: Center(
+            child: Container(
+              width: 58,
+              height: 58,
+              decoration: BoxDecoration(
+                color: colorScheme.surface,
+                shape: BoxShape.circle,
+                border: Border.all(color: clusterColor, width: 2.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: mapShadowColor,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(Icons.layers_rounded, color: clusterColor, size: 28),
+                  Positioned(
+                    right: 6,
+                    top: 5,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(color: mapOutlineColor),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 1,
+                        ),
+                        child: Text(
+                          '${cluster.points.length}',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: colorScheme.onPrimaryContainer,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Marker _buildPointMarker({
+    required BuildContext context,
+    required TreasurePoint point,
+    required Set<String> foundPointIds,
+    required String? trackedPointId,
+    required Duration markerAnimationDuration,
+    required Color markerLabelBackgroundColor,
+    required Color markerDistanceBackgroundColor,
+    required Color mapOutlineColor,
+    required Color mapShadowColor,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isFound = foundPointIds.contains(point.id);
+    final typeColor = colorForPointType(point.type, colorScheme);
+    final isTracked = trackedPointId == point.id;
+    final isSelected = _selectedPointId == point.id;
+    final showMarkerLabel = isTracked || isSelected;
+
+    return Marker(
+      point: LatLng(point.latitude, point.longitude),
+      width: 148,
+      height: 112,
+      child: Semantics(
+        button: true,
+        label: point.name,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => _handleMarkerTap(context, point, isFound),
+          child: AnimatedScale(
+            duration: markerAnimationDuration,
+            curve: Curves.easeOutBack,
+            scale: isTracked ? 1.08 : (isSelected ? 1.04 : 1.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 34,
+                  child: AnimatedOpacity(
+                    duration: markerAnimationDuration,
+                    opacity: showMarkerLabel ? 1 : 0,
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 136),
+                      margin: const EdgeInsets.only(bottom: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: markerLabelBackgroundColor,
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(color: mapOutlineColor),
+                        boxShadow: [
+                          BoxShadow(
+                            color: mapShadowColor,
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        point.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: typeColor,
+                      width: isSelected ? 2.6 : 2.2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: mapShadowColor,
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                      if (isTracked || isSelected)
+                        BoxShadow(
+                          color: typeColor.withValues(alpha: 0.28),
+                          blurRadius: 14,
+                          spreadRadius: 3,
+                        ),
+                    ],
+                  ),
+                  child: Icon(
+                    isFound ? Icons.check_circle : iconForPointType(point.type),
+                    color: isFound
+                        ? typeColor.withValues(alpha: 0.82)
+                        : typeColor,
+                    size: isTracked || isSelected ? 28 : 24,
+                  ),
+                ),
+                SizedBox(
+                  height: 26,
+                  child: _currentPosition != null && !isFound
+                      ? Container(
+                          margin: const EdgeInsets.only(top: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: markerDistanceBackgroundColor,
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: mapOutlineColor),
+                            boxShadow: [
+                              BoxShadow(
+                                color: mapShadowColor,
+                                blurRadius: 2,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            _formatDistance(
+                              Geolocator.distanceBetween(
+                                _currentPosition!.latitude,
+                                _currentPosition!.longitude,
+                                point.latitude,
+                                point.longitude,
+                              ),
+                            ),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              fontSize: 9,
+                              color: colorScheme.onSurface,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showPointCluster(
+    BuildContext context,
+    List<TreasurePoint> points,
+    Set<String> foundPointIds,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (sheetContext) => ListView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+        children: [
+          Text(l10n.groupedPoints, style: theme.textTheme.titleLarge),
+          const SizedBox(height: 8),
+          ...points.map((point) {
+            final isFound = foundPointIds.contains(point.id);
+            final color = colorForPointType(point.type, theme.colorScheme);
+            return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              child: ListTile(
+                leading: Icon(
+                  isFound ? Icons.check_circle : iconForPointType(point.type),
+                  color: color,
+                ),
+                title: Text(point.name),
+                subtitle: Text(labelForPointType(point.type, l10n)),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  if (!mounted) return;
+                  unawaited(_handleMarkerTap(context, point, isFound));
+                },
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
   String _formatDistance(double meters) {
     if (meters < 1000) return '${meters.round()} m';
     return '${(meters / 1000).toStringAsFixed(1)} km';
@@ -640,7 +810,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     );
   }
 
-  void _showPointCollectedDialog(BuildContext context, TreasurePoint point) {
+  void _showPointCollectedDialog(
+    BuildContext context,
+    TreasurePoint point, {
+    required bool allPointsFound,
+  }) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
@@ -648,14 +822,36 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         icon: Icon(
-          Icons.emoji_events,
+          allPointsFound ? Icons.auto_awesome : Icons.emoji_events,
           size: 64,
           color: theme.colorScheme.primary,
         ),
-        title: Text(l10n.pointCollected),
-        content: Text(
-          l10n.pointCollectedDesc(point.name),
-          textAlign: TextAlign.center,
+        title: Text(
+          allPointsFound ? l10n.congratulations : l10n.pointCollected,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.pointCollectedDesc(point.name),
+              textAlign: TextAlign.center,
+            ),
+            if (allPointsFound) ...[
+              const SizedBox(height: 12),
+              Text(
+                l10n.allPointsFound,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.treasureHuntCompleteEasterEgg,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ],
         ),
         actions: [
           TextButton(
@@ -667,7 +863,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.continueScan),
+            child: Text(allPointsFound ? l10n.ok : l10n.continueScan),
           ),
         ],
       ),
@@ -889,23 +1085,22 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
 
       if (!context.mounted) return;
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QrScannerPage(
-            currentPosition: position,
-            treasurePoints: context.read<TreasureHuntBloc>().state.points,
-            unlockedPointIds: context
-                .read<TreasureHuntBloc>()
-                .state
-                .unlockedPointIds,
-            onCodeScanned: (code) {
-              context.read<TreasureHuntBloc>().add(ScanQRCode(code));
-              Navigator.pop(context);
-            },
-          ),
-        ),
-      );
+      final scannedCode = await Navigator.of(context, rootNavigator: true)
+          .push<String>(
+            MaterialPageRoute(
+              fullscreenDialog: true,
+              builder: (context) => QrScannerPage(
+                currentPosition: position,
+                treasurePoints: context.read<TreasureHuntBloc>().state.points,
+                unlockedPointIds: context
+                    .read<TreasureHuntBloc>()
+                    .state
+                    .unlockedPointIds,
+              ),
+            ),
+          );
+      if (!context.mounted || scannedCode == null) return;
+      context.read<TreasureHuntBloc>().add(ScanQRCode(scannedCode));
     } catch (_) {
       if (!context.mounted) return;
       // Re-ask for location instead of showing an error.
@@ -1041,5 +1236,53 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(l10n.skipTreasureHuntEnabledSnack)));
+  }
+}
+
+class _MapBrandBadge extends StatelessWidget {
+  const _MapBrandBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Tooltip(
+      message: 'SGGW Days',
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface.withValues(alpha: 0.94),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.shadow.withValues(alpha: 0.16),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/icon/app_icon_master.png',
+                width: 24,
+                height: 24,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'SGGW',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
