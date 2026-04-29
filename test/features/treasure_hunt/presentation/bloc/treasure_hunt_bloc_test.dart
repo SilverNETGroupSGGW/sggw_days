@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -15,6 +16,20 @@ class _FakeTreasureHuntRepository extends TreasureHuntRepository {
 
   @override
   Future<List<TreasurePoint>> getTreasurePoints() async => points;
+
+  @override
+  Stream<List<TreasurePoint>> watchTreasurePoints() => Stream.value(points);
+}
+
+class _StreamingTreasureHuntRepository extends TreasureHuntRepository {
+  final StreamController<List<TreasurePoint>> controller =
+      StreamController<List<TreasurePoint>>();
+
+  @override
+  Future<List<TreasurePoint>> getTreasurePoints() async => const [];
+
+  @override
+  Stream<List<TreasurePoint>> watchTreasurePoints() => controller.stream;
 }
 
 class _SeededTreasureHuntBloc extends TreasureHuntBloc {
@@ -154,5 +169,65 @@ void main() {
     );
 
     await bloc.close();
+  });
+
+  test('updates points when repository emits a new snapshot', () async {
+    const firstPoint = TreasurePoint(
+      id: 'point-1',
+      name: 'First Point',
+      description: 'First description',
+      latitude: 52.1598,
+      longitude: 21.0463,
+      qrCode: 'https://sggw-days.web.app/scan/point-1',
+      type: PointType.treasurePoint,
+      order: 0,
+    );
+    const renamedPoint = TreasurePoint(
+      id: 'point-1',
+      name: 'Updated Point',
+      description: 'Fresh description',
+      latitude: 52.1598,
+      longitude: 21.0463,
+      qrCode: 'https://sggw-days.web.app/scan/point-1',
+      type: PointType.treasurePoint,
+      order: 0,
+    );
+
+    final progressBox = await Hive.openBox<List<String>>('progress_bloc_test');
+    final repository = _StreamingTreasureHuntRepository();
+    final bloc = TreasureHuntBloc(
+      repository: repository,
+      progressBox: progressBox,
+    );
+
+    final firstSnapshot = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TreasureHuntState>().having(
+          (state) => state.points.single.name,
+          'point name',
+          'First Point',
+        ),
+      ),
+    );
+    bloc.add(const LoadTreasurePoints());
+    repository.controller.add(const [firstPoint]);
+    await firstSnapshot;
+
+    final updatedSnapshot = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TreasureHuntState>().having(
+          (state) => state.points.single.name,
+          'point name',
+          'Updated Point',
+        ),
+      ),
+    );
+    repository.controller.add(const [renamedPoint]);
+    await updatedSnapshot;
+
+    await bloc.close();
+    await repository.controller.close();
   });
 }

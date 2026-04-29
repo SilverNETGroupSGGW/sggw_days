@@ -18,15 +18,7 @@ class TreasureHuntRepository {
   Future<List<TreasurePoint>> getTreasurePoints() async {
     try {
       final snapshot = await _db.collection('treasure_points').get();
-      final points = <TreasurePoint>[];
-      for (final doc in snapshot.docs) {
-        try {
-          final data = _normalizeTreasurePointData(doc.id, doc.data());
-          points.add(TreasurePoint.fromJson(data));
-        } catch (e) {
-          debugPrint('Skipping treasure point ${doc.id}: $e');
-        }
-      }
+      final points = _parseSnapshot(snapshot);
       await _cacheData(points.map((p) => p.toJson()).toList());
       return points;
     } on FirebaseException {
@@ -35,6 +27,46 @@ class TreasureHuntRepository {
       debugPrint('TreasureHuntRepository error: $e');
       return await _loadFromCache();
     }
+  }
+
+  Stream<List<TreasurePoint>> watchTreasurePoints() async* {
+    final cached = await _loadFromCache();
+    if (cached.isNotEmpty) {
+      yield cached;
+    }
+
+    try {
+      await for (final snapshot
+          in _db.collection('treasure_points').snapshots()) {
+        final points = _parseSnapshot(snapshot);
+        await _cacheData(points.map((p) => p.toJson()).toList());
+        yield points;
+      }
+    } on FirebaseException {
+      if (cached.isEmpty) {
+        yield await _loadFromCache();
+      }
+    } catch (e) {
+      debugPrint('TreasureHuntRepository stream error: $e');
+      if (cached.isEmpty) {
+        yield await _loadFromCache();
+      }
+    }
+  }
+
+  List<TreasurePoint> _parseSnapshot(
+    QuerySnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    final points = <TreasurePoint>[];
+    for (final doc in snapshot.docs) {
+      try {
+        final data = _normalizeTreasurePointData(doc.id, doc.data());
+        points.add(TreasurePoint.fromJson(data));
+      } catch (e) {
+        debugPrint('Skipping treasure point ${doc.id}: $e');
+      }
+    }
+    return points;
   }
 
   Future<void> _cacheData(List<Map<String, dynamic>> data) async {

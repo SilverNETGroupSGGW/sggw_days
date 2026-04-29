@@ -24,19 +24,27 @@ class WikiState extends Equatable {
     WikiStatus? status,
     List<WikiArticle>? articles,
     List<WikiArticle>? filteredArticles,
-    String? selectedCategory,
-    String? searchQuery,
-    String? errorMessage,
+    Object? selectedCategory = _noChange,
+    Object? searchQuery = _noChange,
+    Object? errorMessage = _noChange,
   }) {
     return WikiState(
       status: status ?? this.status,
       articles: articles ?? this.articles,
       filteredArticles: filteredArticles ?? this.filteredArticles,
-      selectedCategory: selectedCategory,
-      searchQuery: searchQuery,
-      errorMessage: errorMessage,
+      selectedCategory: identical(selectedCategory, _noChange)
+          ? this.selectedCategory
+          : selectedCategory as String?,
+      searchQuery: identical(searchQuery, _noChange)
+          ? this.searchQuery
+          : searchQuery as String?,
+      errorMessage: identical(errorMessage, _noChange)
+          ? this.errorMessage
+          : errorMessage as String?,
     );
   }
+
+  static const Object _noChange = Object();
 
   @override
   List<Object?> get props => [

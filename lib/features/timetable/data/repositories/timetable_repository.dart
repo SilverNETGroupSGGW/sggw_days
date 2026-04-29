@@ -6,24 +6,17 @@ import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 
 class TimetableRepository {
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _firestore;
   static const _cacheKey = 'timetable_events_cache';
 
-  TimetableRepository({FirebaseFirestore? firestore})
-    : _firestore = firestore ?? FirebaseFirestore.instance;
+  TimetableRepository({FirebaseFirestore? firestore}) : _firestore = firestore;
+
+  FirebaseFirestore get _db => _firestore ?? FirebaseFirestore.instance;
 
   Future<List<TimetableEvent>> getEvents() async {
     try {
-      final snapshot = await _firestore.collection('timetable_events').get();
-      final events = <TimetableEvent>[];
-      for (final doc in snapshot.docs) {
-        try {
-          final data = _normalizeTimetableEventData(doc.id, doc.data());
-          events.add(TimetableEvent.fromJson(data));
-        } catch (e) {
-          debugPrint('Skipping timetable event ${doc.id}: $e');
-        }
-      }
+      final snapshot = await _db.collection('timetable_events').get();
+      final events = _parseSnapshot(snapshot);
       await _cacheData(events.map((e) => e.toJson()).toList());
       return events;
     } on FirebaseException {
@@ -32,6 +25,46 @@ class TimetableRepository {
       debugPrint('TimetableRepository error: $e');
       return await _loadFromCache();
     }
+  }
+
+  Stream<List<TimetableEvent>> watchEvents() async* {
+    final cached = await _loadFromCache();
+    if (cached.isNotEmpty) {
+      yield cached;
+    }
+
+    try {
+      await for (final snapshot
+          in _db.collection('timetable_events').snapshots()) {
+        final events = _parseSnapshot(snapshot);
+        await _cacheData(events.map((e) => e.toJson()).toList());
+        yield events;
+      }
+    } on FirebaseException {
+      if (cached.isEmpty) {
+        yield await _loadFromCache();
+      }
+    } catch (e) {
+      debugPrint('TimetableRepository stream error: $e');
+      if (cached.isEmpty) {
+        yield await _loadFromCache();
+      }
+    }
+  }
+
+  List<TimetableEvent> _parseSnapshot(
+    QuerySnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    final events = <TimetableEvent>[];
+    for (final doc in snapshot.docs) {
+      try {
+        final data = _normalizeTimetableEventData(doc.id, doc.data());
+        events.add(TimetableEvent.fromJson(data));
+      } catch (e) {
+        debugPrint('Skipping timetable event ${doc.id}: $e');
+      }
+    }
+    return events;
   }
 
   Future<void> _cacheData(List<Map<String, dynamic>> data) async {

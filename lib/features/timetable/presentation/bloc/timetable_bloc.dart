@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
@@ -8,6 +10,7 @@ import 'package:sggw_days/features/timetable/presentation/bloc/timetable_state.d
 
 class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   final TimetableRepository _repository;
+  StreamSubscription<List<model.TimetableEvent>>? _eventsSubscription;
 
   TimetableBloc({required TimetableRepository repository})
     : _repository = repository,
@@ -18,6 +21,8 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     on<ToggleFavorite>(_onToggleFavorite);
     on<ToggleShowFavorites>(_onToggleShowFavorites);
     on<CheckInEvent>(_onCheckInEvent);
+    on<_TimetableEventsUpdated>(_onTimetableEventsUpdated);
+    on<_TimetableEventsFailed>(_onTimetableEventsFailed);
   }
 
   Future<void> _onLoadTimetableEvents(
@@ -26,37 +31,21 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   ) async {
     emit(state.copyWith(status: TimetableStatus.loading));
     try {
-      final events = await _repository.getEvents();
-
-      // Load favorites from Hive
-      final favBox = await Hive.openBox<List<String>>('favorites');
-      final favoriteIds =
-          favBox.get('timetable_favorites', defaultValue: <String>[]) ??
-          <String>[];
-
-      // Load check-ins from Hive
-      final checkInBox = await Hive.openBox<List<String>>('check_ins');
-      final checkedInIds =
-          checkInBox.get('event_check_ins', defaultValue: <String>[]) ??
-          <String>[];
-
-      final filtered = _filterEvents(
-        events,
-        state.selectedDate,
-        state.selectedTag,
-        favoriteIds,
-        state.showFavoritesOnly,
-      );
+      await _eventsSubscription?.cancel();
+      final (:favoriteIds, :checkedInIds) = await _loadLocalSelections();
 
       emit(
         state.copyWith(
-          status: TimetableStatus.success,
-          events: events,
-          filteredEvents: filtered,
           selectedTag: state.selectedTag,
           favoriteIds: favoriteIds,
           checkedInIds: checkedInIds,
         ),
+      );
+
+      _eventsSubscription = _repository.watchEvents().listen(
+        (events) => add(_TimetableEventsUpdated(events)),
+        onError: (Object error) =>
+            add(_TimetableEventsFailed(error.toString())),
       );
     } catch (e) {
       emit(
@@ -66,6 +55,21 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
         ),
       );
     }
+  }
+
+  Future<({List<String> favoriteIds, List<String> checkedInIds})>
+  _loadLocalSelections() async {
+    final favBox = await Hive.openBox<List<String>>('favorites');
+    final favoriteIds =
+        favBox.get('timetable_favorites', defaultValue: <String>[]) ??
+        <String>[];
+
+    final checkInBox = await Hive.openBox<List<String>>('check_ins');
+    final checkedInIds =
+        checkInBox.get('event_check_ins', defaultValue: <String>[]) ??
+        <String>[];
+
+    return (favoriteIds: favoriteIds, checkedInIds: checkedInIds);
   }
 
   void _onFilterEventsByDate(
@@ -143,6 +147,42 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     );
   }
 
+  void _onTimetableEventsUpdated(
+    _TimetableEventsUpdated event,
+    Emitter<TimetableState> emit,
+  ) {
+    final filtered = _filterEvents(
+      event.events,
+      state.selectedDate,
+      state.selectedTag,
+      state.favoriteIds,
+      state.showFavoritesOnly,
+    );
+
+    emit(
+      state.copyWith(
+        status: TimetableStatus.success,
+        events: event.events,
+        filteredEvents: filtered,
+        errorMessage: null,
+      ),
+    );
+  }
+
+  void _onTimetableEventsFailed(
+    _TimetableEventsFailed event,
+    Emitter<TimetableState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        status: state.events.isEmpty
+            ? TimetableStatus.error
+            : TimetableStatus.success,
+        errorMessage: event.message,
+      ),
+    );
+  }
+
   List<model.TimetableEvent> _filterEvents(
     List<model.TimetableEvent> events,
     DateTime? date,
@@ -187,4 +227,28 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
       emit(state.copyWith(checkedInIds: updatedCheckIns));
     }
   }
+
+  @override
+  Future<void> close() async {
+    await _eventsSubscription?.cancel();
+    return super.close();
+  }
+}
+
+class _TimetableEventsUpdated extends TimetableEvent {
+  final List<model.TimetableEvent> events;
+
+  const _TimetableEventsUpdated(this.events);
+
+  @override
+  List<Object?> get props => [events];
+}
+
+class _TimetableEventsFailed extends TimetableEvent {
+  final String message;
+
+  const _TimetableEventsFailed(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

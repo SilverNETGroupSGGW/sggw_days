@@ -6,24 +6,17 @@ import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
 
 class WikiRepository {
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _firestore;
   static const _cacheKey = 'wiki_articles_cache';
 
-  WikiRepository({FirebaseFirestore? firestore})
-    : _firestore = firestore ?? FirebaseFirestore.instance;
+  WikiRepository({FirebaseFirestore? firestore}) : _firestore = firestore;
+
+  FirebaseFirestore get _db => _firestore ?? FirebaseFirestore.instance;
 
   Future<List<WikiArticle>> getArticles() async {
     try {
-      final snapshot = await _firestore.collection('wiki_articles').get();
-      final articles = <WikiArticle>[];
-      for (final doc in snapshot.docs) {
-        try {
-          final data = _normalizeWikiArticleData(doc.id, doc.data());
-          articles.add(WikiArticle.fromJson(data));
-        } catch (e) {
-          debugPrint('Skipping wiki article ${doc.id}: $e');
-        }
-      }
+      final snapshot = await _db.collection('wiki_articles').get();
+      final articles = _parseSnapshot(snapshot);
       await _cacheData(articles.map((a) => a.toJson()).toList());
       return articles;
     } on FirebaseException {
@@ -32,6 +25,46 @@ class WikiRepository {
       debugPrint('WikiRepository error: $e');
       return await _loadFromCache();
     }
+  }
+
+  Stream<List<WikiArticle>> watchArticles() async* {
+    final cached = await _loadFromCache();
+    if (cached.isNotEmpty) {
+      yield cached;
+    }
+
+    try {
+      await for (final snapshot
+          in _db.collection('wiki_articles').snapshots()) {
+        final articles = _parseSnapshot(snapshot);
+        await _cacheData(articles.map((a) => a.toJson()).toList());
+        yield articles;
+      }
+    } on FirebaseException {
+      if (cached.isEmpty) {
+        yield await _loadFromCache();
+      }
+    } catch (e) {
+      debugPrint('WikiRepository stream error: $e');
+      if (cached.isEmpty) {
+        yield await _loadFromCache();
+      }
+    }
+  }
+
+  List<WikiArticle> _parseSnapshot(
+    QuerySnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    final articles = <WikiArticle>[];
+    for (final doc in snapshot.docs) {
+      try {
+        final data = _normalizeWikiArticleData(doc.id, doc.data());
+        articles.add(WikiArticle.fromJson(data));
+      } catch (e) {
+        debugPrint('Skipping wiki article ${doc.id}: $e');
+      }
+    }
+    return articles;
   }
 
   Future<void> _cacheData(List<Map<String, dynamic>> data) async {
