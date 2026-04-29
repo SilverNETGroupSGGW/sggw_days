@@ -28,7 +28,9 @@ jobs:
         uses: ./.github/actions/setup-project
 
       - name: Build web
-        run: flutter build web --wasm --release --base-href "/"
+        run: >-
+          flutter build web --wasm --release --base-href "/"
+          --dart-define=FIREBASE_WEB_PUSH_VAPID_KEY=${{ secrets.FIREBASE_WEB_PUSH_VAPID_KEY }}
 
       - name: Prepare Firebase service account
         run: |
@@ -38,9 +40,9 @@ jobs:
       - name: Install Firebase CLI
         run: npm install --global firebase-tools
 
-      - name: Deploy Firebase Hosting and rules
+      - name: Deploy Firebase Hosting, Functions, and rules
         run: firebase deploy --project sggw-days --only
-          hosting,firestore:rules,storage:main --non-interactive
+          hosting,functions,firestore:rules,storage:main --non-interactive
 
       - name: Clean up Firebase service account
         if: always()

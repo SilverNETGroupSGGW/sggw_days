@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
     as model;
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
@@ -10,11 +11,15 @@ import 'package:sggw_days/features/timetable/presentation/bloc/timetable_state.d
 
 class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   final TimetableRepository _repository;
+  final EventReminderService? _eventReminderService;
   StreamSubscription<List<model.TimetableEvent>>? _eventsSubscription;
 
-  TimetableBloc({required TimetableRepository repository})
-    : _repository = repository,
-      super(const TimetableState()) {
+  TimetableBloc({
+    required TimetableRepository repository,
+    EventReminderService? eventReminderService,
+  }) : _repository = repository,
+       _eventReminderService = eventReminderService,
+       super(const TimetableState()) {
     on<LoadTimetableEvents>(_onLoadTimetableEvents);
     on<FilterEventsByDate>(_onFilterEventsByDate);
     on<FilterEventsByTag>(_onFilterEventsByTag);
@@ -125,6 +130,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     emit(
       state.copyWith(favoriteIds: updatedFavorites, filteredEvents: filtered),
     );
+    await _syncEventReminders(state.events, updatedFavorites);
   }
 
   void _onToggleShowFavorites(
@@ -145,6 +151,18 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
         filteredEvents: filtered,
       ),
     );
+  }
+
+  Future<void> _syncEventReminders(
+    List<model.TimetableEvent> events,
+    List<String> favoriteIds,
+  ) async {
+    try {
+      await _eventReminderService?.scheduleFavoriteEventReminders(
+        events,
+        favoriteIds,
+      );
+    } catch (_) {}
   }
 
   void _onTimetableEventsUpdated(
@@ -169,6 +187,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
         errorMessage: null,
       ),
     );
+    unawaited(_syncEventReminders(event.events, state.favoriteIds));
   }
 
   DateTime? _firstEventDate(List<model.TimetableEvent> events) {

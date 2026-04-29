@@ -1,16 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
+import 'package:sggw_days/features/notifications/data/notification_repository.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
+import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool _notificationBusy = false;
+  bool _eventRemindersEnabled = false;
+  bool _pushNotificationsEnabled = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _eventRemindersEnabled = context
+        .read<EventReminderService>()
+        .remindersEnabled;
+    _pushNotificationsEnabled = context
+        .read<NotificationRepository>()
+        .pushNotificationsEnabled;
+  }
+
+  Future<void> _toggleEventReminders(bool value) async {
+    final l10n = AppLocalizations.of(context)!;
+    final reminderService = context.read<EventReminderService>();
+    setState(() => _notificationBusy = true);
+    try {
+      if (value) {
+        final granted = await reminderService.enableReminders();
+        if (granted) {
+          if (!mounted) return;
+          final timetableState = context.read<TimetableBloc>().state;
+          await reminderService.scheduleFavoriteEventReminders(
+            timetableState.events,
+            timetableState.favoriteIds,
+          );
+        }
+        if (!mounted) return;
+        setState(() => _eventRemindersEnabled = granted);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              granted
+                  ? l10n.eventRemindersEnabledSnack
+                  : l10n.notificationPermissionDenied,
+            ),
+          ),
+        );
+      } else {
+        await reminderService.disableReminders();
+        if (!mounted) return;
+        setState(() => _eventRemindersEnabled = false);
+      }
+    } finally {
+      if (mounted) setState(() => _notificationBusy = false);
+    }
+  }
+
+  Future<void> _togglePushNotifications(bool value) async {
+    final l10n = AppLocalizations.of(context)!;
+    final notificationRepository = context.read<NotificationRepository>();
+    setState(() => _notificationBusy = true);
+    try {
+      if (value) {
+        final result = await notificationRepository.enablePushNotifications();
+        if (!mounted) return;
+        setState(() => _pushNotificationsEnabled = result.enabled);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result.enabled
+                  ? l10n.pushNotificationsEnabledSnack
+                  : result.message ?? l10n.notificationPermissionDenied,
+            ),
+          ),
+        );
+      } else {
+        await notificationRepository.disablePushNotifications();
+        if (!mounted) return;
+        setState(() => _pushNotificationsEnabled = false);
+      }
+    } finally {
+      if (mounted) setState(() => _notificationBusy = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final reminderService = context.read<EventReminderService>();
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settings)),
@@ -18,6 +106,30 @@ class SettingsPage extends StatelessWidget {
         builder: (context, state) {
           return ListView(
             children: [
+              SwitchListTile(
+                secondary: const Icon(Icons.campaign_outlined),
+                title: Text(l10n.pushNotificationsSettingTitle),
+                subtitle: Text(l10n.pushNotificationsSettingDesc),
+                value: _pushNotificationsEnabled,
+                onChanged: _notificationBusy ? null : _togglePushNotifications,
+              ),
+              SwitchListTile(
+                secondary: const Icon(Icons.notifications_active_outlined),
+                title: Text(l10n.eventRemindersSettingTitle),
+                subtitle: Text(
+                  reminderService.supportsLocalReminders
+                      ? l10n.eventRemindersSettingDesc
+                      : l10n.eventRemindersUnsupportedDesc,
+                ),
+                value:
+                    reminderService.supportsLocalReminders &&
+                    _eventRemindersEnabled,
+                onChanged:
+                    reminderService.supportsLocalReminders && !_notificationBusy
+                    ? _toggleEventReminders
+                    : null,
+              ),
+              const Divider(),
               ListTile(
                 leading: const Icon(Icons.language),
                 title: Text(l10n.language),

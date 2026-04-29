@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,8 @@ import 'package:sggw_days/core/router/app_router.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
 import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
+import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
+import 'package:sggw_days/features/notifications/data/notification_repository.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
@@ -120,6 +124,24 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(create: (context) => WikiRepository()),
         RepositoryProvider(create: (context) => TimetableRepository()),
         RepositoryProvider(create: (context) => AdminRepository()),
+        RepositoryProvider(
+          create: (context) {
+            final service = EventReminderService(
+              settingsBox: widget.settingsBox,
+            );
+            unawaited(service.initialize());
+            return service;
+          },
+        ),
+        RepositoryProvider(
+          create: (context) {
+            final repository = NotificationRepository(
+              settingsBox: widget.settingsBox,
+            );
+            unawaited(repository.refreshRegistrationIfEnabled());
+            return repository;
+          },
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -138,8 +160,10 @@ class _MyAppState extends State<MyApp> {
                 WikiBloc(repository: context.read<WikiRepository>()),
           ),
           BlocProvider(
-            create: (context) =>
-                TimetableBloc(repository: context.read<TimetableRepository>()),
+            create: (context) => TimetableBloc(
+              repository: context.read<TimetableRepository>(),
+              eventReminderService: context.read<EventReminderService>(),
+            ),
           ),
           BlocProvider(
             create: (context) =>

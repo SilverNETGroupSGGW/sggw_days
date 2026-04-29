@@ -7,12 +7,15 @@ A new Flutter project.
 The repository deploys Firebase automatically with GitHub Actions:
 
 - Pull requests run [firebase-hosting-pull-request.yml](.github/workflows/firebase-hosting-pull-request.yml) to validate the project, build a debug Android APK artifact, and create Hosting preview channels for branches in this repository.
-- Pushes to `main` and manual workflow dispatch run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml), which validates the Flutter project, builds the web app, and deploys Firebase Hosting plus Firestore and Storage rules to the `sggw-days` project.
+- Pushes to `main` and manual workflow dispatch run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml), which validates the Flutter project, builds the web app, and deploys Firebase Hosting, Functions, plus Firestore and Storage rules to the `sggw-days` project.
 - Pushes to `main` and manual workflow dispatch can also run [play-store-deploy.yml](.github/workflows/play-store-deploy.yml) to build an Android App Bundle and upload it to Google Play. The workflow defaults to the public testing track and can be overridden for closed testing when needed.
 
 Required repository secret:
 
 - `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Hosting and update Firestore and Storage rules.
+- `FIREBASE_WEB_PUSH_VAPID_KEY`: Firebase Cloud Messaging web push certificate key used when building the web app. Without it, web clients cannot opt in to broadcast push notifications; Android and iOS push still use native FCM tokens.
+
+The Firebase service account also needs permission to deploy Cloud Functions for the admin broadcast notification sender. Broadcast requests are created from the admin panel, then `functions/index.js` sends them to registered client tokens with the Firebase Admin SDK.
 
 Additional secrets required by the Google Play workflow:
 

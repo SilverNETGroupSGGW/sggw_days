@@ -968,6 +968,54 @@ abstract class AppLocalizations {
   /// **'Pokazuj punkty na mapie, wiedzę i harmonogram bez skanowania pierwszego punktu skarbu.'**
   String get skipTreasureHuntSettingDesc;
 
+  /// No description provided for @eventRemindersSettingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienia o wydarzeniach'**
+  String get eventRemindersSettingTitle;
+
+  /// No description provided for @eventRemindersSettingDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiadom mnie 30 minut przed ulubionymi wydarzeniami z harmonogramu.'**
+  String get eventRemindersSettingDesc;
+
+  /// No description provided for @eventRemindersUnsupportedDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tylko w aplikacji mobilnej.'**
+  String get eventRemindersUnsupportedDesc;
+
+  /// No description provided for @eventRemindersEnabledSnack.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienia dla ulubionych wydarzeń są włączone.'**
+  String get eventRemindersEnabledSnack;
+
+  /// No description provided for @pushNotificationsSettingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiadomienia organizatorów'**
+  String get pushNotificationsSettingTitle;
+
+  /// No description provided for @pushNotificationsSettingDesc.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otrzymuj ważne komunikaty wysyłane przez organizatorów wydarzenia.'**
+  String get pushNotificationsSettingDesc;
+
+  /// No description provided for @pushNotificationsEnabledSnack.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiadomienia organizatorów są włączone.'**
+  String get pushNotificationsEnabledSnack;
+
+  /// No description provided for @notificationPermissionDenied.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie przyznano uprawnienia do powiadomień.'**
+  String get notificationPermissionDenied;
+
   /// No description provided for @permissionDeniedTitle.
   ///
   /// In pl, this message translates to:

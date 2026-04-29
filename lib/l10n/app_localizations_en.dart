@@ -492,6 +492,35 @@ class AppLocalizationsEn extends AppLocalizations {
       'Show map points, wiki and timetable without scanning the first treasure point.';
 
   @override
+  String get eventRemindersSettingTitle => 'Event reminders';
+
+  @override
+  String get eventRemindersSettingDesc =>
+      'Notify me 30 minutes before favourited timetable events.';
+
+  @override
+  String get eventRemindersUnsupportedDesc => 'Mobile app only.';
+
+  @override
+  String get eventRemindersEnabledSnack =>
+      'Event reminders are on for your favourites.';
+
+  @override
+  String get pushNotificationsSettingTitle => 'Broadcast notifications';
+
+  @override
+  String get pushNotificationsSettingDesc =>
+      'Receive important messages sent by event organisers.';
+
+  @override
+  String get pushNotificationsEnabledSnack =>
+      'Broadcast notifications are enabled.';
+
+  @override
+  String get notificationPermissionDenied =>
+      'Notification permission was not granted.';
+
+  @override
   String get permissionDeniedTitle => 'We need one more thing';
 
   @override

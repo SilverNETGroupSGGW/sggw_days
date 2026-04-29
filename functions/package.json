@@ -1,0 +1,16 @@
+{
+  "name": "sggw-days-functions",
+  "description": "Firebase Functions for Dni SGGW",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "deploy": "firebase deploy --only functions"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^7.0.1"
+  }
+}

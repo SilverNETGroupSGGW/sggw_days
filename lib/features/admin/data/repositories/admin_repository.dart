@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:sggw_days/features/admin/data/models/invalid_entry.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
@@ -13,10 +14,15 @@ class AdminRepository {
 
   final FirebaseFirestore _firestore;
   final FirebaseStorage _storage;
+  final FirebaseAuth _auth;
 
-  AdminRepository({FirebaseFirestore? firestore, FirebaseStorage? storage})
-    : _firestore = firestore ?? FirebaseFirestore.instance,
-      _storage = storage ?? FirebaseStorage.instance;
+  AdminRepository({
+    FirebaseFirestore? firestore,
+    FirebaseStorage? storage,
+    FirebaseAuth? auth,
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _storage = storage ?? FirebaseStorage.instance,
+       _auth = auth ?? FirebaseAuth.instance;
 
   // Treasure Points CRUD
   Future<TreasurePoint> createTreasurePoint(TreasurePoint point) async {
@@ -121,6 +127,30 @@ class AdminRepository {
     } catch (e) {
       throw Exception('Failed to upload image: $e');
     }
+  }
+
+  Future<void> createNotificationBroadcast({
+    required String title,
+    required String body,
+  }) async {
+    final trimmedTitle = title.trim();
+    final trimmedBody = body.trim();
+    if (trimmedTitle.isEmpty || trimmedBody.isEmpty) {
+      throw Exception('Notification title and body are required.');
+    }
+
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) {
+      throw Exception('Admin sign-in is required to send notifications.');
+    }
+
+    await _firestore.collection('notification_broadcasts').add({
+      'title': trimmedTitle,
+      'body': trimmedBody,
+      'status': 'queued',
+      'createdBy': currentUser.uid,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
   }
 
   // Fetch & Validate (single Firestore call returns both valid and invalid)

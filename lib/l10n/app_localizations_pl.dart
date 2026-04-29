@@ -494,6 +494,35 @@ class AppLocalizationsPl extends AppLocalizations {
       'Pokazuj punkty na mapie, wiedzę i harmonogram bez skanowania pierwszego punktu skarbu.';
 
   @override
+  String get eventRemindersSettingTitle => 'Przypomnienia o wydarzeniach';
+
+  @override
+  String get eventRemindersSettingDesc =>
+      'Powiadom mnie 30 minut przed ulubionymi wydarzeniami z harmonogramu.';
+
+  @override
+  String get eventRemindersUnsupportedDesc => 'Tylko w aplikacji mobilnej.';
+
+  @override
+  String get eventRemindersEnabledSnack =>
+      'Przypomnienia dla ulubionych wydarzeń są włączone.';
+
+  @override
+  String get pushNotificationsSettingTitle => 'Powiadomienia organizatorów';
+
+  @override
+  String get pushNotificationsSettingDesc =>
+      'Otrzymuj ważne komunikaty wysyłane przez organizatorów wydarzenia.';
+
+  @override
+  String get pushNotificationsEnabledSnack =>
+      'Powiadomienia organizatorów są włączone.';
+
+  @override
+  String get notificationPermissionDenied =>
+      'Nie przyznano uprawnienia do powiadomień.';
+
+  @override
   String get permissionDeniedTitle => 'Potrzebujemy jeszcze jednej rzeczy';
 
   @override
