@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timetable => 'Timetable';
 
   @override
+  String get leaderboard => 'Leaders';
+
+  @override
   String get notifications => 'Notifications';
 
   @override
@@ -161,7 +164,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicyCollectedStorage =>
-      'The app stores settings, onboarding status, cached content, and collected progress locally on your device.';
+      'The app stores settings, onboarding status, notification choices, cached content, leaderboard display name, and collected progress locally on your device. Leaderboards use an anonymous Firebase identifier so your device can update only its own score.';
 
   @override
   String get privacyPolicyCollectedAdmin =>
@@ -180,7 +183,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicyUsageAppState =>
-      'Local device storage is used to remember your preferences, onboarding completion, cached data, and scan progress between sessions.';
+      'Local device storage is used to remember your preferences, onboarding completion, cached data, notification choices, leaderboard display name, and scan progress between sessions. If you appear on leaderboards, only your display name, anonymous identifier, and aggregate score counts are published.';
 
   @override
   String get privacyPolicyUsageAdmin =>
@@ -196,7 +199,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicySharingFirebase =>
-      'Data submitted through administrator tools may be processed by Firebase Authentication, Cloud Firestore, and Firebase Storage as part of operating the app.';
+      'Data submitted through administrator tools, notification token registration, and optional leaderboard entries may be processed by Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions, and Firebase Storage as part of operating the app.';
 
   @override
   String get privacyPolicySharingLegal =>
@@ -215,7 +218,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicyChoicesAdmin =>
-      'Regular visitors do not need to create an account. Google sign-in is only used for approved administrator access.';
+      'Regular visitors do not need to create a visible account. Google sign-in is only used for approved administrator access, while leaderboards may use Firebase anonymous sign-in in the background.';
 
   @override
   String get privacyPolicyChoicesDevice =>
@@ -519,6 +522,47 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notificationPermissionDenied =>
       'Notification permission was not granted.';
+
+  @override
+  String get leaderboardOverall => 'All';
+
+  @override
+  String get leaderboardTreasureHunt => 'Hunt';
+
+  @override
+  String get leaderboardDisplayName => 'Display name';
+
+  @override
+  String get leaderboardEditName => 'Edit name';
+
+  @override
+  String get leaderboardSaveName => 'Save';
+
+  @override
+  String get leaderboardNoEntries => 'No scores yet';
+
+  @override
+  String get leaderboardYou => 'You';
+
+  @override
+  String leaderboardScore(int count) {
+    return '$count pts';
+  }
+
+  @override
+  String leaderboardFoundPoints(int count) {
+    return '$count points';
+  }
+
+  @override
+  String leaderboardTreasurePoints(int count) {
+    return '$count treasures';
+  }
+
+  @override
+  String leaderboardCheckIns(int count) {
+    return '$count check-ins';
+  }
 
   @override
   String get permissionDeniedTitle => 'We need one more thing';

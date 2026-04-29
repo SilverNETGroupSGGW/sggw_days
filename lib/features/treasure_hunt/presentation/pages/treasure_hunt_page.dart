@@ -48,7 +48,6 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   @override
   void initState() {
     super.initState();
-    context.read<TreasureHuntBloc>().add(const LoadTreasurePoints());
     _initLocationService();
   }
 

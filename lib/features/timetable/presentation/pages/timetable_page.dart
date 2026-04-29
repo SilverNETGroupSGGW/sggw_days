@@ -20,12 +20,6 @@ class _TimetablePageState extends State<TimetablePage> {
   bool _showTimeline = false;
 
   @override
-  void initState() {
-    super.initState();
-    context.read<TimetableBloc>().add(const LoadTimetableEvents());
-  }
-
-  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 

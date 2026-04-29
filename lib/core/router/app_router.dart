@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sggw_days/core/router/error_page.dart';
 import 'package:sggw_days/features/admin/presentation/pages/admin_login_page.dart';
 import 'package:sggw_days/features/home/presentation/pages/home_page.dart';
+import 'package:sggw_days/features/leaderboard/presentation/pages/leaderboard_page.dart';
 import 'package:sggw_days/features/settings/presentation/pages/privacy_policy_page.dart';
 import 'package:sggw_days/features/settings/presentation/pages/settings_page.dart';
 import 'package:sggw_days/features/timetable/presentation/pages/timetable_page.dart';
@@ -57,6 +58,14 @@ final appRouter = GoRouter(
             GoRoute(
               path: '/timetable',
               builder: (context, state) => const TimetablePage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/leaderboard',
+              builder: (context, state) => const LeaderboardPage(),
             ),
           ],
         ),

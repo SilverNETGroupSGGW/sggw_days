@@ -17,6 +17,8 @@ Required repository secret:
 
 The Firebase service account also needs permission to deploy Cloud Functions for the admin broadcast notification sender. Broadcast requests are created from the admin panel, then `functions/index.js` sends them to registered client tokens with the Firebase Admin SDK.
 
+Firebase Authentication must have Anonymous sign-in enabled for public leaderboard publishing. The app uses anonymous Firebase user IDs to make sure each device can update only its own aggregate leaderboard score.
+
 Additional secrets required by the Google Play workflow:
 
 - `KEYSTORE_BASE64`: Base64-encoded Android upload keystore.

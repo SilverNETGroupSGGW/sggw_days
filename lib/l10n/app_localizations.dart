@@ -122,6 +122,12 @@ abstract class AppLocalizations {
   /// **'Harmonogram'**
   String get timetable;
 
+  /// No description provided for @leaderboard.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ranking'**
+  String get leaderboard;
+
   /// No description provided for @notifications.
   ///
   /// In pl, this message translates to:
@@ -383,7 +389,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyCollectedStorage.
   ///
   /// In pl, this message translates to:
-  /// **'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, dane z pamięci podręcznej oraz postęp w zbieraniu punktów.'**
+  /// **'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, wybory dotyczące powiadomień, dane z pamięci podręcznej, nazwę w rankingu oraz postęp w zbieraniu punktów. Rankingi korzystają z anonimowego identyfikatora Firebase, żeby urządzenie mogło aktualizować tylko własny wynik.'**
   String get privacyPolicyCollectedStorage;
 
   /// No description provided for @privacyPolicyCollectedAdmin.
@@ -413,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyUsageAppState.
   ///
   /// In pl, this message translates to:
-  /// **'Lokalna pamięć urządzenia służy do zapamiętywania preferencji, ukończenia wprowadzenia, danych z pamięci podręcznej oraz postępu skanowania między sesjami.'**
+  /// **'Lokalna pamięć urządzenia służy do zapamiętywania preferencji, ukończenia wprowadzenia, danych z pamięci podręcznej, wyborów dotyczących powiadomień, nazwy w rankingu oraz postępu skanowania między sesjami. Jeśli pojawisz się w rankingu, publikowana jest tylko nazwa, anonimowy identyfikator i zagregowane wyniki.'**
   String get privacyPolicyUsageAppState;
 
   /// No description provided for @privacyPolicyUsageAdmin.
@@ -437,7 +443,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicySharingFirebase.
   ///
   /// In pl, this message translates to:
-  /// **'Dane przesłane przez narzędzia administracyjne mogą być przetwarzane przez Firebase Authentication, Cloud Firestore i Firebase Storage w celu działania aplikacji.'**
+  /// **'Dane przesłane przez narzędzia administracyjne, rejestrację tokenów powiadomień oraz opcjonalne wpisy rankingowe mogą być przetwarzane przez Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions i Firebase Storage w celu działania aplikacji.'**
   String get privacyPolicySharingFirebase;
 
   /// No description provided for @privacyPolicySharingLegal.
@@ -467,7 +473,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyChoicesAdmin.
   ///
   /// In pl, this message translates to:
-  /// **'Zwykli odwiedzający nie muszą tworzyć konta. Logowanie Google jest używane wyłącznie dla zatwierdzonego dostępu administratora.'**
+  /// **'Zwykli odwiedzający nie muszą tworzyć widocznego konta. Logowanie Google jest używane wyłącznie dla zatwierdzonego dostępu administratora, a rankingi mogą korzystać z anonimowego logowania Firebase w tle.'**
   String get privacyPolicyChoicesAdmin;
 
   /// No description provided for @privacyPolicyChoicesDevice.
@@ -1015,6 +1021,72 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Nie przyznano uprawnienia do powiadomień.'**
   String get notificationPermissionDenied;
+
+  /// No description provided for @leaderboardOverall.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystko'**
+  String get leaderboardOverall;
+
+  /// No description provided for @leaderboardTreasureHunt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gra'**
+  String get leaderboardTreasureHunt;
+
+  /// No description provided for @leaderboardDisplayName.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa w rankingu'**
+  String get leaderboardDisplayName;
+
+  /// No description provided for @leaderboardEditName.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień nazwę'**
+  String get leaderboardEditName;
+
+  /// No description provided for @leaderboardSaveName.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz'**
+  String get leaderboardSaveName;
+
+  /// No description provided for @leaderboardNoEntries.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak wyników'**
+  String get leaderboardNoEntries;
+
+  /// No description provided for @leaderboardYou.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ty'**
+  String get leaderboardYou;
+
+  /// No description provided for @leaderboardScore.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} pkt'**
+  String leaderboardScore(int count);
+
+  /// No description provided for @leaderboardFoundPoints.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} punktów'**
+  String leaderboardFoundPoints(int count);
+
+  /// No description provided for @leaderboardTreasurePoints.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} skarbów'**
+  String leaderboardTreasurePoints(int count);
+
+  /// No description provided for @leaderboardCheckIns.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} meldunków'**
+  String leaderboardCheckIns(int count);
 
   /// No description provided for @permissionDeniedTitle.
   ///
