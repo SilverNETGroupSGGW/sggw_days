@@ -18,12 +18,13 @@ class AdminAuthState extends Equatable {
     bool? isLoading,
     bool? isUnauthorized,
     String? error,
+    bool clearError = false,
   }) {
     return AdminAuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       isLoading: isLoading ?? this.isLoading,
       isUnauthorized: isUnauthorized ?? this.isUnauthorized,
-      error: error,
+      error: clearError ? null : error ?? this.error,
     );
   }
 

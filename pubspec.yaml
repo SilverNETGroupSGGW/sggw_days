@@ -60,6 +60,7 @@ dependencies:
   confetti: ^0.8.0
   firebase_storage: ^13.3.0
   image_picker: ^1.2.1
+  dynamic_color: ^1.8.1
 
 dev_dependencies:
   flutter_test:

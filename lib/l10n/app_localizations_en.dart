@@ -73,35 +73,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingWelcomeDesc =>
-      'Discover SGGW campus, learn about the university, and enjoy the SGGW Days events!';
+      'Explore the campus, catch the best events, and collect a few surprises along the way.';
 
   @override
-  String get onboardingTreasureHuntTitle => 'Treasure Hunt';
+  String get onboardingTreasureHuntTitle => 'Campus Hunt';
 
   @override
   String get onboardingTreasureHuntDesc =>
-      'Find hidden points on campus, scan QR codes and earn points. You must be close to a point to scan its code.';
+      'Find marked spots around campus and scan their QR codes when you get close. Each scan unlocks more of the app.';
 
   @override
   String get onboardingWikiTitle => 'SGGW Knowledge';
 
   @override
   String get onboardingWikiDesc =>
-      'Learn more about the university\'s history, lecturers and interesting facts.';
+      'Peek into SGGW stories, useful places and campus facts whenever you need them.';
 
   @override
   String get onboardingTimetableTitle => 'Event Schedule';
 
   @override
   String get onboardingTimetableDesc =>
-      'Check the full SGGW Days program and don\'t miss any event.';
+      'Keep the day in your pocket and jump to the next thing without hunting through posters.';
 
   @override
-  String get onboardingPermissionsTitle => 'Permissions';
+  String get onboardingPermissionsTitle => 'Almost ready';
 
   @override
   String get onboardingPermissionsDesc =>
-      'The app needs access to your location for Treasure Hunt and camera for QR code scanning.';
+      'Camera lets you scan QR codes. Location helps confirm you are actually by a hunt point.';
 
   @override
   String get getStarted => 'Get Started';
@@ -119,10 +119,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cameraPermission => 'Camera';
 
   @override
-  String get grantPermissions => 'Grant Permissions';
+  String get grantPermissions => 'Allow camera and location';
 
   @override
-  String get permissionsGranted => 'Permissions Granted';
+  String get permissionsGranted => 'All set';
 
   @override
   String get viewOnboarding => 'View Onboarding';
@@ -306,6 +306,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminSignInFailed => 'Sign-in failed. Please try again.';
 
   @override
+  String adminSignInFailedDetail(String message) {
+    return 'Details: $message';
+  }
+
+  @override
+  String get debugEmailLoginTitle => 'Debug email login';
+
+  @override
+  String get signInWithEmailDebug => 'Sign in with email in debug';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get password => 'Password';
+
+  @override
   String get checkIn => 'Check In';
 
   @override
@@ -367,17 +384,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialDesc =>
-      'Scan your first QR code at a nearby point to unlock the full app experience.';
+      'Scan a nearby QR code to open the rest of the app and start collecting points.';
 
   @override
-  String get appLocked => 'Scan your first point to unlock';
+  String get appLocked => 'Scan one nearby point to open this tab';
 
   @override
-  String get pointCollected => 'Point Collected!';
+  String get pointCollected => 'Nice, point collected!';
 
   @override
   String pointCollectedDesc(String pointName) {
-    return 'You successfully scanned $pointName!';
+    return 'You scanned $pointName!';
   }
 
   @override
@@ -437,14 +454,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminAllEntriesFixed => 'All entries fixed successfully';
 
   @override
-  String get continueWithoutTreasureHunt => 'Continue without treasure hunt';
+  String get continueWithoutTreasureHunt => 'Use the app without the hunt';
 
   @override
-  String get skipTreasureHuntDialogTitle => 'Skip the treasure hunt?';
+  String get skipTreasureHuntDialogTitle => 'Skip the campus hunt?';
 
   @override
   String get skipTreasureHuntDialogBody =>
-      'You can still browse the map, wiki and timetable. QR collection and treasure progress will stay optional. You will also miss out on competition, leaderboards and rewards tied to the treasure hunt.';
+      'You can still use the map, wiki and timetable. QR collecting stays optional, but hunt rankings and rewards will not count for you.';
 
   @override
   String get skipTreasureHuntEnabledSnack =>
@@ -458,15 +475,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'Show map points, wiki and timetable without scanning the first treasure point.';
 
   @override
-  String get permissionDeniedTitle => 'Permission required';
+  String get permissionDeniedTitle => 'We need one more thing';
 
   @override
   String get permissionDeniedCameraBody =>
-      'Camera access is needed to scan QR codes during the treasure hunt.';
+      'Camera access lets you scan QR codes during the campus hunt.';
 
   @override
   String get permissionDeniedLocationBody =>
-      'Location access is needed to confirm that you are close enough to a treasure point.';
+      'Location access confirms you are close enough to collect a point.';
 
   @override
   String get permissionDeniedOpenSettings => 'Open settings';

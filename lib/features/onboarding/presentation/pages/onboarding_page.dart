@@ -22,7 +22,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final GlobalKey<IntroductionScreenState> _introKey =
       GlobalKey<IntroductionScreenState>();
   bool _permissionsGranted = false;
-  bool _autoAdvanced = false;
   bool _requestingPermissions = false;
 
   @override
@@ -57,13 +56,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
       setState(() {
         _permissionsGranted = granted;
       });
-      if (granted && !_autoAdvanced) {
-        _autoAdvanced = true;
-        // Small delay so the user sees the "Granted" state change.
-        await Future.delayed(const Duration(milliseconds: 350));
-        if (!mounted) return;
-        await _completeOnboarding();
-      }
     } finally {
       if (mounted) {
         setState(() => _requestingPermissions = false);
@@ -108,7 +100,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return SafeArea(
+    return SizedBox.expand(
       child: IntroductionScreen(
         key: _introKey,
         pages: [
@@ -241,8 +233,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             )
                           : Icon(
                               _permissionsGranted
-                                  ? Icons.check_box
-                                  : Icons.check_box_outline_blank,
+                                  ? Icons.check_circle
+                                  : Icons.shield_outlined,
                             ),
                       label: Text(
                         _permissionsGranted
@@ -263,9 +255,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
         ],
         onDone: _completeOnboarding,
-        onSkip: _completeOnboarding,
-        showSkipButton: true,
-        skip: Text(l10n.skip),
+        showSkipButton: false,
         next: Text(l10n.next),
         done: Text(l10n.getStarted),
         dotsDecorator: DotsDecorator(

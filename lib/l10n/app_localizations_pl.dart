@@ -73,35 +73,35 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get onboardingWelcomeDesc =>
-      'Odkryj kampus SGGW, poznaj uczelnię i ciesz się wydarzeniami Dni SGGW!';
+      'Poznaj kampus, wpadaj na najciekawsze wydarzenia i zbieraj małe niespodzianki po drodze.';
 
   @override
-  String get onboardingTreasureHuntTitle => 'Gra Terenowa';
+  String get onboardingTreasureHuntTitle => 'Gra po kampusie';
 
   @override
   String get onboardingTreasureHuntDesc =>
-      'Znajdź ukryte punkty na terenie uczelni, skanuj kody QR i zdobywaj punkty. Musisz być blisko punktu, aby zeskanować kod.';
+      'Szukaj oznaczonych miejsc na kampusie i skanuj QR-y, kiedy jesteś blisko. Każdy skan odblokowuje więcej aplikacji.';
 
   @override
   String get onboardingWikiTitle => 'Wiedza o SGGW';
 
   @override
   String get onboardingWikiDesc =>
-      'Dowiedz się więcej o historii, wykładowcach i ciekawostkach związanych z uczelnią.';
+      'Zajrzyj do historii SGGW, przydatnych miejsc i kampusowych ciekawostek, kiedy tylko chcesz.';
 
   @override
   String get onboardingTimetableTitle => 'Harmonogram Wydarzeń';
 
   @override
   String get onboardingTimetableDesc =>
-      'Sprawdź pełny program Dni SGGW i nie przegap żadnego wydarzenia.';
+      'Miej plan dnia pod ręką i szybko sprawdzaj, co dzieje się za chwilę.';
 
   @override
-  String get onboardingPermissionsTitle => 'Uprawnienia';
+  String get onboardingPermissionsTitle => 'Prawie gotowe';
 
   @override
   String get onboardingPermissionsDesc =>
-      'Aplikacja potrzebuje dostępu do lokalizacji do Gra Terenowej i kamery do skanowania kodów QR.';
+      'Kamera pozwala skanować QR-y. Lokalizacja pomaga sprawdzić, czy naprawdę jesteś przy punkcie gry.';
 
   @override
   String get getStarted => 'Rozpocznij';
@@ -119,10 +119,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get cameraPermission => 'Kamera';
 
   @override
-  String get grantPermissions => 'Przyznaj uprawnienia';
+  String get grantPermissions => 'Włącz kamerę i lokalizację';
 
   @override
-  String get permissionsGranted => 'Uprawnienia przyznane';
+  String get permissionsGranted => 'Gotowe';
 
   @override
   String get viewOnboarding => 'Pokaż wprowadzenie';
@@ -308,6 +308,23 @@ class AppLocalizationsPl extends AppLocalizations {
       'Logowanie nie powiodło się. Spróbuj ponownie.';
 
   @override
+  String adminSignInFailedDetail(String message) {
+    return 'Szczegóły: $message';
+  }
+
+  @override
+  String get debugEmailLoginTitle => 'Logowanie e-mailem w debug';
+
+  @override
+  String get signInWithEmailDebug => 'Zaloguj e-mailem w debug';
+
+  @override
+  String get email => 'E-mail';
+
+  @override
+  String get password => 'Hasło';
+
+  @override
   String get checkIn => 'Zamelduj się';
 
   @override
@@ -369,17 +386,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tutorialDesc =>
-      'Zeskanuj swój pierwszy kod QR przy pobliskim punkcie, aby odblokować pełne doświadczenie aplikacji.';
+      'Zeskanuj QR przy pobliskim punkcie, żeby odblokować resztę aplikacji i zacząć zbieranie.';
 
   @override
-  String get appLocked => 'Zeskanuj pierwszy punkt, aby odblokować';
+  String get appLocked => 'Zeskanuj pobliski punkt, żeby otworzyć tę zakładkę';
 
   @override
-  String get pointCollected => 'Punkt zebrany!';
+  String get pointCollected => 'Jest, punkt zebrany!';
 
   @override
   String pointCollectedDesc(String pointName) {
-    return 'Pomyślnie zeskanowałeś $pointName!';
+    return 'Zeskanowano $pointName!';
   }
 
   @override
@@ -439,14 +456,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get adminAllEntriesFixed => 'Wszystkie wpisy naprawione pomyślnie';
 
   @override
-  String get continueWithoutTreasureHunt => 'Kontynuuj bez gry terenowej';
+  String get continueWithoutTreasureHunt => 'Używaj apki bez gry';
 
   @override
-  String get skipTreasureHuntDialogTitle => 'Pominąć grę terenową?';
+  String get skipTreasureHuntDialogTitle => 'Pominąć grę po kampusie?';
 
   @override
   String get skipTreasureHuntDialogBody =>
-      'Nadal możesz przeglądać mapę, wiedzę i harmonogram. Zbieranie kodów QR oraz postęp gry pozostaną opcjonalne. Ominą Cię też rywalizacja, rankingi i nagrody powiązane z grą terenową.';
+      'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Zbieranie QR-ów zostanie opcjonalne, ale rankingi i nagrody z gry nie będą się wtedy liczyć.';
 
   @override
   String get skipTreasureHuntEnabledSnack =>
@@ -460,15 +477,15 @@ class AppLocalizationsPl extends AppLocalizations {
       'Pokazuj punkty na mapie, wiedzę i harmonogram bez skanowania pierwszego punktu skarbu.';
 
   @override
-  String get permissionDeniedTitle => 'Wymagane uprawnienie';
+  String get permissionDeniedTitle => 'Potrzebujemy jeszcze jednej rzeczy';
 
   @override
   String get permissionDeniedCameraBody =>
-      'Dostęp do kamery jest potrzebny do skanowania kodów QR podczas gry terenowej.';
+      'Kamera pozwala skanować QR-y podczas gry po kampusie.';
 
   @override
   String get permissionDeniedLocationBody =>
-      'Dostęp do lokalizacji jest potrzebny, aby potwierdzić, że jesteś wystarczająco blisko punktu skarbu.';
+      'Lokalizacja potwierdza, że jesteś wystarczająco blisko punktu.';
 
   @override
   String get permissionDeniedOpenSettings => 'Otwórz ustawienia';

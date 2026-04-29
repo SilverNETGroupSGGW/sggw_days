@@ -227,19 +227,19 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Odkryj kampus SGGW, poznaj uczelnię i ciesz się wydarzeniami Dni SGGW!'**
+  /// **'Poznaj kampus, wpadaj na najciekawsze wydarzenia i zbieraj małe niespodzianki po drodze.'**
   String get onboardingWelcomeDesc;
 
   /// No description provided for @onboardingTreasureHuntTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Gra Terenowa'**
+  /// **'Gra po kampusie'**
   String get onboardingTreasureHuntTitle;
 
   /// No description provided for @onboardingTreasureHuntDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Znajdź ukryte punkty na terenie uczelni, skanuj kody QR i zdobywaj punkty. Musisz być blisko punktu, aby zeskanować kod.'**
+  /// **'Szukaj oznaczonych miejsc na kampusie i skanuj QR-y, kiedy jesteś blisko. Każdy skan odblokowuje więcej aplikacji.'**
   String get onboardingTreasureHuntDesc;
 
   /// No description provided for @onboardingWikiTitle.
@@ -251,7 +251,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWikiDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Dowiedz się więcej o historii, wykładowcach i ciekawostkach związanych z uczelnią.'**
+  /// **'Zajrzyj do historii SGGW, przydatnych miejsc i kampusowych ciekawostek, kiedy tylko chcesz.'**
   String get onboardingWikiDesc;
 
   /// No description provided for @onboardingTimetableTitle.
@@ -263,19 +263,19 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTimetableDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Sprawdź pełny program Dni SGGW i nie przegap żadnego wydarzenia.'**
+  /// **'Miej plan dnia pod ręką i szybko sprawdzaj, co dzieje się za chwilę.'**
   String get onboardingTimetableDesc;
 
   /// No description provided for @onboardingPermissionsTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Uprawnienia'**
+  /// **'Prawie gotowe'**
   String get onboardingPermissionsTitle;
 
   /// No description provided for @onboardingPermissionsDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Aplikacja potrzebuje dostępu do lokalizacji do Gra Terenowej i kamery do skanowania kodów QR.'**
+  /// **'Kamera pozwala skanować QR-y. Lokalizacja pomaga sprawdzić, czy naprawdę jesteś przy punkcie gry.'**
   String get onboardingPermissionsDesc;
 
   /// No description provided for @getStarted.
@@ -311,13 +311,13 @@ abstract class AppLocalizations {
   /// No description provided for @grantPermissions.
   ///
   /// In pl, this message translates to:
-  /// **'Przyznaj uprawnienia'**
+  /// **'Włącz kamerę i lokalizację'**
   String get grantPermissions;
 
   /// No description provided for @permissionsGranted.
   ///
   /// In pl, this message translates to:
-  /// **'Uprawnienia przyznane'**
+  /// **'Gotowe'**
   String get permissionsGranted;
 
   /// No description provided for @viewOnboarding.
@@ -632,6 +632,36 @@ abstract class AppLocalizations {
   /// **'Logowanie nie powiodło się. Spróbuj ponownie.'**
   String get adminSignInFailed;
 
+  /// No description provided for @adminSignInFailedDetail.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły: {message}'**
+  String adminSignInFailedDetail(String message);
+
+  /// No description provided for @debugEmailLoginTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Logowanie e-mailem w debug'**
+  String get debugEmailLoginTitle;
+
+  /// No description provided for @signInWithEmailDebug.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaloguj e-mailem w debug'**
+  String get signInWithEmailDebug;
+
+  /// No description provided for @email.
+  ///
+  /// In pl, this message translates to:
+  /// **'E-mail'**
+  String get email;
+
+  /// No description provided for @password.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hasło'**
+  String get password;
+
   /// No description provided for @checkIn.
   ///
   /// In pl, this message translates to:
@@ -749,25 +779,25 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Zeskanuj swój pierwszy kod QR przy pobliskim punkcie, aby odblokować pełne doświadczenie aplikacji.'**
+  /// **'Zeskanuj QR przy pobliskim punkcie, żeby odblokować resztę aplikacji i zacząć zbieranie.'**
   String get tutorialDesc;
 
   /// No description provided for @appLocked.
   ///
   /// In pl, this message translates to:
-  /// **'Zeskanuj pierwszy punkt, aby odblokować'**
+  /// **'Zeskanuj pobliski punkt, żeby otworzyć tę zakładkę'**
   String get appLocked;
 
   /// No description provided for @pointCollected.
   ///
   /// In pl, this message translates to:
-  /// **'Punkt zebrany!'**
+  /// **'Jest, punkt zebrany!'**
   String get pointCollected;
 
   /// No description provided for @pointCollectedDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Pomyślnie zeskanowałeś {pointName}!'**
+  /// **'Zeskanowano {pointName}!'**
   String pointCollectedDesc(String pointName);
 
   /// No description provided for @seeDetails.
@@ -875,19 +905,19 @@ abstract class AppLocalizations {
   /// No description provided for @continueWithoutTreasureHunt.
   ///
   /// In pl, this message translates to:
-  /// **'Kontynuuj bez gry terenowej'**
+  /// **'Używaj apki bez gry'**
   String get continueWithoutTreasureHunt;
 
   /// No description provided for @skipTreasureHuntDialogTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Pominąć grę terenową?'**
+  /// **'Pominąć grę po kampusie?'**
   String get skipTreasureHuntDialogTitle;
 
   /// No description provided for @skipTreasureHuntDialogBody.
   ///
   /// In pl, this message translates to:
-  /// **'Nadal możesz przeglądać mapę, wiedzę i harmonogram. Zbieranie kodów QR oraz postęp gry pozostaną opcjonalne. Ominą Cię też rywalizacja, rankingi i nagrody powiązane z grą terenową.'**
+  /// **'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Zbieranie QR-ów zostanie opcjonalne, ale rankingi i nagrody z gry nie będą się wtedy liczyć.'**
   String get skipTreasureHuntDialogBody;
 
   /// No description provided for @skipTreasureHuntEnabledSnack.
@@ -911,19 +941,19 @@ abstract class AppLocalizations {
   /// No description provided for @permissionDeniedTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Wymagane uprawnienie'**
+  /// **'Potrzebujemy jeszcze jednej rzeczy'**
   String get permissionDeniedTitle;
 
   /// No description provided for @permissionDeniedCameraBody.
   ///
   /// In pl, this message translates to:
-  /// **'Dostęp do kamery jest potrzebny do skanowania kodów QR podczas gry terenowej.'**
+  /// **'Kamera pozwala skanować QR-y podczas gry po kampusie.'**
   String get permissionDeniedCameraBody;
 
   /// No description provided for @permissionDeniedLocationBody.
   ///
   /// In pl, this message translates to:
-  /// **'Dostęp do lokalizacji jest potrzebny, aby potwierdzić, że jesteś wystarczająco blisko punktu skarbu.'**
+  /// **'Lokalizacja potwierdza, że jesteś wystarczająco blisko punktu.'**
   String get permissionDeniedLocationBody;
 
   /// No description provided for @permissionDeniedOpenSettings.

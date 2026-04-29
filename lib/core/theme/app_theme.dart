@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 
 class AppColors {
   static const Color darkGreen = Color(0xFF003228);
@@ -7,40 +8,22 @@ class AppColors {
   static const Color yellow = Color(0xFFF0DC8C);
   static const Color red = Color(0xFFF01E32);
 
-  static const ColorScheme sggwLightScheme = ColorScheme(
+  static final ColorScheme sggwLightScheme = ColorScheme.fromSeed(
+    seedColor: primaryGreen,
     brightness: Brightness.light,
-    primary: primaryGreen,
-    onPrimary: Colors.white,
-    secondary: darkGreen,
-    onSecondary: Colors.white,
-    error: red,
-    onError: Colors.white,
-    surface: Colors.white,
-    onSurface: darkGreen,
-    tertiary: yellow,
-    onTertiary: darkGreen,
-  );
+  ).copyWith(error: red, tertiary: yellow, onTertiary: darkGreen);
 
-  static const ColorScheme sggwDarkScheme = ColorScheme(
+  static final ColorScheme sggwDarkScheme = ColorScheme.fromSeed(
+    seedColor: primaryGreen,
     brightness: Brightness.dark,
-    primary: primaryGreen,
-    onPrimary: darkGreen,
-    secondary: lightGreen,
-    onSecondary: darkGreen,
-    error: red,
-    onError: Colors.white,
-    surface: darkGreen,
-    onSurface: Colors.white,
-    tertiary: yellow,
-    onTertiary: darkGreen,
-  );
+  ).copyWith(error: red, tertiary: yellow, onTertiary: darkGreen);
 
-  static ColorScheme dynamicLightScheme = ColorScheme.fromSeed(
+  static final ColorScheme dynamicLightFallback = ColorScheme.fromSeed(
     seedColor: primaryGreen,
     brightness: Brightness.light,
   );
 
-  static ColorScheme dynamicDarkScheme = ColorScheme.fromSeed(
+  static final ColorScheme dynamicDarkFallback = ColorScheme.fromSeed(
     seedColor: primaryGreen,
     brightness: Brightness.dark,
   );
@@ -49,19 +32,44 @@ class AppColors {
 class AppTheme {
   static ThemeData light({
     bool useDynamicColors = false,
+    ColorScheme? dynamicColorScheme,
     bool boldText = false,
   }) => _build(
-    useDynamicColors ? AppColors.dynamicLightScheme : AppColors.sggwLightScheme,
+    _resolveScheme(
+      useDynamicColors: useDynamicColors,
+      platformScheme: dynamicColorScheme,
+      fallbackDynamicScheme: AppColors.dynamicLightFallback,
+      sggwScheme: AppColors.sggwLightScheme,
+    ),
     boldText: boldText,
   );
 
   static ThemeData dark({
     bool useDynamicColors = false,
+    ColorScheme? dynamicColorScheme,
     bool boldText = false,
   }) => _build(
-    useDynamicColors ? AppColors.dynamicDarkScheme : AppColors.sggwDarkScheme,
+    _resolveScheme(
+      useDynamicColors: useDynamicColors,
+      platformScheme: dynamicColorScheme,
+      fallbackDynamicScheme: AppColors.dynamicDarkFallback,
+      sggwScheme: AppColors.sggwDarkScheme,
+    ),
     boldText: boldText,
   );
+
+  static ColorScheme _resolveScheme({
+    required bool useDynamicColors,
+    required ColorScheme? platformScheme,
+    required ColorScheme fallbackDynamicScheme,
+    required ColorScheme sggwScheme,
+  }) {
+    if (!useDynamicColors) {
+      return sggwScheme;
+    }
+
+    return (platformScheme ?? fallbackDynamicScheme).harmonized();
+  }
 
   static ThemeData _build(ColorScheme colorScheme, {required bool boldText}) {
     final base = ThemeData(
@@ -69,7 +77,7 @@ class AppTheme {
       colorScheme: colorScheme,
       appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
       navigationBarTheme: NavigationBarThemeData(
-        indicatorColor: AppColors.primaryGreen.withValues(alpha: 0.3),
+        indicatorColor: colorScheme.primaryContainer,
         labelTextStyle: WidgetStateProperty.all(
           const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
         ),

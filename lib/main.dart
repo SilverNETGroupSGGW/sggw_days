@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -145,35 +146,41 @@ class _MyAppState extends State<MyApp> {
                 AdminBloc(adminRepository: context.read<AdminRepository>()),
           ),
         ],
-        child: BlocBuilder<SettingsCubit, SettingsState>(
-          builder: (context, settings) {
-            return MaterialApp.router(
-              title: 'Dni SGGW',
-              theme: AppTheme.light(
-                useDynamicColors: settings.useDynamicColors,
-                boldText: settings.boldText,
-              ),
-              darkTheme: AppTheme.dark(
-                useDynamicColors: settings.useDynamicColors,
-                boldText: settings.boldText,
-              ),
-              themeMode: settings.themeMode,
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [Locale('pl'), Locale('en')],
-              locale: settings.locale,
-              routerConfig: appRouter,
-              builder: (context, child) {
-                final mediaQuery = MediaQuery.of(context);
-                return MediaQuery(
-                  data: mediaQuery.copyWith(
-                    textScaler: TextScaler.linear(settings.textScaleFactor),
+        child: DynamicColorBuilder(
+          builder: (lightDynamic, darkDynamic) {
+            return BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, settings) {
+                return MaterialApp.router(
+                  title: 'Dni SGGW',
+                  theme: AppTheme.light(
+                    useDynamicColors: settings.useDynamicColors,
+                    dynamicColorScheme: lightDynamic,
+                    boldText: settings.boldText,
                   ),
-                  child: child!,
+                  darkTheme: AppTheme.dark(
+                    useDynamicColors: settings.useDynamicColors,
+                    dynamicColorScheme: darkDynamic,
+                    boldText: settings.boldText,
+                  ),
+                  themeMode: settings.themeMode,
+                  localizationsDelegates: [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: const [Locale('pl'), Locale('en')],
+                  locale: settings.locale,
+                  routerConfig: appRouter,
+                  builder: (context, child) {
+                    final mediaQuery = MediaQuery.of(context);
+                    return MediaQuery(
+                      data: mediaQuery.copyWith(
+                        textScaler: TextScaler.linear(settings.textScaleFactor),
+                      ),
+                      child: child!,
+                    );
+                  },
                 );
               },
             );
