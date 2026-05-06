@@ -95,7 +95,7 @@ flutter_launcher_icons:
   image_path: assets/icon/app_icon_master.png
   adaptive_icon_background: "#c8f0b4"
   adaptive_icon_foreground: assets/icon/android_dynamic_foreground.png
-  adaptive_icon_foreground_inset: 10
+  adaptive_icon_foreground_inset: 0
   adaptive_icon_monochrome: assets/icon/android_dynamic_monochrome.png
   remove_alpha_ios: true
   macos:

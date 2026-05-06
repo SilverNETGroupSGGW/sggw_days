@@ -10,6 +10,8 @@ const _sggwLogoPath = 'assets/icon/source/sggw_logo_white.png';
 const _silverNetLogoPath = 'assets/icon/source/silvernet_logo.png';
 const _markCanvasSize = 1024;
 const _markMaxDimension = 690;
+const _brandingWidth = 800;
+const _brandingHeight = 320;
 
 void main() {
   _generateCenterMark();
@@ -52,32 +54,25 @@ void _generateBranding() {
   final tempDir = Directory.systemTemp.createTempSync('sggw-days-splash-');
   final svgPath = '${tempDir.path}/branding.svg';
   final outputPath = '${tempDir.path}/branding.png';
-  final sggwLogo = _dataUri(_sggwLogoPath);
   final silverNetLogo = _dataUri(_silverNetLogoPath);
   final svg =
       '''
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="720" viewBox="0 0 1600 720">
+<svg xmlns="http://www.w3.org/2000/svg" width="$_brandingWidth" height="$_brandingHeight" viewBox="0 0 $_brandingWidth $_brandingHeight">
   <defs>
-    <filter id="softShadow" x="-10%" y="-30%" width="120%" height="170%">
-      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#001812" flood-opacity="0.28"/>
+    <filter id="softShadow" x="-8%" y="-18%" width="116%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#001812" flood-opacity="0.30"/>
     </filter>
   </defs>
-  <g fill="#F5FFF0" font-family="DejaVu Sans, Arial, sans-serif">
-    <image href="$sggwLogo" x="88" y="72" width="238" height="238" preserveAspectRatio="xMidYMid meet"/>
-    <rect x="376" y="72" width="2" height="292" rx="1" fill="#C8F0B4" opacity="0.58"/>
-    <text x="416" y="116" font-size="32" font-weight="700" letter-spacing="4">SGGW DAYS</text>
-    <text x="416" y="186" font-size="56" font-weight="800">Warsaw University</text>
-    <text x="416" y="254" font-size="56" font-weight="800">of Life Sciences</text>
-    <text x="416" y="312" font-size="26" font-weight="700" fill="#C8F0B4" letter-spacing="2">CREATED IN</text>
-    <text x="416" y="354" font-size="34" font-weight="700" fill="#DFF9D4">Wydział Zastosowań Informatyki i Informatyki</text>
-  </g>
-  <g transform="translate(96 414)" filter="url(#softShadow)">
-    <rect width="1408" height="236" rx="38" fill="#F8FFF4"/>
-    <image href="$silverNetLogo" x="38" y="32" width="172" height="172" preserveAspectRatio="xMidYMid meet"/>
-    <text x="250" y="84" font-family="DejaVu Sans, Arial, sans-serif" font-size="42" font-weight="700" fill="#456056">Created by</text>
-    <text x="250" y="158" font-family="DejaVu Sans, Arial, sans-serif" font-size="74" font-weight="800" fill="#202928">Silver.NET</text>
-    <text x="750" y="128" font-family="DejaVu Sans, Arial, sans-serif" font-size="38" font-weight="700" fill="#456056">Student creators</text>
-    <text x="750" y="178" font-family="DejaVu Sans, Arial, sans-serif" font-size="38" font-weight="700" fill="#456056">of the app</text>
+  <g transform="translate(28 34)" filter="url(#softShadow)">
+    <rect width="744" height="252" rx="42" fill="#F6FFF1"/>
+    <rect x="422" y="44" width="2" height="164" rx="1" fill="#B6DDA4"/>
+    <image href="$silverNetLogo" x="52" y="78" width="96" height="96" preserveAspectRatio="xMidYMid meet"/>
+    <text x="174" y="104" font-family="DejaVu Sans, Arial, sans-serif" font-size="27" font-weight="700" fill="#486158">Koło naukowe</text>
+    <text x="174" y="160" font-family="DejaVu Sans, Arial, sans-serif" font-size="38" font-weight="800" fill="#202928">Silver.NET</text>
+    <text x="462" y="96" font-family="DejaVu Sans, Arial, sans-serif" font-size="54" font-weight="800" fill="#003228">WZIM</text>
+    <text x="462" y="142" font-family="DejaVu Sans, Arial, sans-serif" font-size="22" font-weight="700" fill="#40574E">Wydział Zastosowań</text>
+    <text x="462" y="176" font-family="DejaVu Sans, Arial, sans-serif" font-size="22" font-weight="700" fill="#40574E">Informatyki i</text>
+    <text x="462" y="210" font-family="DejaVu Sans, Arial, sans-serif" font-size="22" font-weight="700" fill="#40574E">Matematyki</text>
   </g>
 </svg>
 ''';
@@ -85,9 +80,9 @@ void _generateBranding() {
   File(svgPath).writeAsStringSync(svg);
   final result = Process.runSync('rsvg-convert', [
     '-w',
-    '1600',
+    '$_brandingWidth',
     '-h',
-    '720',
+    '$_brandingHeight',
     svgPath,
     '-o',
     outputPath,

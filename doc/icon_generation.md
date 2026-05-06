@@ -21,16 +21,19 @@ Source of truth: `assets/icon/source/app_icon.svg`
 
 ## Validation
 
-- Android foreground source max dimension: 777 px (75.9% of canvas, target <= 75.9%)
-- Android foreground after 10% launcher inset: 622 px (60.7% of canvas, target <= 61.1%)
+- Native flat icon visible max dimension: 573 px (56.0% of canvas)
+- Android foreground source max dimension: 531 px (51.9% of canvas, target <= 51.9%)
+- Android foreground after 0% launcher inset: 531 px (51.9% of canvas, target 50.9%-51.9%)
+- Android themed monochrome source max dimension: 664 px (64.8% of canvas, target <= 64.8%)
+- Android themed monochrome after 0% launcher inset: 664 px (64.8% of canvas, target 63.9%-64.8%)
 - Master icon canvas: 1024x1024
 
 ## Regenerate
 
 ```bash
 dart run tool/generate_app_icons.dart
-dart run flutter_launcher_icons
+dart run flutter_launcher_icons -f flutter_launcher_icons.native.yaml
 dart run tool/validate_android_icons.dart
 ```
 
-Preview-only assets are intentionally excluded. The generator emits only production icon sources used by the app and web browser metadata.
+Preview-only assets are intentionally excluded. The generator emits only production icon sources used by the native app launcher pipeline.

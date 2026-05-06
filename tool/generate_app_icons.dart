@@ -15,9 +15,13 @@ const _analysisOutputPath = 'doc/icon_generation.md';
 
 const _analysisRasterSize = 4096;
 const _outputSize = 1024;
-const _androidAdaptiveLayerRatio = 82 / 108;
-const _androidAdaptiveInsetPercent = 10;
-const _androidMaskedSafeRatio = 66 / 108;
+const _androidForegroundLayerRatio = 56 / 108;
+const _androidMonochromeLayerRatio = 70 / 108;
+const _androidAdaptiveInsetPercent = 0;
+const _androidForegroundEffectiveMinRatio = 55 / 108;
+const _androidForegroundEffectiveMaxRatio = _androidForegroundLayerRatio;
+const _androidMonochromeEffectiveMinRatio = 69 / 108;
+const _androidMonochromeEffectiveMaxRatio = _androidMonochromeLayerRatio;
 const _masterRatio = 0.56;
 const _horizontalAlignmentGroupLabel = 'pinpoint';
 
@@ -50,13 +54,13 @@ void main() {
   );
   final androidForeground = _composeTransparentLayer(
     glyphCrop,
-    maxDimensionRatio: _androidAdaptiveLayerRatio,
+    maxDimensionRatio: _androidForegroundLayerRatio,
     color: _color(_foregroundColor),
     horizontalAnchorX: horizontalAnchorX,
   );
-  final androidMonochrome = _composeTransparentLayer(
+  final androidMonochrome = _composeMonochromeLayer(
     glyphCrop,
-    maxDimensionRatio: _androidAdaptiveLayerRatio,
+    maxDimensionRatio: _androidMonochromeLayerRatio,
     color: _color(0xFF000000),
     horizontalAnchorX: horizontalAnchorX,
   );
@@ -72,6 +76,7 @@ void main() {
     renderedSize: rendered.width,
     masterIcon: masterIcon,
     androidForeground: androidForeground,
+    androidMonochrome: androidMonochrome,
   );
 
   stdout.writeln('Generated app icon assets from $_sourceSvgPath');
@@ -163,6 +168,38 @@ _Bounds _findOpaqueBounds(img.Image image) {
   return _Bounds(left, top, right - left + 1, bottom - top + 1);
 }
 
+_Bounds _findNonBackgroundBounds(img.Image image, img.Color backgroundColor) {
+  var left = image.width;
+  var top = image.height;
+  var right = -1;
+  var bottom = -1;
+
+  for (var y = 0; y < image.height; y++) {
+    for (var x = 0; x < image.width; x++) {
+      final pixel = image.getPixel(x, y);
+      if (_sameRgb(pixel, backgroundColor)) {
+        continue;
+      }
+      left = math.min(left, x);
+      top = math.min(top, y);
+      right = math.max(right, x);
+      bottom = math.max(bottom, y);
+    }
+  }
+
+  if (right < left || bottom < top) {
+    throw StateError('The icon contains no foreground content.');
+  }
+
+  return _Bounds(left, top, right - left + 1, bottom - top + 1);
+}
+
+bool _sameRgb(img.Pixel pixel, img.Color color) {
+  return _channel(pixel.r) == _channel(color.r) &&
+      _channel(pixel.g) == _channel(color.g) &&
+      _channel(pixel.b) == _channel(color.b);
+}
+
 img.Image _composeMasterIcon(
   img.Image glyphCrop, {
   required double horizontalAnchorX,
@@ -199,6 +236,20 @@ img.Image _composeTransparentLayer(
   final y = ((_outputSize - monochromeGlyph.height) / 2).round();
   img.compositeImage(canvas, monochromeGlyph, dstX: x, dstY: y);
   return canvas;
+}
+
+img.Image _composeMonochromeLayer(
+  img.Image glyphCrop, {
+  required double maxDimensionRatio,
+  required img.Color color,
+  required double horizontalAnchorX,
+}) {
+  return _composeTransparentLayer(
+    glyphCrop,
+    maxDimensionRatio: maxDimensionRatio,
+    color: color,
+    horizontalAnchorX: horizontalAnchorX,
+  );
 }
 
 double _relativeCenterX({
@@ -246,6 +297,7 @@ img.Image _recolorOpaquePixels(img.Image source, img.Color color) {
   return recolored;
 }
 
+
 void _fillSolid(img.Image image, img.Color color) {
   for (var y = 0; y < image.height; y++) {
     for (var x = 0; x < image.width; x++) {
@@ -267,9 +319,14 @@ void _writeAnalysis({
   required int renderedSize,
   required img.Image masterIcon,
   required img.Image androidForeground,
+  required img.Image androidMonochrome,
 }) {
   final sourceWidthRatio = sourceBounds.width / renderedSize;
   final sourceHeightRatio = sourceBounds.height / renderedSize;
+  final masterBounds = _findNonBackgroundBounds(
+    masterIcon,
+    _color(_backgroundColor),
+  );
   final androidBounds = _findOpaqueBounds(androidForeground);
   final androidSourceMaxDimension = math.max(
     androidBounds.width,
@@ -277,6 +334,13 @@ void _writeAnalysis({
   );
   final effectiveAndroidMaxDimension =
       androidSourceMaxDimension * (1 - (_androidAdaptiveInsetPercent / 50));
+  final monochromeBounds = _findOpaqueBounds(androidMonochrome);
+  final monochromeSourceMaxDimension = math.max(
+    monochromeBounds.width,
+    monochromeBounds.height,
+  );
+  final effectiveMonochromeMaxDimension =
+      monochromeSourceMaxDimension * (1 - (_androidAdaptiveInsetPercent / 50));
   final analysis = StringBuffer()
     ..writeln('# App Icon Generation')
     ..writeln()
@@ -312,10 +376,19 @@ void _writeAnalysis({
     ..writeln('## Validation')
     ..writeln()
     ..writeln(
-      '- Android foreground source max dimension: $androidSourceMaxDimension px (${(androidSourceMaxDimension / _outputSize * 100).toStringAsFixed(1)}% of canvas, target <= ${(_androidAdaptiveLayerRatio * 100).toStringAsFixed(1)}%)',
+      '- Native flat icon visible max dimension: ${math.max(masterBounds.width, masterBounds.height)} px (${(math.max(masterBounds.width, masterBounds.height) / _outputSize * 100).toStringAsFixed(1)}% of canvas)',
     )
     ..writeln(
-      '- Android foreground after $_androidAdaptiveInsetPercent% launcher inset: ${effectiveAndroidMaxDimension.round()} px (${(effectiveAndroidMaxDimension / _outputSize * 100).toStringAsFixed(1)}% of canvas, target <= ${(_androidMaskedSafeRatio * 100).toStringAsFixed(1)}%)',
+      '- Android foreground source max dimension: $androidSourceMaxDimension px (${(androidSourceMaxDimension / _outputSize * 100).toStringAsFixed(1)}% of canvas, target <= ${(_androidForegroundLayerRatio * 100).toStringAsFixed(1)}%)',
+    )
+    ..writeln(
+      '- Android foreground after $_androidAdaptiveInsetPercent% launcher inset: ${effectiveAndroidMaxDimension.round()} px (${(effectiveAndroidMaxDimension / _outputSize * 100).toStringAsFixed(1)}% of canvas, target ${(_androidForegroundEffectiveMinRatio * 100).toStringAsFixed(1)}%-${(_androidForegroundEffectiveMaxRatio * 100).toStringAsFixed(1)}%)',
+    )
+    ..writeln(
+      '- Android themed monochrome source max dimension: $monochromeSourceMaxDimension px (${(monochromeSourceMaxDimension / _outputSize * 100).toStringAsFixed(1)}% of canvas, target <= ${(_androidMonochromeLayerRatio * 100).toStringAsFixed(1)}%)',
+    )
+    ..writeln(
+      '- Android themed monochrome after $_androidAdaptiveInsetPercent% launcher inset: ${effectiveMonochromeMaxDimension.round()} px (${(effectiveMonochromeMaxDimension / _outputSize * 100).toStringAsFixed(1)}% of canvas, target ${(_androidMonochromeEffectiveMinRatio * 100).toStringAsFixed(1)}%-${(_androidMonochromeEffectiveMaxRatio * 100).toStringAsFixed(1)}%)',
     )
     ..writeln('- Master icon canvas: ${masterIcon.width}x${masterIcon.height}')
     ..writeln()
@@ -323,12 +396,12 @@ void _writeAnalysis({
     ..writeln()
     ..writeln('```bash')
     ..writeln('dart run tool/generate_app_icons.dart')
-    ..writeln('dart run flutter_launcher_icons')
+    ..writeln('dart run flutter_launcher_icons -f flutter_launcher_icons.native.yaml')
     ..writeln('dart run tool/validate_android_icons.dart')
     ..writeln('```')
     ..writeln()
     ..writeln(
-      'Preview-only assets are intentionally excluded. The generator emits only production icon sources used by the app and web browser metadata.',
+      'Preview-only assets are intentionally excluded. The generator emits only production icon sources used by the native app launcher pipeline.',
     );
 
   File(_analysisOutputPath)
