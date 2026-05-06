@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plakaty Promocyjne - Dni SGGW 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap");
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: #f3f4f6;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Dokładne wymiary dla wydruku A4 */
+      .poster-v {
+        width: 210mm;
+        height: 297mm;
+        background: white;
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+
+      .poster-h {
+        width: 297mm;
+        height: 210mm;
+        background: white;
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+
+      /* Ustawienia SGGW */
+      .bg-sggw {
+        background-color: #005a3c;
+      }
+      .text-sggw {
+        color: #005a3c;
+      }
+      .border-sggw {
+        border-color: #005a3c;
+      }
+      .bg-gold {
+        background-color: #d4af37;
+      }
+      .text-gold {
+        color: #d4af37;
+      }
+
+      @media print {
+        body {
+          background: transparent;
+          padding: 0;
+          margin: 0;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .hidden-print {
+          display: none !important;
+        }
+        .poster-container {
+          margin: 0 !important;
+          box-shadow: none !important;
+        }
+        .poster-v,
+        .poster-h {
+          box-shadow: none !important;
+          border: none !important;
+          margin: 0 !important;
+        }
+        @page {
+          margin: 0;
+        }
+      }
+
+      /* Cień telefonu dla makiet */
+      .phone-shadow {
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      }
+    </style>
+    <script>
+      function printPoster(wrapperId) {
+        // Ukryj wszystkie inne elementy
+        const wrappers = document.querySelectorAll(".poster-wrapper");
+        wrappers.forEach((w) => w.classList.add("hidden-print"));
+
+        // Pokaż tylko wybrany plakat
+        document.getElementById(wrapperId).classList.remove("hidden-print");
+
+        // Drukuj
+        window.print();
+
+        // Przywróć widoczność
+        setTimeout(() => {
+          wrappers.forEach((w) => w.classList.remove("hidden-print"));
+        }, 500);
+      }
+    </script>
+  </head>
+  <body class="text-gray-800 pb-20">
+    <!-- Pasek narzędzi (Nie drukuje się) -->
+    <div class="max-w-6xl mx-auto p-4 space-y-12 no-print">
+      <header
+        class="bg-white p-8 rounded-2xl shadow-lg text-center border-t-8 border-[#005a3c]"
+      >
+        <h1 class="text-3xl font-extrabold text-[#005a3c]">
+          Generator Plakatów - Aplikacja Dni SGGW
+        </h1>
+        <p class="text-gray-600 mt-2 font-medium">
+          Przeglądaj i drukuj przygotowane materiały (format A4). Logotypy
+          210-lecia oraz WZIM zostały wkomponowane w projekt.<br />Aby uzyskać
+          najlepszy efekt, upewnij się, że w oknie drukowania marginesy są
+          ustawione na "Brak" (None) oraz włączone jest "Drukuj tło" (Background
+          graphics).
+        </p>
+      </header>
+    </div>
+
+    <div class="max-w-[297mm] mx-auto space-y-16">
+      <!-- ============================================== -->
+      <!-- PLAKAT 1: PIONOWY PROMOCYJNY                   -->
+      <!-- ============================================== -->
+      <div
+        id="wrapper-1"
+        class="poster-wrapper shadow-2xl rounded-lg overflow-hidden border border-gray-200"
+      >
+        <div class="bg-gray-100 p-4 flex justify-between items-center no-print">
+          <h2 class="text-xl font-bold">1. Plakat Promocyjny A4 (Pionowy)</h2>
+          <button
+            onclick="printPoster('wrapper-1')"
+            class="bg-[#005a3c] text-white px-6 py-2 rounded-lg font-bold hover:bg-green-800 transition shadow-md flex items-center gap-2"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              ></path>
+            </svg>
+            Drukuj Pionowy
+          </button>
+        </div>
+
+        <div class="poster-container">
+          <div class="poster-v bg-[#005a3c] flex flex-col justify-between">
+            <!-- Tło i grafiki -->
+            <div class="absolute inset-0 opacity-10 pointer-events-none">
+              <svg
+                width="100%"
+                height="100%"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <pattern
+                    id="dots"
+                    x="0"
+                    y="0"
+                    width="40"
+                    height="40"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <circle fill="#ffffff" cx="20" cy="20" r="2"></circle>
+                  </pattern>
+                </defs>
+                <rect
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  fill="url(#dots)"
+                ></rect>
+              </svg>
+            </div>
+
+            <!-- Nagłówek -->
+            <div class="pt-12 px-12 text-center relative z-10">
+              <div
+                class="inline-block bg-white text-[#005a3c] px-6 py-2 rounded-full font-bold text-lg tracking-wider mb-6 shadow-lg"
+              >
+                15-16 MAJA 2026 | KAMPUS SGGW
+              </div>
+
+              <!-- Logotyp 210 (biały na ciemnym tle) -->
+              <div class="flex justify-center mb-4">
+                <img
+                  src="Logo 210-SGGW białe.jpg"
+                  alt="210 Lat Tradycji SGGW"
+                  class="h-32 object-contain mix-blend-screen opacity-95"
+                />
+              </div>
+
+              <h1
+                class="text-6xl font-extrabold text-white mb-4 leading-tight tracking-tight"
+              >
+                DNI SGGW
+              </h1>
+              <p
+                class="text-white text-xl font-medium max-w-lg mx-auto leading-relaxed"
+              >
+                Pobierz oficjalną aplikację wydarzenia. Harmonogram, mapa,
+                koncerty i ekscytująca Gra Terenowa w Twoim telefonie!
+              </p>
+            </div>
+
+            <!-- Makiety Telefonów -->
+            <div
+              class="relative flex-grow flex items-center justify-center mt-6"
+            >
+              <!-- Telefon 1 (Z tyłu, lekko w lewo) -->
+              <div
+                class="absolute -left-4 top-12 w-[180px] h-[380px] bg-white rounded-[2.5rem] phone-shadow border-8 border-gray-800 transform -rotate-6 z-10 overflow-hidden opacity-90 scale-90"
+              >
+                <div
+                  class="absolute top-0 inset-x-0 h-5 bg-gray-800 rounded-b-xl w-20 mx-auto z-20"
+                ></div>
+                <div
+                  class="bg-[#f1c40f] h-24 rounded-t-[2rem] pt-7 px-4 text-[#005a3c] relative"
+                >
+                  <div class="text-sm font-bold uppercase tracking-wide">
+                    Gra Terenowa
+                  </div>
+                  <div class="text-xl font-black mt-1">SGGW Quest</div>
+                </div>
+                <div class="p-3 pt-4 space-y-2 bg-gray-50 h-full">
+                  <div
+                    class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-green-500"
+                  >
+                    <div class="font-bold text-xs">#1 Wydział Leśny</div>
+                    <div class="text-[10px] font-bold text-green-600 mt-1">
+                      ✓ Zaliczone (+50 pkt)
+                    </div>
+                  </div>
+                  <div
+                    class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-yellow-400"
+                  >
+                    <div class="font-bold text-xs">#2 Rektorat</div>
+                    <div class="text-[10px] font-bold text-yellow-600 mt-1">
+                      Oczekuje na skan...
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Telefon 2 (Na froncie) -->
+              <div
+                class="w-[220px] h-[460px] bg-white rounded-[2.5rem] phone-shadow border-[10px] border-gray-900 transform rotate-3 z-20 overflow-hidden relative"
+              >
+                <!-- Notch -->
+                <div
+                  class="absolute top-0 inset-x-0 h-6 bg-gray-900 rounded-b-2xl w-28 mx-auto z-30"
+                ></div>
+                <!-- App Header -->
+                <div class="bg-[#005a3c] h-40 pt-10 px-5 text-white relative">
+                  <div
+                    class="text-xs font-semibold opacity-80 uppercase tracking-widest"
+                  >
+                    Aplikacja
+                  </div>
+                  <div class="text-2xl font-black leading-tight mt-1">
+                    Dni SGGW<br />2026
+                  </div>
+                  <div
+                    class="absolute -bottom-6 right-5 w-14 h-14 bg-white rounded-full shadow-lg flex items-center justify-center text-[#005a3c]"
+                  >
+                    <svg
+                      class="w-7 h-7"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2.5"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+                <!-- App Body -->
+                <div class="p-4 pt-8 space-y-4 bg-gray-50 h-full">
+                  <div
+                    class="bg-white p-3 rounded-xl shadow-sm flex items-center gap-3"
+                  >
+                    <div
+                      class="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-bold text-sm">Harmonogram</div>
+                      <div class="text-xs text-gray-500">Koncerty i pokazy</div>
+                    </div>
+                  </div>
+                  <div
+                    class="bg-white p-3 rounded-xl shadow-sm flex items-center gap-3"
+                  >
+                    <div
+                      class="w-10 h-10 bg-red-100 text-red-600 rounded-lg flex items-center justify-center"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        ></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-bold text-sm">Mapa Kampusu</div>
+                      <div class="text-xs text-gray-500">Nawiguj do celu</div>
+                    </div>
+                  </div>
+                  <div
+                    class="bg-green-100 border border-green-300 p-3 rounded-xl shadow-sm flex items-center gap-3"
+                  >
+                    <div
+                      class="w-10 h-10 bg-[#005a3c] text-white rounded-lg flex items-center justify-center"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-bold text-sm text-[#005a3c]">
+                        Gra Terenowa
+                      </div>
+                      <div class="text-xs text-green-700">Zbieraj punkty!</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sekcja Dolna (Biała fala + QR + Logotypy Wydziałowe) -->
+            <div
+              class="bg-white pt-8 pb-6 px-8 rounded-t-[3rem] relative z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.2)] text-center flex flex-col justify-between"
+            >
+              <div>
+                <h2
+                  class="text-2xl font-bold text-gray-800 mb-6 uppercase tracking-widest"
+                >
+                  Pobierz Aplikację
+                </h2>
+                <div class="flex justify-center gap-6 mb-6">
+                  <!-- Play Store -->
+                  <div class="text-center w-1/3 flex flex-col items-center">
+                    <div class="bg-gray-100 p-2 rounded-2xl shadow-inner mb-3">
+                      <img
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://play.google.com/store/apps/details?id=com.silvernet.sggw_days"
+                        alt="Google Play"
+                        class="w-24 h-24 mix-blend-multiply"
+                      />
+                    </div>
+                    <div
+                      class="flex items-center gap-2 text-[#005a3c] font-bold text-sm"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="w-5 h-5"
+                      >
+                        <path
+                          d="M17.523 15.341l-4.624-4.624 4.624-4.624 2.68 1.517c1.353.766 1.353 2.015 0 2.781l-2.68 1.516a1 1 0 010-0.005v-0.005L17.523 15.341zM2.854 2.724a1.88 1.88 0 00-.354 1.118v16.316a1.88 1.88 0 00.354 1.118l9.642-9.642L2.854 2.724zM13.251 12.001l3.37-3.37-12.786-7.24a1.05 1.05 0 00-.981 0l10.397 10.61zM13.251 12l-10.4 10.61a1.05 1.05 0 00.982 0l12.788-7.24-3.37-3.37z"
+                        />
+                      </svg>
+                      Google Play
+                    </div>
+                  </div>
+                  <!-- App Store -->
+                  <div class="text-center w-1/3 flex flex-col items-center">
+                    <div class="bg-gray-100 p-2 rounded-2xl shadow-inner mb-3">
+                      <img
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://apps.apple.com/pl/app/sggw-days"
+                        alt="App Store"
+                        class="w-24 h-24 mix-blend-multiply"
+                      />
+                    </div>
+                    <div
+                      class="flex items-center gap-2 text-[#005a3c] font-bold text-sm"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="w-5 h-5"
+                      >
+                        <path
+                          d="M15.4 10.6c-.1-2.4 2-3.6 2.1-3.7-1.1-1.6-2.9-1.9-3.5-1.9-1.5-.2-3 .9-3.8.9-.8 0-2-.8-3.3-.8-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.3.9 1.3 1.9 2.7 3.3 2.7 1.3-.1 1.8-.9 3.4-.9 1.6 0 2.1.9 3.4.9 1.4 0 2.3-1.3 3.2-2.6 1-1.5 1.4-2.9 1.5-3-.1-.1-2.2-.8-2.3-3.4zM12.9 5.8c.7-.8 1.2-2 1.1-3.1-1 .1-2.3.6-3 1.4-.6.7-1.2 1.9-1.1 3 1.1.1 2.3-.5 3-1.3z"
+                        />
+                      </svg>
+                      App Store
+                    </div>
+                  </div>
+                  <!-- Web Version -->
+                  <div class="text-center w-1/3 flex flex-col items-center">
+                    <div class="bg-gray-100 p-2 rounded-2xl shadow-inner mb-3">
+                      <img
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://sggwdays.pl"
+                        alt="Browser App"
+                        class="w-24 h-24 mix-blend-multiply"
+                      />
+                    </div>
+                    <div
+                      class="flex items-center gap-2 text-[#005a3c] font-bold text-sm"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        class="w-5 h-5"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M2 12h20"></path>
+                        <path
+                          d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                        ></path>
+                      </svg>
+                      Przeglądarka
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pasek logotypów na dole -->
+              <div
+                class="flex justify-between items-center pt-5 border-t border-gray-100"
+              >
+                <img
+                  src="210_lat_tradycji_zielone.png"
+                  alt="210 lat tradycji SGGW"
+                  class="h-10 object-contain"
+                />
+                <img
+                  src="SGGW-wydzial-zastosowan-informatyki-i-matematyki-logotyp-ciemnozielony_RGB.png"
+                  alt="WZIM SGGW"
+                  class="h-10 object-contain"
+                />
+                <img
+                  src="silvernet_logo.png"
+                  alt="Koło Naukowe Silver .NET"
+                  class="h-10 object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PLAKAT 2: POZIOMY PROMOCYJNY                   -->
+      <!-- ============================================== -->
+      <div
+        id="wrapper-2"
+        class="poster-wrapper shadow-2xl rounded-lg overflow-hidden border border-gray-200"
+      >
+        <div class="bg-gray-100 p-4 flex justify-between items-center no-print">
+          <h2 class="text-xl font-bold">2. Plakat Promocyjny A4 (Poziomy)</h2>
+          <div class="flex items-center gap-4">
+            <span class="text-red-500 text-sm font-bold animate-pulse"
+              >⚠️ Ustaw układ "Poziomy" przed drukiem!</span
+            >
+            <button
+              onclick="printPoster('wrapper-2')"
+              class="bg-[#005a3c] text-white px-6 py-2 rounded-lg font-bold hover:bg-green-800 transition shadow-md flex items-center gap-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                ></path>
+              </svg>
+              Drukuj Poziomy
+            </button>
+          </div>
+        </div>
+
+        <div class="poster-container overflow-auto">
+          <div class="poster-h flex relative">
+            <!-- Lewa sekcja (Tekst i QR) -->
+            <div
+              class="w-[55%] bg-[#005a3c] text-white p-12 flex flex-col justify-center relative"
+            >
+              <div class="absolute inset-0 opacity-10 pointer-events-none">
+                <svg
+                  width="100%"
+                  height="100%"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <pattern
+                      id="diagonal"
+                      width="20"
+                      height="20"
+                      patternUnits="userSpaceOnUse"
+                      patternTransform="rotate(45)"
+                    >
+                      <line
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="20"
+                        stroke="#ffffff"
+                        stroke-width="2"
+                      />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#diagonal)"></rect>
+                </svg>
+              </div>
+
+              <div class="relative z-10">
+                <!-- Logo okrągłe wtopione w tło na jasny kolor -->
+                <img
+                  src="Logo 210-SGGW białe.jpg"
+                  alt="210 Lat Tradycji"
+                  class="h-28 object-contain mix-blend-screen opacity-95 mb-6"
+                />
+
+                <h3
+                  class="text-[#d4af37] font-bold tracking-widest uppercase mb-2"
+                >
+                  15-16 Maja 2026 | Kampus SGGW
+                </h3>
+                <h1 class="text-6xl font-extrabold mb-6 leading-tight">
+                  DNI SGGW<br /><span class="text-3xl text-white opacity-90"
+                    >OFICJALNA APLIKACJA</span
+                  >
+                </h1>
+
+                <ul class="space-y-4 mb-10 text-lg font-medium">
+                  <li class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold"
+                    >
+                      ✓
+                    </div>
+                    Pełny harmonogram wydarzeń
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold"
+                    >
+                      ✓
+                    </div>
+                    Interaktywna mapa kampusu
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 rounded-full bg-[#d4af37] flex items-center justify-center text-white font-bold"
+                    >
+                      ✓
+                    </div>
+                    <span class="text-[#d4af37] font-bold"
+                      >Gra Terenowa z nagrodami!</span
+                    >
+                  </li>
+                </ul>
+
+                <div class="flex gap-4">
+                  <!-- QR 1 -->
+                  <div
+                    class="bg-white p-3 rounded-xl flex items-center gap-3 shadow-lg"
+                  >
+                    <img
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://play.google.com/store/apps/details?id=com.silvernet.sggw_days"
+                      class="w-16 h-16"
+                      alt="Play"
+                    />
+                    <div>
+                      <div
+                        class="text-[10px] text-gray-500 font-bold uppercase"
+                      >
+                        Pobierz w
+                      </div>
+                      <div class="text-sm font-bold text-gray-900 leading-none">
+                        Google Play
+                      </div>
+                    </div>
+                  </div>
+                  <!-- QR 2 -->
+                  <div
+                    class="bg-white p-3 rounded-xl flex items-center gap-3 shadow-lg"
+                  >
+                    <img
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://apps.apple.com/pl/app/sggw-days"
+                      class="w-16 h-16"
+                      alt="App"
+                    />
+                    <div>
+                      <div
+                        class="text-[10px] text-gray-500 font-bold uppercase"
+                      >
+                        Pobierz w
+                      </div>
+                      <div class="text-sm font-bold text-gray-900 leading-none">
+                        App Store
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prawa sekcja (Biała z Telefonem) -->
+            <div
+              class="w-[45%] bg-gray-50 relative flex items-center justify-center"
+            >
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-green-100 to-transparent z-0"
+              ></div>
+
+              <!-- Elementy ozdobne -->
+              <div
+                class="absolute top-10 right-10 w-32 h-32 bg-[#005a3c] rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+              ></div>
+              <div
+                class="absolute bottom-10 left-10 w-40 h-40 bg-[#d4af37] rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+              ></div>
+
+              <!-- Telefon -->
+              <div
+                class="w-[240px] h-[480px] bg-white rounded-[3rem] phone-shadow border-[12px] border-gray-900 transform rotate-[-5deg] z-20 overflow-hidden relative"
+              >
+                <!-- Notch -->
+                <div
+                  class="absolute top-0 inset-x-0 h-6 bg-gray-900 rounded-b-2xl w-32 mx-auto z-30"
+                ></div>
+
+                <!-- Ekran -->
+                <div
+                  class="w-full h-full bg-cover bg-center bg-gray-100 relative"
+                >
+                  <div
+                    class="bg-[#005a3c] h-48 pt-12 px-6 text-white text-center rounded-b-[3rem] shadow-md"
+                  >
+                    <div class="text-4xl font-black mb-1 text-[#d4af37]">
+                      SGGW
+                    </div>
+                    <div class="text-lg font-bold">Days 2026</div>
+                  </div>
+
+                  <div class="px-5 -mt-8 space-y-4 relative z-10">
+                    <div
+                      class="bg-white p-4 rounded-2xl shadow-md border-l-4 border-blue-500 flex justify-between items-center"
+                    >
+                      <div>
+                        <div class="font-black text-gray-800">Program</div>
+                        <div class="text-xs text-gray-500">
+                          Co, gdzie, kiedy?
+                        </div>
+                      </div>
+                      <div
+                        class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold"
+                      >
+                        →
+                      </div>
+                    </div>
+                    <div
+                      class="bg-white p-4 rounded-2xl shadow-md border-l-4 border-red-500 flex justify-between items-center"
+                    >
+                      <div>
+                        <div class="font-black text-gray-800">Mapa</div>
+                        <div class="text-xs text-gray-500">Odkrywaj kampus</div>
+                      </div>
+                      <div
+                        class="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold"
+                      >
+                        →
+                      </div>
+                    </div>
+                    <div
+                      class="bg-gradient-to-r from-green-500 to-[#005a3c] p-4 rounded-2xl shadow-md text-white flex justify-between items-center"
+                    >
+                      <div>
+                        <div class="font-black">Gra Terenowa</div>
+                        <div class="text-xs text-green-100">
+                          Włącz się do gry!
+                        </div>
+                      </div>
+                      <div
+                        class="w-8 h-8 bg-white text-[#005a3c] rounded-full flex items-center justify-center font-bold shadow-inner"
+                      >
+                        ★
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Logotypy w prawym dolnym rogu (na panelu z subtelnym rozmyciem) -->
+              <div
+                class="absolute bottom-6 right-6 z-30 flex flex-col items-end gap-4 bg-white/70 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white"
+              >
+                <img
+                  src="210_lat_tradycji_zielone.png"
+                  alt="210 lat tradycji"
+                  class="h-10 object-contain"
+                />
+                <img
+                  src="SGGW-wydzial-zastosowan-informatyki-i-matematyki-logotyp-ciemnozielony_RGB.png"
+                  alt="WZIM SGGW"
+                  class="h-8 object-contain"
+                />
+                <img
+                  src="silvernet_logo.png"
+                  alt="Koło Naukowe Silver .NET"
+                  class="h-8 object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PLAKAT 3: PUNKT KONTROLNY (GRA TERENOWA)       -->
+      <!-- ============================================== -->
+      <div
+        id="wrapper-3"
+        class="poster-wrapper shadow-2xl rounded-lg overflow-hidden border border-gray-200"
+      >
+        <div class="bg-gray-100 p-4 flex justify-between items-center no-print">
+          <h2 class="text-xl font-bold">
+            3. Plakat - Punkt Kontrolny Gry Terenowej
+          </h2>
+          <button
+            onclick="printPoster('wrapper-3')"
+            class="bg-[#005a3c] text-white px-6 py-2 rounded-lg font-bold hover:bg-green-800 transition shadow-md flex items-center gap-2"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              ></path>
+            </svg>
+            Drukuj Checkpoint
+          </button>
+        </div>
+
+        <div class="poster-container">
+          <div
+            class="poster-v bg-[#005a3c] flex flex-col p-10 border-[16px] border-[#d4af37]"
+          >
+            <!-- Top -->
+            <div class="text-center pt-8 pb-4">
+              <div
+                class="text-[#d4af37] font-black text-4xl tracking-[0.2em] mb-2 uppercase"
+              >
+                Gra Terenowa
+              </div>
+              <div
+                class="text-white font-bold text-2xl tracking-widest opacity-90"
+              >
+                DNI SGGW 2026
+              </div>
+            </div>
+
+            <!-- Main White Card -->
+            <div
+              class="bg-white rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex-grow flex flex-col items-center justify-between p-12 text-center relative mt-4 mb-8"
+            >
+              <!-- Znak wodny (Logo 210 zielone) wewnątrz ukrytego obszaru aby nie wychodził poza rogi -->
+              <div
+                class="absolute inset-0 rounded-[3rem] overflow-hidden pointer-events-none z-0"
+              >
+                <div
+                  class="absolute inset-0 flex items-center justify-center opacity-[0.03]"
+                >
+                  <img
+                    src="Logo 210-SGGW zielone.jpg"
+                    alt="Watermark"
+                    class="w-[500px] h-[500px] object-contain mix-blend-multiply"
+                  />
+                </div>
+              </div>
+
+              <!-- Zawartość główna -->
+              <div class="relative z-10 w-full flex flex-col items-center">
+                <!-- Badge -->
+                <div
+                  class="absolute -top-20 bg-[#d4af37] text-white font-black text-3xl py-4 px-12 rounded-full shadow-xl border-4 border-white"
+                >
+                  PUNKT #01
+                </div>
+
+                <div class="flex items-center gap-3 text-[#005a3c] mb-6 mt-8">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="w-10 h-10 animate-pulse"
+                  >
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                    <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                    <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                    <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                    <rect x="7" y="7" width="10" height="10" rx="1"></rect>
+                  </svg>
+                  <h3 class="text-2xl font-bold uppercase tracking-wider">
+                    Skanuj Kod
+                  </h3>
+                </div>
+
+                <!-- Wielki QR Kod dla punktu -->
+                <div
+                  class="bg-gray-100 p-4 rounded-3xl mb-8 border-4 border-dashed border-gray-300"
+                >
+                  <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=sggwdays://checkpoint/01"
+                    alt="Kod Punktu Kontrolnego"
+                    class="w-72 h-72 mix-blend-multiply"
+                  />
+                </div>
+
+                <p
+                  class="text-2xl text-gray-700 font-bold max-w-sm leading-snug"
+                >
+                  Zeskanuj ten kod w
+                  <span class="text-[#005a3c] font-black"
+                    >aplikacji Dni SGGW</span
+                  >, aby zaliczyć zadanie i zdobyć punkty!
+                </p>
+              </div>
+
+              <!-- Pasek z logotypami na dole białej karty -->
+              <div
+                class="relative z-10 mt-auto pt-6 border-t border-gray-200 w-full flex justify-between items-center px-2"
+              >
+                <img
+                  src="210_lat_tradycji_zielone.png"
+                  alt="210 Lat Tradycji"
+                  class="h-10 object-contain"
+                />
+                <img
+                  src="SGGW-wydzial-zastosowan-informatyki-i-matematyki-logotyp-ciemnozielony_RGB.png"
+                  alt="WZIM"
+                  class="h-8 object-contain"
+                />
+                <img
+                  src="silvernet_logo.png"
+                  alt="Koło Naukowe Silver .NET"
+                  class="h-10 object-contain"
+                />
+              </div>
+            </div>
+
+            <!-- Footer / Small QRs -->
+            <div class="text-center pb-2">
+              <p
+                class="text-white text-sm font-semibold uppercase tracking-widest mb-4"
+              >
+                Nie masz jeszcze aplikacji? Pobierz teraz:
+              </p>
+              <div class="flex justify-center gap-6">
+                <div
+                  class="bg-white px-4 py-2 rounded-xl flex items-center gap-3"
+                >
+                  <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://play.google.com/store/apps/details?id=com.silvernet.sggw_days"
+                    class="w-12 h-12"
+                    alt="Play"
+                  />
+                  <div class="text-left">
+                    <div class="text-[9px] text-gray-500 font-bold uppercase">
+                      Pobierz w
+                    </div>
+                    <div class="text-xs font-black text-[#005a3c]">
+                      Google Play
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="bg-white px-4 py-2 rounded-xl flex items-center gap-3"
+                >
+                  <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://apps.apple.com/pl/app/sggw-days"
+                    class="w-12 h-12"
+                    alt="App"
+                  />
+                  <div class="text-left">
+                    <div class="text-[9px] text-gray-500 font-bold uppercase">
+                      Pobierz w
+                    </div>
+                    <div class="text-xs font-black text-[#005a3c]">
+                      App Store
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

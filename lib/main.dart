@@ -14,9 +14,6 @@ import 'package:sggw_days/core/theme/dynamic_color_availability.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
 import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
-import 'package:sggw_days/features/leaderboard/data/repositories/leaderboard_repository.dart';
-import 'package:sggw_days/features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
-import 'package:sggw_days/features/leaderboard/presentation/bloc/leaderboard_event.dart';
 import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
 import 'package:sggw_days/features/notifications/data/notification_repository.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
@@ -123,10 +120,6 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(create: (context) => TimetableRepository()),
         RepositoryProvider(create: (context) => AdminRepository()),
         RepositoryProvider(
-          create: (context) =>
-              LeaderboardRepository(settingsBox: widget.settingsBox),
-        ),
-        RepositoryProvider(
           create: (context) {
             final service = EventReminderService(
               settingsBox: widget.settingsBox,
@@ -168,11 +161,6 @@ class _MyAppState extends State<MyApp> {
               repository: context.read<TimetableRepository>(),
               eventReminderService: context.read<EventReminderService>(),
             ),
-          ),
-          BlocProvider(
-            create: (context) => LeaderboardBloc(
-              repository: context.read<LeaderboardRepository>(),
-            )..add(const LoadLeaderboards()),
           ),
           BlocProvider(
             create: (context) =>

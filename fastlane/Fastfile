@@ -1,0 +1,133 @@
+default_platform(:ios)
+
+def env_flag(name, default_value)
+  value = ENV[name]
+  return default_value if value.nil? || value.strip.empty?
+
+  %w[1 true yes on].include?(value.strip.downcase)
+end
+
+def optional_env(name)
+  value = ENV[name]
+  return nil if value.nil? || value.strip.empty?
+
+  value
+end
+
+def required_env(name)
+  ENV.fetch(name)
+end
+
+def app_store_api_key
+  app_store_connect_api_key(
+    key_id: required_env('APPSTORE_API_KEY_ID'),
+    issuer_id: required_env('APPSTORE_ISSUER_ID'),
+    key_content: required_env('APPSTORE_API_PRIVATE_KEY'),
+    duration: 1200,
+    in_house: false,
+  )
+end
+
+def ipa_path
+  Dir[File.expand_path('../build/ios/ipa/*.ipa', __dir__)].first
+end
+
+def play_store_options
+  options = {
+    json_key_data: required_env('GOOGLE_PLAY_SERVICE_ACCOUNT_JSON'),
+    package_name: required_env('GOOGLE_PLAY_PACKAGE_NAME'),
+    metadata_path: optional_env('GOOGLE_PLAY_METADATA_PATH'),
+    skip_upload_metadata: true,
+    skip_upload_images: true,
+    skip_upload_screenshots: true,
+    skip_upload_changelogs: optional_env('GOOGLE_PLAY_METADATA_PATH').nil?,
+    rescue_changes_not_sent_for_review: true,
+  }
+
+  mapping_path = optional_env('GOOGLE_PLAY_MAPPING_PATH')
+  options[:mapping] = mapping_path if mapping_path
+
+  version_name = optional_env('GOOGLE_PLAY_VERSION_NAME')
+  options[:version_name] = version_name if version_name
+
+  version_code = optional_env('GOOGLE_PLAY_VERSION_CODE')
+  options[:version_code] = version_code.to_i if version_code
+
+  options
+end
+
+platform :ios do
+  lane :sync_signing_readonly do
+    sync_code_signing(
+      api_key: app_store_api_key,
+      type: 'appstore',
+      readonly: true,
+      app_identifier: [required_env('IOS_BUNDLE_IDENTIFIER')],
+      git_basic_authorization: optional_env('MATCH_GIT_BASIC_AUTHORIZATION'),
+    )
+  end
+
+  lane :beta_testflight do
+    path = ipa_path
+    UI.user_error!('No IPA found in build/ios/ipa.') if path.nil?
+
+    upload_to_testflight(
+      api_key: app_store_api_key,
+      app_identifier: required_env('IOS_BUNDLE_IDENTIFIER'),
+      ipa: path,
+      changelog: optional_env('TESTFLIGHT_CHANGELOG'),
+      skip_waiting_for_build_processing: !env_flag('TESTFLIGHT_WAIT_FOR_PROCESSING', true),
+      uses_non_exempt_encryption: false,
+    )
+  end
+
+  lane :submit_app_store_release do
+    release_notes = optional_env('APPSTORE_RELEASE_NOTES').to_s.strip
+
+    deliver_options = {
+      api_key: app_store_api_key,
+      app_identifier: required_env('IOS_BUNDLE_IDENTIFIER'),
+      app_version: required_env('APP_VERSION'),
+      build_number: required_env('BUILD_NUMBER'),
+      submit_for_review: true,
+      automatic_release: env_flag('APPSTORE_AUTOMATIC_RELEASE', true),
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      force: true,
+      run_precheck_before_submit: false,
+      submission_information: {
+        export_compliance_uses_encryption: false,
+      },
+    }
+
+    if release_notes.empty?
+      deliver_options[:skip_metadata] = true
+    else
+      deliver_options[:release_notes] = { 'default' => release_notes }
+    end
+
+    deliver(deliver_options)
+  end
+end
+
+platform :android do
+  lane :deploy_play_testing do
+    upload_to_play_store(
+      play_store_options.merge(
+        aab: required_env('GOOGLE_PLAY_AAB_PATH'),
+        track: required_env('GOOGLE_PLAY_TRACK'),
+        release_status: required_env('GOOGLE_PLAY_RELEASE_STATUS'),
+      ),
+    )
+  end
+
+  lane :promote_play_production do
+    upload_to_play_store(
+      play_store_options.merge(
+        track: required_env('GOOGLE_PLAY_SOURCE_TRACK'),
+        track_promote_to: required_env('GOOGLE_PLAY_TARGET_TRACK'),
+        track_promote_release_status: required_env('GOOGLE_PLAY_RELEASE_STATUS'),
+      ),
+    )
+  end
+end

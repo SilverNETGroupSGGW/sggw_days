@@ -7,7 +7,6 @@
   "treasureHunt": "Mapa",
   "wiki": "Wiedza",
   "timetable": "Harmonogram",
-  "leaderboard": "Ranking",
   "notifications": "Powiadomienia",
   "map": "Mapa",
   "scanQr": "Skanuj QR",
@@ -56,21 +55,21 @@
   "privacyPolicyCollectedIntro": "Dni SGGW działają dla zwykłych odwiedzających bez zakładania konta, ale część funkcji korzysta z uprawnień urządzenia i usług chmurowych.",
   "privacyPolicyCollectedCamera": "Dostęp do kamery służy wyłącznie do skanowania kodów QR podczas gry terenowej i powiązanych interakcji eventowych.",
   "privacyPolicyCollectedLocation": "Dostęp do lokalizacji służy do sprawdzania, czy znajdujesz się fizycznie blisko punktu gry terenowej, zanim kod QR zostanie uznany.",
-  "privacyPolicyCollectedStorage": "Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, wybory dotyczące powiadomień, dane z pamięci podręcznej, nazwę w rankingu oraz postęp w zbieraniu punktów. Rankingi korzystają z anonimowego identyfikatora Firebase, żeby urządzenie mogło aktualizować tylko własny wynik.",
+  "privacyPolicyCollectedStorage": "Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, wybory dotyczące powiadomień, dane z pamięci podręcznej oraz postęp skanowania.",
   "privacyPolicyCollectedAdmin": "Funkcje administracyjne korzystają z logowania Google i usług Firebase oraz mogą przechowywać identyfikatory kont, edytowane treści i przesłane obrazy na potrzeby zarządzania wydarzeniem.",
   "privacyPolicySectionUsageTitle": "Jak dane są wykorzystywane",
   "privacyPolicyUsageIntro": "Aplikacja wykorzystuje dane wyłącznie do dostarczenia głównych funkcji wydarzenia oraz obsługi narzędzi administracyjnych.",
   "privacyPolicyUsageTreasureHunt": "Dane z kamery i lokalizacji są używane, aby odwiedzający mogli odkrywać punkty gry terenowej, potwierdzać skany i odblokowywać powiązane treści.",
-  "privacyPolicyUsageAppState": "Lokalna pamięć urządzenia służy do zapamiętywania preferencji, ukończenia wprowadzenia, danych z pamięci podręcznej, wyborów dotyczących powiadomień, nazwy w rankingu oraz postępu skanowania między sesjami. Jeśli pojawisz się w rankingu, publikowana jest tylko nazwa, anonimowy identyfikator i zagregowane wyniki.",
+  "privacyPolicyUsageAppState": "Lokalna pamięć urządzenia służy do zapamiętywania preferencji, ukończenia wprowadzenia, danych z pamięci podręcznej, wyborów dotyczących powiadomień oraz postępu skanowania między sesjami.",
   "privacyPolicyUsageAdmin": "Jeśli jesteś uprawnionym administratorem, dane logowania i przesyłane treści są wykorzystywane do zarządzania wydarzeniami harmonogramu, artykułami wiki, punktami gry terenowej i obrazami.",
   "privacyPolicySectionSharingTitle": "Udostępnianie i usługi zewnętrzne",
   "privacyPolicySharingIntro": "Aplikacja korzysta z usług Google Firebase do uwierzytelniania, przechowywania danych w chmurze oraz hostowania obrazów dla funkcji administracyjnych.",
-  "privacyPolicySharingFirebase": "Dane przesłane przez narzędzia administracyjne, rejestrację tokenów powiadomień oraz opcjonalne wpisy rankingowe mogą być przetwarzane przez Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions i Firebase Storage w celu działania aplikacji.",
+  "privacyPolicySharingFirebase": "Dane przesłane przez narzędzia administracyjne oraz rejestrację tokenów powiadomień mogą być przetwarzane przez Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions i Firebase Storage w celu działania aplikacji.",
   "privacyPolicySharingLegal": "Informacje mogą też zostać ujawnione, jeśli wymaga tego prawo lub jest to konieczne dla ochrony bezpieczeństwa i integralności usługi.",
   "privacyPolicySectionChoicesTitle": "Twoje wybory",
   "privacyPolicyChoicesIntro": "Masz kontrolę nad opcjonalnymi uprawnieniami oraz lokalnie zapisanymi danymi aplikacji.",
   "privacyPolicyChoicesPermissions": "Możesz odmówić dostępu do kamery lub lokalizacji, ale funkcje gry terenowej zależne od tych uprawnień mogą wtedy nie działać poprawnie.",
-  "privacyPolicyChoicesAdmin": "Zwykli odwiedzający nie muszą tworzyć widocznego konta. Logowanie Google jest używane wyłącznie dla zatwierdzonego dostępu administratora, a rankingi mogą korzystać z anonimowego logowania Firebase w tle.",
+  "privacyPolicyChoicesAdmin": "Zwykli odwiedzający nie muszą tworzyć widocznego konta. Logowanie Google jest używane wyłącznie dla zatwierdzonego dostępu administratora.",
   "privacyPolicyChoicesDevice": "Możesz usunąć lokalnie zapisane dane aplikacji, czyszcząc dane aplikacji na urządzeniu albo instalując ją ponownie.",
   "privacyPolicySectionContactTitle": "Kontakt",
   "privacyPolicyContactIntro": "Jeśli masz pytania dotyczące prywatności w Dniach SGGW, skontaktuj się z organizatorami przez oficjalne kanały kontaktowe wydarzenia.",
@@ -185,7 +184,7 @@
   "adminAllEntriesFixed": "Wszystkie wpisy naprawione pomyślnie",
   "continueWithoutTreasureHunt": "Używaj apki bez gry",
   "skipTreasureHuntDialogTitle": "Pominąć grę po kampusie?",
-  "skipTreasureHuntDialogBody": "Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Zbieranie QR-ów zostanie opcjonalne, ale rankingi i nagrody z gry nie będą się wtedy liczyć.",
+  "skipTreasureHuntDialogBody": "Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Zbieranie QR-ów zostanie opcjonalne, ale nagrody związane z grą pozostaną niedostępne.",
   "skipTreasureHuntEnabledSnack": "Odblokowanie gry terenowej jest teraz opcjonalne.",
   "skipTreasureHuntSettingTitle": "Pomiń blokadę gry terenowej",
   "skipTreasureHuntSettingDesc": "Pokazuj punkty na mapie, wiedzę i harmonogram bez skanowania pierwszego punktu skarbu.",
@@ -198,45 +197,6 @@
   "pushNotificationsSettingDesc": "Otrzymuj ważne komunikaty wysyłane przez organizatorów wydarzenia.",
   "pushNotificationsEnabledSnack": "Powiadomienia organizatorów są włączone.",
   "notificationPermissionDenied": "Nie przyznano uprawnienia do powiadomień.",
-  "leaderboardOverall": "Wszystko",
-  "leaderboardTreasureHunt": "Gra",
-  "leaderboardDisplayName": "Nazwa w rankingu",
-  "leaderboardEditName": "Zmień nazwę",
-  "leaderboardSaveName": "Zapisz",
-  "leaderboardNoEntries": "Brak wyników",
-  "leaderboardYou": "Ty",
-  "leaderboardScore": "{count} pkt",
-  "@leaderboardScore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "leaderboardFoundPoints": "{count} punktów",
-  "@leaderboardFoundPoints": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "leaderboardTreasurePoints": "{count} skarbów",
-  "@leaderboardTreasurePoints": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "leaderboardCheckIns": "{count} meldunków",
-  "@leaderboardCheckIns": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "permissionDeniedTitle": "Potrzebujemy jeszcze jednej rzeczy",
   "permissionDeniedCameraBody": "Kamera pozwala skanować QR-y podczas gry po kampusie.",
   "permissionDeniedLocationBody": "Lokalizacja potwierdza, że jesteś wystarczająco blisko punktu.",

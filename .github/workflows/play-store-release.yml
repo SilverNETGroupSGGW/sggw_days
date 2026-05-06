@@ -1,0 +1,164 @@
+name: Release to Google Play Production
+
+"on":
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: Optional semver release version (for example 1.2.3). Release events derive this from the GitHub Release tag.
+        required: false
+        type: string
+      build_number:
+        description: Optional Android versionCode override. Defaults to the testing build number already uploaded from the tag.
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "play-store-production-${{ github.event.release.tag_name || github.ref }}"
+  cancel-in-progress: true
+
+env:
+  GOOGLE_PLAY_DEFAULT_TESTING_TRACK: beta
+  GOOGLE_PLAY_DEFAULT_PRODUCTION_TRACK: production
+  GOOGLE_PLAY_DEFAULT_STATUS: completed
+  GOOGLE_PLAY_DEFAULT_PACKAGE_NAME: com.silvernet.sggw_days
+
+jobs:
+  promote_existing_release:
+    if: "${{ github.event_name != 'release' || (!github.event.release.draft && !github.event.release.prerelease) }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Resolve Play production release configuration
+        id: resolve_release
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+          INPUT_BUILD_NUMBER: ${{ github.event.inputs.build_number }}
+          SOURCE_TRACK: ${{ vars['GOOGLE_PLAY_TESTING_TRACK'] }}
+          DEFAULT_SOURCE_TRACK: ${{ env.GOOGLE_PLAY_DEFAULT_TESTING_TRACK }}
+          TARGET_TRACK: ${{ vars['GOOGLE_PLAY_PRODUCTION_TRACK'] }}
+          DEFAULT_TARGET_TRACK: ${{ env.GOOGLE_PLAY_DEFAULT_PRODUCTION_TRACK }}
+          RELEASE_STATUS: ${{ vars['GOOGLE_PLAY_PRODUCTION_STATUS'] }}
+          DEFAULT_RELEASE_STATUS: ${{ env.GOOGLE_PLAY_DEFAULT_STATUS }}
+          PACKAGE_NAME: ${{ vars['GOOGLE_PLAY_PACKAGE_NAME'] }}
+          DEFAULT_PACKAGE_NAME: ${{ env.GOOGLE_PLAY_DEFAULT_PACKAGE_NAME }}
+        run: |
+          set -euo pipefail
+
+          release_version="${INPUT_RELEASE_VERSION:-}"
+          if [ "$EVENT_NAME" = "release" ]; then
+            release_version="${RELEASE_TAG:-$release_version}"
+          fi
+
+          release_version="${release_version#refs/tags/}"
+          release_version="${release_version#v}"
+
+          if ! [[ "$release_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            echo "Release version must match X.Y.Z or vX.Y.Z for store deployment, got: $release_version"
+            exit 1
+          fi
+
+          major="${BASH_REMATCH[1]}"
+          minor="${BASH_REMATCH[2]}"
+          patch="${BASH_REMATCH[3]}"
+
+          if [ "$major" -gt 2099 ] || [ "$minor" -gt 99 ] || [ "$patch" -gt 99 ]; then
+            echo "Release version components must satisfy major <= 2099, minor <= 99, patch <= 99."
+            exit 1
+          fi
+
+          build_number="${INPUT_BUILD_NUMBER:-}"
+          if [ -z "$build_number" ]; then
+            build_number=$((major * 1000000 + minor * 10000 + patch * 100 + 1))
+          fi
+
+          if ! [[ "$build_number" =~ ^[0-9]+$ ]]; then
+            echo "Android build number must be a positive integer, got: $build_number"
+            exit 1
+          fi
+
+          if [ "$build_number" -le 0 ] || [ "$build_number" -gt 2100000000 ]; then
+            echo "Android build number must be between 1 and 2100000000, got: $build_number"
+            exit 1
+          fi
+
+          source_track="${SOURCE_TRACK:-$DEFAULT_SOURCE_TRACK}"
+          target_track="${TARGET_TRACK:-$DEFAULT_TARGET_TRACK}"
+          release_status="${RELEASE_STATUS:-$DEFAULT_RELEASE_STATUS}"
+          package_name="${PACKAGE_NAME:-$DEFAULT_PACKAGE_NAME}"
+
+          case "$release_status" in
+            completed|inProgress|halted|draft)
+              ;;
+            *)
+              echo "Unsupported Google Play release status: $release_status"
+              exit 1
+              ;;
+          esac
+
+          if [ -z "$source_track" ] || [ -z "$target_track" ] || [ -z "$package_name" ]; then
+            echo "Google Play source track, target track, and package name are required."
+            exit 1
+          fi
+
+          echo "build_name=$release_version" >> "$GITHUB_OUTPUT"
+          echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
+          echo "package_name=$package_name" >> "$GITHUB_OUTPUT"
+          echo "source_track=$source_track" >> "$GITHUB_OUTPUT"
+          echo "target_track=$target_track" >> "$GITHUB_OUTPUT"
+          echo "release_status=$release_status" >> "$GITHUB_OUTPUT"
+
+      - name: Generate production release notes
+        id: release_notes
+        env:
+          RELEASE_BODY: ${{ github.event.release.body }}
+          RELEASE_NAME: ${{ github.event.release.name }}
+          RELEASE_VERSION: ${{ steps.resolve_release.outputs.build_name }}
+          BUILD_NUMBER: ${{ steps.resolve_release.outputs.build_number }}
+        run: |
+          set -euo pipefail
+
+          raw_notes="${RELEASE_BODY:-}"
+          if [ -z "$raw_notes" ]; then
+            raw_notes="${RELEASE_NAME:-Release ${RELEASE_VERSION}}"
+          fi
+
+          metadata_path="$RUNNER_TEMP/fastlane/metadata/android"
+          changelog_dir="$metadata_path/en-US/changelogs"
+          mkdir -p "$changelog_dir"
+          printf '%s\n' "$raw_notes" > "$changelog_dir/${BUILD_NUMBER}.txt"
+
+          echo "metadata_path=$metadata_path" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Install fastlane
+        run: gem install fastlane --no-document
+
+      - name: Promote testing build to Google Play production
+        env:
+          FASTLANE_DISABLE_COLORS: "1"
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS }}
+          GOOGLE_PLAY_PACKAGE_NAME: ${{ steps.resolve_release.outputs.package_name }}
+          GOOGLE_PLAY_SOURCE_TRACK: ${{ steps.resolve_release.outputs.source_track }}
+          GOOGLE_PLAY_TARGET_TRACK: ${{ steps.resolve_release.outputs.target_track }}
+          GOOGLE_PLAY_RELEASE_STATUS: ${{ steps.resolve_release.outputs.release_status }}
+          GOOGLE_PLAY_METADATA_PATH: ${{ steps.release_notes.outputs.metadata_path }}
+          GOOGLE_PLAY_VERSION_NAME: ${{ steps.resolve_release.outputs.build_name }}
+          GOOGLE_PLAY_VERSION_CODE: ${{ steps.resolve_release.outputs.build_number }}
+        run: fastlane android promote_play_production

@@ -4,7 +4,6 @@
   "treasureHunt": "Map",
   "wiki": "Wiki",
   "timetable": "Timetable",
-  "leaderboard": "Leaders",
   "notifications": "Notifications",
   "map": "Map",
   "scanQr": "Scan QR",
@@ -53,21 +52,21 @@
   "privacyPolicyCollectedIntro": "Dni SGGW is designed to work without requiring an account for regular visitors, but some features rely on device permissions and cloud services.",
   "privacyPolicyCollectedCamera": "Camera access is used only to scan QR codes during the treasure hunt and related event interactions.",
   "privacyPolicyCollectedLocation": "Location access is used to verify that you are physically near a treasure hunt point before a QR code can be accepted.",
-  "privacyPolicyCollectedStorage": "The app stores settings, onboarding status, notification choices, cached content, leaderboard display name, and collected progress locally on your device. Leaderboards use an anonymous Firebase identifier so your device can update only its own score.",
+  "privacyPolicyCollectedStorage": "The app stores settings, onboarding status, notification choices, cached content, and scan progress locally on your device.",
   "privacyPolicyCollectedAdmin": "Administrator features use Google sign-in together with Firebase services and may store account identifiers, edited content, and uploaded images for event management.",
   "privacyPolicySectionUsageTitle": "How the data is used",
   "privacyPolicyUsageIntro": "The app uses data only to deliver the core event experience and to operate the administration tools.",
   "privacyPolicyUsageTreasureHunt": "Camera and location data are used to let visitors discover treasure hunt points, validate scans, and unlock related content.",
-  "privacyPolicyUsageAppState": "Local device storage is used to remember your preferences, onboarding completion, cached data, notification choices, leaderboard display name, and scan progress between sessions. If you appear on leaderboards, only your display name, anonymous identifier, and aggregate score counts are published.",
+  "privacyPolicyUsageAppState": "Local device storage is used to remember your preferences, onboarding completion, cached data, notification choices, and scan progress between sessions.",
   "privacyPolicyUsageAdmin": "If you are an authorized administrator, sign-in data and uploaded content are used to manage timetable entries, wiki articles, treasure hunt points, and images.",
   "privacyPolicySectionSharingTitle": "Sharing and third-party services",
   "privacyPolicySharingIntro": "The app relies on Google Firebase services to provide authentication, cloud data storage, and image hosting for administration features.",
-  "privacyPolicySharingFirebase": "Data submitted through administrator tools, notification token registration, and optional leaderboard entries may be processed by Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions, and Firebase Storage as part of operating the app.",
+  "privacyPolicySharingFirebase": "Data submitted through administrator tools and notification token registration may be processed by Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions, and Firebase Storage as part of operating the app.",
   "privacyPolicySharingLegal": "Information may also be disclosed if required by law or when necessary to protect the security and integrity of the service.",
   "privacyPolicySectionChoicesTitle": "Your choices",
   "privacyPolicyChoicesIntro": "You stay in control of optional permissions and locally stored app data.",
   "privacyPolicyChoicesPermissions": "You can deny camera or location permissions, but treasure hunt features that depend on them may stop working correctly.",
-  "privacyPolicyChoicesAdmin": "Regular visitors do not need to create a visible account. Google sign-in is only used for approved administrator access, while leaderboards may use Firebase anonymous sign-in in the background.",
+  "privacyPolicyChoicesAdmin": "Regular visitors do not need to create a visible account. Google sign-in is only used for approved administrator access.",
   "privacyPolicyChoicesDevice": "You can clear locally stored app data by removing the app data from your device or reinstalling the application.",
   "privacyPolicySectionContactTitle": "Contact",
   "privacyPolicyContactIntro": "If you have privacy-related questions about Dni SGGW, contact the organizers using the official event contact channels.",
@@ -182,7 +181,7 @@
   "adminAllEntriesFixed": "All entries fixed successfully",
   "continueWithoutTreasureHunt": "Use the app without the hunt",
   "skipTreasureHuntDialogTitle": "Skip the campus hunt?",
-  "skipTreasureHuntDialogBody": "You can still use the map, wiki and timetable. QR collecting stays optional, but hunt rankings and rewards will not count for you.",
+  "skipTreasureHuntDialogBody": "You can still use the map, wiki and timetable. QR collecting stays optional, but hunt-only rewards will stay unavailable.",
   "skipTreasureHuntEnabledSnack": "Treasure hunt unlock is now optional.",
   "skipTreasureHuntSettingTitle": "Skip treasure hunt gate",
   "skipTreasureHuntSettingDesc": "Show map points, wiki and timetable without scanning the first treasure point.",
@@ -195,45 +194,6 @@
   "pushNotificationsSettingDesc": "Receive important messages sent by event organisers.",
   "pushNotificationsEnabledSnack": "Broadcast notifications are enabled.",
   "notificationPermissionDenied": "Notification permission was not granted.",
-  "leaderboardOverall": "All",
-  "leaderboardTreasureHunt": "Hunt",
-  "leaderboardDisplayName": "Display name",
-  "leaderboardEditName": "Edit name",
-  "leaderboardSaveName": "Save",
-  "leaderboardNoEntries": "No scores yet",
-  "leaderboardYou": "You",
-  "leaderboardScore": "{count} pts",
-  "@leaderboardScore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "leaderboardFoundPoints": "{count} points",
-  "@leaderboardFoundPoints": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "leaderboardTreasurePoints": "{count} treasures",
-  "@leaderboardTreasurePoints": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "leaderboardCheckIns": "{count} check-ins",
-  "@leaderboardCheckIns": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "permissionDeniedTitle": "We need one more thing",
   "permissionDeniedCameraBody": "Camera access lets you scan QR codes during the campus hunt.",
   "permissionDeniedLocationBody": "Location access confirms you are close enough to collect a point.",

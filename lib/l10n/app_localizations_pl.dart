@@ -21,9 +21,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get timetable => 'Harmonogram';
 
   @override
-  String get leaderboard => 'Ranking';
-
-  @override
   String get notifications => 'Powiadomienia';
 
   @override
@@ -181,7 +178,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacyPolicyCollectedStorage =>
-      'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, wybory dotyczące powiadomień, dane z pamięci podręcznej, nazwę w rankingu oraz postęp w zbieraniu punktów. Rankingi korzystają z anonimowego identyfikatora Firebase, żeby urządzenie mogło aktualizować tylko własny wynik.';
+      'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, wybory dotyczące powiadomień, dane z pamięci podręcznej oraz postęp skanowania.';
 
   @override
   String get privacyPolicyCollectedAdmin =>
@@ -200,7 +197,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacyPolicyUsageAppState =>
-      'Lokalna pamięć urządzenia służy do zapamiętywania preferencji, ukończenia wprowadzenia, danych z pamięci podręcznej, wyborów dotyczących powiadomień, nazwy w rankingu oraz postępu skanowania między sesjami. Jeśli pojawisz się w rankingu, publikowana jest tylko nazwa, anonimowy identyfikator i zagregowane wyniki.';
+      'Lokalna pamięć urządzenia służy do zapamiętywania preferencji, ukończenia wprowadzenia, danych z pamięci podręcznej, wyborów dotyczących powiadomień oraz postępu skanowania między sesjami.';
 
   @override
   String get privacyPolicyUsageAdmin =>
@@ -216,7 +213,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacyPolicySharingFirebase =>
-      'Dane przesłane przez narzędzia administracyjne, rejestrację tokenów powiadomień oraz opcjonalne wpisy rankingowe mogą być przetwarzane przez Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions i Firebase Storage w celu działania aplikacji.';
+      'Dane przesłane przez narzędzia administracyjne oraz rejestrację tokenów powiadomień mogą być przetwarzane przez Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions i Firebase Storage w celu działania aplikacji.';
 
   @override
   String get privacyPolicySharingLegal =>
@@ -235,7 +232,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacyPolicyChoicesAdmin =>
-      'Zwykli odwiedzający nie muszą tworzyć widocznego konta. Logowanie Google jest używane wyłącznie dla zatwierdzonego dostępu administratora, a rankingi mogą korzystać z anonimowego logowania Firebase w tle.';
+      'Zwykli odwiedzający nie muszą tworzyć widocznego konta. Logowanie Google jest używane wyłącznie dla zatwierdzonego dostępu administratora.';
 
   @override
   String get privacyPolicyChoicesDevice =>
@@ -499,7 +496,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get skipTreasureHuntDialogBody =>
-      'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Zbieranie QR-ów zostanie opcjonalne, ale rankingi i nagrody z gry nie będą się wtedy liczyć.';
+      'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Zbieranie QR-ów zostanie opcjonalne, ale nagrody związane z grą pozostaną niedostępne.';
 
   @override
   String get skipTreasureHuntEnabledSnack =>
@@ -543,47 +540,6 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get notificationPermissionDenied =>
       'Nie przyznano uprawnienia do powiadomień.';
-
-  @override
-  String get leaderboardOverall => 'Wszystko';
-
-  @override
-  String get leaderboardTreasureHunt => 'Gra';
-
-  @override
-  String get leaderboardDisplayName => 'Nazwa w rankingu';
-
-  @override
-  String get leaderboardEditName => 'Zmień nazwę';
-
-  @override
-  String get leaderboardSaveName => 'Zapisz';
-
-  @override
-  String get leaderboardNoEntries => 'Brak wyników';
-
-  @override
-  String get leaderboardYou => 'Ty';
-
-  @override
-  String leaderboardScore(int count) {
-    return '$count pkt';
-  }
-
-  @override
-  String leaderboardFoundPoints(int count) {
-    return '$count punktów';
-  }
-
-  @override
-  String leaderboardTreasurePoints(int count) {
-    return '$count skarbów';
-  }
-
-  @override
-  String leaderboardCheckIns(int count) {
-    return '$count meldunków';
-  }
 
   @override
   String get permissionDeniedTitle => 'Potrzebujemy jeszcze jednej rzeczy';

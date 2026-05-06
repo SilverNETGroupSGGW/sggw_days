@@ -8,7 +8,8 @@ The repository deploys Firebase automatically with GitHub Actions:
 
 - Pull requests run [firebase-hosting-pull-request.yml](.github/workflows/firebase-hosting-pull-request.yml) to validate the project, build a debug Android APK artifact, and create Hosting preview channels for branches in this repository.
 - Pushes to `main` and manual workflow dispatch run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml), which validates the Flutter project, builds the web app, and deploys Firebase Hosting, Functions, plus Firestore and Storage rules to the `sggw-days` project.
-- Pushes to `main` and manual workflow dispatch can also run [play-store-deploy.yml](.github/workflows/play-store-deploy.yml) to build an Android App Bundle and upload it to Google Play. The workflow defaults to the public testing track and can be overridden for closed testing when needed.
+- Semver tags such as `v1.2.3` automatically run [testflight-deploy.yml](.github/workflows/testflight-deploy.yml) and [play-store-deploy.yml](.github/workflows/play-store-deploy.yml) to build signed artifacts and upload testing builds through fastlane.
+- Published GitHub Releases from semver tags automatically run [app-store-release.yml](.github/workflows/app-store-release.yml) and [play-store-release.yml](.github/workflows/play-store-release.yml). The App Store workflow submits the already-uploaded TestFlight build for review, and the Google Play workflow promotes the already-uploaded testing release to the configured production track.
 
 Required repository secret:
 
@@ -16,8 +17,6 @@ Required repository secret:
 - `FIREBASE_WEB_PUSH_VAPID_KEY`: Firebase Cloud Messaging web push certificate key used when building the web app. Without it, web clients cannot opt in to broadcast push notifications; Android and iOS push still use native FCM tokens.
 
 The Firebase service account also needs permission to deploy Cloud Functions for the admin broadcast notification sender. Broadcast requests are created from the admin panel, then `functions/index.js` sends them to registered client tokens with the Firebase Admin SDK.
-
-Firebase Authentication must have Anonymous sign-in enabled for public leaderboard publishing. The app uses anonymous Firebase user IDs to make sure each device can update only its own aggregate leaderboard score.
 
 ## Android App Links Verification
 
@@ -64,16 +63,26 @@ Additional secrets required by the Google Play workflow:
 
 Additional configuration required by the Google Play workflow:
 
-- `GOOGLE_PLAY_DEFAULT_TRACK`: The workflow currently defaults this to `beta` at the top of [play-store-deploy.yml](.github/workflows/play-store-deploy.yml). `beta` is the Google Play open/public testing track. Override it with a custom track name if you want closed testing instead.
-- `GOOGLE_PLAY_DEFAULT_STATUS`: The workflow currently defaults this to `completed`, so successful uploads are published to the target testing track without manual Play Console promotion.
-- `GOOGLE_PLAY_BUILD_NUMBER_OFFSET`: The workflow generates a unique Android `versionCode` from the GitHub Actions run number and run attempt, plus this offset. Increase the offset if your Play Console already contains larger version codes.
-- Manual runs can override the workflow defaults with the `play_track`, `release_status`, and `build_number` workflow inputs.
-- Release notes are generated automatically from commit subjects and uploaded through the Play release-notes mechanism as `whatsnew-en-US`.
-- Manual runs can also override the default commit range with the `commit_range` workflow input. On pushes to `main`, the workflow uses the pushed commit range automatically.
+- `GOOGLE_PLAY_PACKAGE_NAME`: Android application id used for Play uploads. Set this to `com.silvernet.sggw_days` for the current app.
+- `GOOGLE_PLAY_TESTING_TRACK`: Testing track used by [play-store-deploy.yml](.github/workflows/play-store-deploy.yml). The default is `beta`, which maps to Google Play open testing.
+- `GOOGLE_PLAY_TESTING_STATUS`: Release status used for testing uploads. The default is `completed`.
+- `GOOGLE_PLAY_PRODUCTION_TRACK`: Production track used by [play-store-release.yml](.github/workflows/play-store-release.yml). The default is `production`.
+- `GOOGLE_PLAY_PRODUCTION_STATUS`: Release status used when promoting the testing release into production. The default is `completed`.
+- `GOOGLE_PLAY_BUILD_NUMBER_OFFSET`: Manual builds without a semver release version still fall back to a unique Android `versionCode` based on the GitHub Actions run number and this offset.
+- Store tags must be strict semver (`v1.2.3` or `1.2.3`). The workflows derive deterministic testing and production build numbers from that version.
+- Manual testing runs can override the workflow defaults with the `release_version`, `play_track`, `release_status`, `build_number`, and `commit_range` inputs.
+- Production Play release notes are taken from the GitHub Release body. Testing release notes are generated automatically from commit subjects since the previous tag.
+
+Additional configuration required by the iOS store workflows:
+
+- `APPSTORE_API_PRIVATE_KEY` is always required for App Store Connect API access.
+- `MATCH_PASSWORD` enables the preferred fastlane `match` signing path, using the private repo as encrypted signing storage on the `match-signing` branch by default.
+- If `MATCH_PASSWORD` is not present yet, the TestFlight workflow falls back to the existing direct-signing secrets: `APPSTORE_CERTIFICATES_FILE_BASE64`, `APPSTORE_CERTIFICATES_PASSWORD`, and `IOS_APPSTORE_PROFILE_BASE64`.
+- The iOS GitHub Release workflow does not rebuild the app. It submits the exact build number that was already uploaded from the matching tag.
 
 Flutter-specific versioning note:
 
-- Flutter maps `pubspec.yaml` version metadata to Android `versionName` and `versionCode`. The workflow passes `--build-number` to `flutter build appbundle`, which is the Flutter-supported way to assign a unique Android `versionCode` in CI without manually editing `pubspec.yaml` for every release.
+- Flutter maps `pubspec.yaml` version metadata to Android `versionName` and `versionCode`, and iOS `CFBundleShortVersionString` and `CFBundleVersion`. The store workflows pass `--build-name` and `--build-number` so tags such as `v1.2.3` produce the correct store version without editing `pubspec.yaml` for every release.
 
 Google Play upload prerequisite:
 

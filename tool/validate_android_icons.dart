@@ -13,11 +13,11 @@ const _launcherColorsPath = 'android/app/src/main/res/values/colors.xml';
 
 const _outputSize = 1024;
 const _androidForegroundLayerRatio = 56 / 108;
-const _androidMonochromeLayerRatio = 70 / 108;
+const _androidMonochromeLayerRatio = 56 / 108;
 const _androidAdaptiveInsetPercent = 0;
 const _androidForegroundEffectiveMinRatio = 55 / 108;
 const _androidForegroundEffectiveMaxRatio = _androidForegroundLayerRatio;
-const _androidMonochromeEffectiveMinRatio = 69 / 108;
+const _androidMonochromeEffectiveMinRatio = 55 / 108;
 const _androidMonochromeEffectiveMaxRatio = _androidMonochromeLayerRatio;
 const _masterGlyphMinRatio = 0.54;
 const _masterGlyphMaxRatio = 0.57;

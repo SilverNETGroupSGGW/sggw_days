@@ -6,6 +6,18 @@ import 'package:flutter/foundation.dart'
 ///
 /// Generated Firebase configuration for each supported platform.
 class DefaultFirebaseOptions {
+  static const _iosApiKeyOverride = String.fromEnvironment('IOS_FIREBASE_API_KEY');
+  static const _iosAppIdOverride = String.fromEnvironment('IOS_FIREBASE_APP_ID');
+  static const _iosMessagingSenderIdOverride = String.fromEnvironment(
+    'IOS_FIREBASE_MESSAGING_SENDER_ID',
+  );
+  static const _iosProjectIdOverride = String.fromEnvironment('IOS_FIREBASE_PROJECT_ID');
+  static const _iosStorageBucketOverride = String.fromEnvironment(
+    'IOS_FIREBASE_STORAGE_BUCKET',
+  );
+  static const _iosClientIdOverride = String.fromEnvironment('IOS_FIREBASE_CLIENT_ID');
+  static const _iosBundleIdOverride = String.fromEnvironment('IOS_FIREBASE_BUNDLE_ID');
+
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       return web;
@@ -41,13 +53,26 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCisIDKK2e5gOv9qPhTlXOqxMMaecXQfIQ',
-    appId: '1:583939995714:ios:4e932895299047780755db',
-    messagingSenderId: '583939995714',
-    projectId: 'sggw-days',
-    storageBucket: 'sggw-days.firebasestorage.app',
-    iosClientId:
-        '583939995714-79ch2uvg3patcbs256bv0512nmarqdcp.apps.googleusercontent.com',
-    iosBundleId: 'com.example.sggwDays',
+    apiKey: _iosApiKeyOverride != ''
+      ? _iosApiKeyOverride
+      : 'AIzaSyCisIDKK2e5gOv9qPhTlXOqxMMaecXQfIQ',
+    appId: _iosAppIdOverride != ''
+      ? _iosAppIdOverride
+      : '1:583939995714:ios:4e932895299047780755db',
+    messagingSenderId: _iosMessagingSenderIdOverride != ''
+      ? _iosMessagingSenderIdOverride
+      : '583939995714',
+    projectId: _iosProjectIdOverride != ''
+      ? _iosProjectIdOverride
+      : 'sggw-days',
+    storageBucket: _iosStorageBucketOverride != ''
+      ? _iosStorageBucketOverride
+      : 'sggw-days.firebasestorage.app',
+    iosClientId: _iosClientIdOverride != ''
+      ? _iosClientIdOverride
+      : '583939995714-79ch2uvg3patcbs256bv0512nmarqdcp.apps.googleusercontent.com',
+    iosBundleId: _iosBundleIdOverride != ''
+      ? _iosBundleIdOverride
+      : 'com.silvernet.sggwDays',
   );
 }
