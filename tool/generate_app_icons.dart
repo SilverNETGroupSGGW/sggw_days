@@ -297,7 +297,6 @@ img.Image _recolorOpaquePixels(img.Image source, img.Color color) {
   return recolored;
 }
 
-
 void _fillSolid(img.Image image, img.Color color) {
   for (var y = 0; y < image.height; y++) {
     for (var x = 0; x < image.width; x++) {
@@ -396,7 +395,9 @@ void _writeAnalysis({
     ..writeln()
     ..writeln('```bash')
     ..writeln('dart run tool/generate_app_icons.dart')
-    ..writeln('dart run flutter_launcher_icons -f flutter_launcher_icons.native.yaml')
+    ..writeln(
+      'dart run flutter_launcher_icons -f flutter_launcher_icons.native.yaml',
+    )
     ..writeln('dart run tool/validate_android_icons.dart')
     ..writeln('```')
     ..writeln()
