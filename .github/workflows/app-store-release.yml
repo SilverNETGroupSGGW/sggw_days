@@ -1,200 +1,203 @@
 name: Release to App Store
 
 "on":
-  release:
-    types:
-      - published
-  workflow_dispatch:
-    inputs:
-      release_version:
-        description: Optional semver release version (for example 1.2.3). Release events derive this from the GitHub Release tag.
-        required: false
-        type: string
-      build_number:
-        description: Optional CFBundleVersion override. Defaults to the semver-derived testing build number already uploaded to TestFlight.
-        required: false
-        type: string
-      automatic_release:
-        description: Automatically release after App Review approval.
-        required: false
-        default: true
-        type: boolean
+    release:
+        types:
+            - published
+    workflow_dispatch:
+        inputs:
+            release_version:
+                description: Optional semver release version (for example 1.2.3). Release events
+                    derive this from the GitHub Release tag.
+                required: false
+                type: string
+            build_number:
+                description: Optional CFBundleVersion override. Defaults to the semver-derived
+                    testing build number already uploaded to TestFlight.
+                required: false
+                type: string
+            automatic_release:
+                description: Automatically release after App Review approval.
+                required: false
+                default: true
+                type: boolean
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  group: "app-store-${{ github.event.release.tag_name || github.ref }}"
-  cancel-in-progress: true
+    group: "app-store-${{ github.event.release.tag_name || github.ref }}"
+    cancel-in-progress: true
 
 env:
-  IOS_DEFAULT_BUNDLE_IDENTIFIER: com.silvernet.sggwDays
+    IOS_DEFAULT_BUNDLE_IDENTIFIER: com.silvernet.sggwDays
 
 jobs:
-  submit_existing_build:
-    if: "${{ github.event_name != 'release' || (!github.event.release.draft && !github.event.release.prerelease) }}"
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+    submit_existing_build:
+        if: "${{ github.event_name != 'release' || (!github.event.release.draft &&
+            !github.event.release.prerelease) }}"
+        runs-on: macos-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
 
-      - name: Resolve App Store release configuration
-        id: resolve_release
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-          INPUT_RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-          INPUT_BUILD_NUMBER: ${{ github.event.inputs.build_number }}
-          INPUT_AUTOMATIC_RELEASE: ${{ github.event.inputs.automatic_release }}
-          IOS_BUNDLE_IDENTIFIER: ${{ vars['IOS_BUNDLE_IDENTIFIER'] }}
-          DEFAULT_IOS_BUNDLE_IDENTIFIER: ${{ env.IOS_DEFAULT_BUNDLE_IDENTIFIER }}
-          IOS_APPSTORE_AUTOMATIC_RELEASE: ${{ vars['IOS_APPSTORE_AUTOMATIC_RELEASE'] }}
-          APPSTORE_ISSUER_ID: ${{ vars['APPSTORE_ISSUER_ID'] }}
-          APPSTORE_API_KEY_ID: ${{ vars['APPSTORE_API_KEY_ID'] }}
-          APPSTORE_API_PRIVATE_KEY: ${{ secrets['APPSTORE_API_PRIVATE_KEY'] }}
-        run: |
-          set -euo pipefail
+            - name: Resolve App Store release configuration
+              id: resolve_release
+              env:
+                  EVENT_NAME: ${{ github.event_name }}
+                  RELEASE_TAG: ${{ github.event.release.tag_name }}
+                  INPUT_RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+                  INPUT_BUILD_NUMBER: ${{ github.event.inputs.build_number }}
+                  INPUT_AUTOMATIC_RELEASE: ${{ github.event.inputs.automatic_release }}
+                  IOS_BUNDLE_IDENTIFIER: ${{ vars['IOS_BUNDLE_IDENTIFIER'] }}
+                  DEFAULT_IOS_BUNDLE_IDENTIFIER: ${{ env.IOS_DEFAULT_BUNDLE_IDENTIFIER }}
+                  IOS_APPSTORE_AUTOMATIC_RELEASE: ${{ vars['IOS_APPSTORE_AUTOMATIC_RELEASE'] }}
+                  APPSTORE_ISSUER_ID: ${{ vars['APPSTORE_ISSUER_ID'] }}
+                  APPSTORE_API_KEY_ID: ${{ vars['APPSTORE_API_KEY_ID'] }}
+                  APPSTORE_API_PRIVATE_KEY: ${{ secrets['APPSTORE_API_PRIVATE_KEY'] }}
+              run: |
+                  set -euo pipefail
 
-          is_missing() {
-            local value="$1"
-            [ -z "$value" ] || [ "$value" = "REPLACE_ME" ]
-          }
+                  is_missing() {
+                    local value="$1"
+                    [ -z "$value" ] || [ "$value" = "REPLACE_ME" ]
+                  }
 
-          release_version="${INPUT_RELEASE_VERSION:-}"
-          if [ "$EVENT_NAME" = "release" ]; then
-            release_version="${RELEASE_TAG:-$release_version}"
-          fi
+                  release_version="${INPUT_RELEASE_VERSION:-}"
+                  if [ "$EVENT_NAME" = "release" ]; then
+                    release_version="${RELEASE_TAG:-$release_version}"
+                  fi
 
-          release_version="${release_version#refs/tags/}"
-          release_version="${release_version#v}"
+                  release_version="${release_version#refs/tags/}"
+                  release_version="${release_version#v}"
 
-          if ! [[ "$release_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-            echo "Release version must match X.Y.Z or vX.Y.Z for store deployment, got: $release_version"
-            exit 1
-          fi
+                  if ! [[ "$release_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+                    echo "Release version must match X.Y.Z or vX.Y.Z for store deployment, got: $release_version"
+                    exit 1
+                  fi
 
-          major="${BASH_REMATCH[1]}"
-          minor="${BASH_REMATCH[2]}"
-          patch="${BASH_REMATCH[3]}"
+                  major="${BASH_REMATCH[1]}"
+                  minor="${BASH_REMATCH[2]}"
+                  patch="${BASH_REMATCH[3]}"
 
-          if [ "$major" -gt 2099 ] || [ "$minor" -gt 99 ] || [ "$patch" -gt 99 ]; then
-            echo "Release version components must satisfy major <= 2099, minor <= 99, patch <= 99."
-            exit 1
-          fi
+                  if [ "$major" -gt 2099 ] || [ "$minor" -gt 99 ] || [ "$patch" -gt 99 ]; then
+                    echo "Release version components must satisfy major <= 2099, minor <= 99, patch <= 99."
+                    exit 1
+                  fi
 
-          build_number="${INPUT_BUILD_NUMBER:-}"
-          if [ -z "$build_number" ]; then
-            build_number=$((major * 1000000 + minor * 10000 + patch * 100 + 1))
-          fi
+                  build_number="${INPUT_BUILD_NUMBER:-}"
+                  if [ -z "$build_number" ]; then
+                    build_number=$((major * 1000000 + minor * 10000 + patch * 100 + 1))
+                  fi
 
-          if ! [[ "$build_number" =~ ^[0-9]+$ ]]; then
-            echo "iOS build number must be a positive integer, got: $build_number"
-            exit 1
-          fi
+                  if ! [[ "$build_number" =~ ^[0-9]+$ ]]; then
+                    echo "iOS build number must be a positive integer, got: $build_number"
+                    exit 1
+                  fi
 
-          bundle_identifier="${IOS_BUNDLE_IDENTIFIER:-$DEFAULT_IOS_BUNDLE_IDENTIFIER}"
-          if [ -z "$bundle_identifier" ]; then
-            echo "IOS_BUNDLE_IDENTIFIER is required."
-            exit 1
-          fi
+                  bundle_identifier="${IOS_BUNDLE_IDENTIFIER:-$DEFAULT_IOS_BUNDLE_IDENTIFIER}"
+                  if [ -z "$bundle_identifier" ]; then
+                    echo "IOS_BUNDLE_IDENTIFIER is required."
+                    exit 1
+                  fi
 
-          automatic_release="${INPUT_AUTOMATIC_RELEASE:-}"
-          if [ -z "$automatic_release" ]; then
-            automatic_release="${IOS_APPSTORE_AUTOMATIC_RELEASE:-true}"
-          fi
+                  automatic_release="${INPUT_AUTOMATIC_RELEASE:-}"
+                  if [ -z "$automatic_release" ]; then
+                    automatic_release="${IOS_APPSTORE_AUTOMATIC_RELEASE:-true}"
+                  fi
 
-          automatic_release=$(printf '%s' "$automatic_release" | tr '[:upper:]' '[:lower:]')
-          case "$automatic_release" in
-            true|false)
-              ;;
-            *)
-              echo "automatic_release must be true or false, got: $automatic_release"
-              exit 1
-              ;;
-          esac
+                  automatic_release=$(printf '%s' "$automatic_release" | tr '[:upper:]' '[:lower:]')
+                  case "$automatic_release" in
+                    true|false)
+                      ;;
+                    *)
+                      echo "automatic_release must be true or false, got: $automatic_release"
+                      exit 1
+                      ;;
+                  esac
 
-          missing=0
-          for name in APPSTORE_ISSUER_ID APPSTORE_API_KEY_ID APPSTORE_API_PRIVATE_KEY; do
-            if is_missing "${!name:-}"; then
-              echo "Missing required App Store Connect setting: $name"
-              missing=1
-            fi
-          done
+                  missing=0
+                  for name in APPSTORE_ISSUER_ID APPSTORE_API_KEY_ID APPSTORE_API_PRIVATE_KEY; do
+                    if is_missing "${!name:-}"; then
+                      echo "Missing required App Store Connect setting: $name"
+                      missing=1
+                    fi
+                  done
 
-          if [ "$missing" -ne 0 ]; then
-            exit 1
-          fi
+                  if [ "$missing" -ne 0 ]; then
+                    exit 1
+                  fi
 
-          echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
-          echo "bundle_identifier=$bundle_identifier" >> "$GITHUB_OUTPUT"
-          echo "release_tag=${RELEASE_TAG:-}" >> "$GITHUB_OUTPUT"
-          echo "release_version=$release_version" >> "$GITHUB_OUTPUT"
-          echo "automatic_release=$automatic_release" >> "$GITHUB_OUTPUT"
+                  echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
+                  echo "bundle_identifier=$bundle_identifier" >> "$GITHUB_OUTPUT"
+                  echo "release_tag=${RELEASE_TAG:-}" >> "$GITHUB_OUTPUT"
+                  echo "release_version=$release_version" >> "$GITHUB_OUTPUT"
+                  echo "automatic_release=$automatic_release" >> "$GITHUB_OUTPUT"
 
-      - name: Prepare App Store release notes
-        id: release_notes
-        env:
-          RELEASE_BODY: ${{ github.event.release.body }}
-          RELEASE_TAG: ${{ steps.resolve_release.outputs.release_tag }}
-        run: |
-          set -euo pipefail
+            - name: Prepare App Store release notes
+              id: release_notes
+              env:
+                  RELEASE_BODY: ${{ github.event.release.body }}
+                  RELEASE_TAG: ${{ steps.resolve_release.outputs.release_tag }}
+              run: |
+                  set -euo pipefail
 
-          notes_path="$RUNNER_TEMP/appstore-release-notes.txt"
-          raw_notes="${RELEASE_BODY:-}"
+                  notes_path="$RUNNER_TEMP/appstore-release-notes.txt"
+                  raw_notes="${RELEASE_BODY:-}"
 
-          if [ -z "$raw_notes" ]; then
-            current_sha="$GITHUB_SHA"
-            if [ -n "$RELEASE_TAG" ] && git rev-parse "refs/tags/$RELEASE_TAG" >/dev/null 2>&1; then
-              current_sha=$(git rev-list -n 1 "refs/tags/$RELEASE_TAG")
-            fi
+                  if [ -z "$raw_notes" ]; then
+                    current_sha="$GITHUB_SHA"
+                    if [ -n "$RELEASE_TAG" ] && git rev-parse "refs/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+                      current_sha=$(git rev-list -n 1 "refs/tags/$RELEASE_TAG")
+                    fi
 
-            previous_tag=$(git describe --tags --abbrev=0 "${current_sha}^" 2>/dev/null || true)
-            if [ -n "$previous_tag" ]; then
-              raw_notes=$(git log --format='- %s' --no-merges "$previous_tag..$current_sha")
-            else
-              raw_notes=$(git log --format='- %s' --no-merges -n 5 "$current_sha")
-            fi
-          fi
+                    previous_tag=$(git describe --tags --abbrev=0 "${current_sha}^" 2>/dev/null || true)
+                    if [ -n "$previous_tag" ]; then
+                      raw_notes=$(git log --format='- %s' --no-merges "$previous_tag..$current_sha")
+                    else
+                      raw_notes=$(git log --format='- %s' --no-merges -n 5 "$current_sha")
+                    fi
+                  fi
 
-          printf '%s' "$raw_notes" > "$notes_path"
+                  printf '%s' "$raw_notes" > "$notes_path"
 
-          NOTES_PATH="$notes_path" python3 - <<'PY'
-          import os
-          from pathlib import Path
+                  NOTES_PATH="$notes_path" python3 - <<'PY'
+                  import os
+                  from pathlib import Path
 
-          path = Path(os.environ['NOTES_PATH'])
-          text = path.read_text().replace('\r\n', '\n').strip()
-          if len(text) > 4000:
-              text = text[:3997].rstrip() + '...'
-          path.write_text(text)
-          PY
+                  path = Path(os.environ['NOTES_PATH'])
+                  text = path.read_text().replace('\r\n', '\n').strip()
+                  if len(text) > 4000:
+                      text = text[:3997].rstrip() + '...'
+                  path.write_text(text)
+                  PY
 
-          {
-            echo 'release_notes<<EOF'
-            cat "$notes_path"
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
+                  {
+                    echo 'release_notes<<EOF'
+                    cat "$notes_path"
+                    echo 'EOF'
+                  } >> "$GITHUB_OUTPUT"
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3"
+            - name: Setup Ruby
+              uses: ruby/setup-ruby@v1
+              with:
+                  ruby-version: "3.3"
 
-      - name: Install fastlane
-        run: gem install fastlane --no-document
+            - name: Install fastlane
+              run: gem install fastlane --no-document
 
-      - name: Submit existing build to App Store review
-        env:
-          FASTLANE_DISABLE_COLORS: "1"
-          FASTLANE_SKIP_UPDATE_CHECK: "1"
-          APPSTORE_API_KEY_ID: ${{ vars['APPSTORE_API_KEY_ID'] }}
-          APPSTORE_ISSUER_ID: ${{ vars['APPSTORE_ISSUER_ID'] }}
-          APPSTORE_API_PRIVATE_KEY: ${{ secrets['APPSTORE_API_PRIVATE_KEY'] }}
-          APPSTORE_AUTOMATIC_RELEASE: ${{ steps.resolve_release.outputs.automatic_release }}
-          APPSTORE_RELEASE_NOTES: ${{ steps.release_notes.outputs.release_notes }}
-          APP_VERSION: ${{ steps.resolve_release.outputs.release_version }}
-          BUILD_NUMBER: ${{ steps.resolve_release.outputs.build_number }}
-          IOS_BUNDLE_IDENTIFIER: ${{ steps.resolve_release.outputs.bundle_identifier }}
-        run: fastlane ios submit_app_store_release
+            - name: Submit existing build to App Store review
+              env:
+                  FASTLANE_DISABLE_COLORS: "1"
+                  FASTLANE_SKIP_UPDATE_CHECK: "1"
+                  APPSTORE_API_KEY_ID: ${{ vars['APPSTORE_API_KEY_ID'] }}
+                  APPSTORE_ISSUER_ID: ${{ vars['APPSTORE_ISSUER_ID'] }}
+                  APPSTORE_API_PRIVATE_KEY: ${{ secrets['APPSTORE_API_PRIVATE_KEY'] }}
+                  APPSTORE_AUTOMATIC_RELEASE: ${{ steps.resolve_release.outputs.automatic_release }}
+                  APPSTORE_RELEASE_NOTES: ${{ steps.release_notes.outputs.release_notes }}
+                  APP_VERSION: ${{ steps.resolve_release.outputs.release_version }}
+                  BUILD_NUMBER: ${{ steps.resolve_release.outputs.build_number }}
+                  IOS_BUNDLE_IDENTIFIER: ${{ steps.resolve_release.outputs.bundle_identifier }}
+              run: fastlane ios submit_app_store_release
