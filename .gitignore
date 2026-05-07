@@ -53,3 +53,9 @@ keystore.properties
 keystore-base64.txt
 *.p12
 *.pfx
+
+*.key
+*.pem
+*.cer
+*.csr
+*.mobileprovision

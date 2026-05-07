@@ -8,8 +8,8 @@ The repository deploys Firebase automatically with GitHub Actions:
 
 - Pull requests run [firebase-hosting-pull-request.yml](.github/workflows/firebase-hosting-pull-request.yml) to validate the project, build a debug Android APK artifact, and create Hosting preview channels for branches in this repository.
 - Pushes to `main` and manual workflow dispatch run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml), which validates the Flutter project, builds the web app, and deploys Firebase Hosting, Functions, plus Firestore and Storage rules to the `sggw-days` project.
-- Semver tags such as `v1.2.3` automatically run [ios-store.yml](.github/workflows/ios-store.yml) and [android-store.yml](.github/workflows/android-store.yml) in their testing modes to build signed artifacts and upload them through fastlane.
-- Published GitHub Releases from semver tags automatically run [ios-store.yml](.github/workflows/ios-store.yml) in `app_store` mode and [android-store.yml](.github/workflows/android-store.yml) in `production` mode. The iOS workflow submits the already-uploaded TestFlight build for review, and the Android workflow promotes the already-uploaded testing release to the configured production track.
+- Semver tags such as `v1.2.3` automatically run [store-release.yml](.github/workflows/store-release.yml), which validates the repo once and then fans out to the reusable [ios-store.yml](.github/workflows/ios-store.yml) and [android-store.yml](.github/workflows/android-store.yml) workflows in their testing modes.
+- Published GitHub Releases from semver tags automatically run [store-release.yml](.github/workflows/store-release.yml), which fans out to [ios-store.yml](.github/workflows/ios-store.yml) in `app_store` mode and [android-store.yml](.github/workflows/android-store.yml) in `production` mode. The iOS workflow submits the already-uploaded TestFlight build for review, and the Android workflow promotes the already-uploaded testing release to the configured production track.
 
 Required repository secret:
 
@@ -105,7 +105,7 @@ Additional configuration required by the Google Play workflow:
 - `GOOGLE_PLAY_BUILD_NUMBER_OFFSET`: Manual builds without a semver release version still fall back to a unique Android `versionCode` based on the GitHub Actions run number and this offset.
 - Store tags must be strict semver (`v1.2.3` or `1.2.3`). The workflows derive deterministic testing and production build numbers from that version.
 - Manual Android runs use `target` to choose `testing` or `production`, then can override defaults with `release_version`, `play_track`, `release_status`, `build_number`, and `commit_range` as needed.
-- Production Play release notes are taken from the GitHub Release body. Testing release notes are generated automatically from commit subjects since the previous tag.
+- Production Play release notes are taken from the GitHub Release body. Testing release notes are generated automatically from commit subjects since the previous tag. Both paths normalize and truncate the final `en-US` note to Google Play's 500-character limit before upload.
 
 Additional configuration required by the iOS store workflows:
 
