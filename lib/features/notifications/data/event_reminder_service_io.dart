@@ -179,7 +179,7 @@ class EventReminderService {
         .where((event) => favoriteIdSet.contains(event.id))
         .toList();
     final favoriteNotificationIds = favoriteEvents
-      .map((event) => _notificationIdForKey(event.id))
+        .map((event) => _notificationIdForKey(event.id))
         .toSet();
 
     final pending = await _notifications.pendingNotificationRequests();
