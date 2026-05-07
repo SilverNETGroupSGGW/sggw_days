@@ -379,6 +379,29 @@ jobs:
           mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
           cp "$profile_path" "$HOME/Library/MobileDevice/Provisioning Profiles/$profile_uuid.mobileprovision"
 
+      - name: Configure direct iOS signing overrides
+        if: ${{ steps.signing.outputs.mode == 'direct' }}
+        env:
+          APPLE_TEAM_ID: ${{ vars['APPLE_TEAM_ID'] }}
+        run: |
+          set -euo pipefail
+
+          config_path="ios/Flutter/GitHubActions.xcconfig"
+          profile_plist="$RUNNER_TEMP/sggw-days-appstore.plist"
+          profile_name=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$profile_plist")
+          profile_uuid=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$profile_plist")
+
+          {
+            printf '%s = %s\n' CODE_SIGN_STYLE Manual
+            printf '%s = %s\n' CODE_SIGN_IDENTITY 'Apple Distribution'
+            printf '%s = %s\n' PROVISIONING_PROFILE_SPECIFIER "$profile_name"
+            printf '%s = %s\n' PROVISIONING_PROFILE "$profile_uuid"
+          } >> "$config_path"
+
+          if [ -n "${APPLE_TEAM_ID:-}" ]; then
+            printf '%s = %s\n' DEVELOPMENT_TEAM "$APPLE_TEAM_ID" >> "$config_path"
+          fi
+
       - name: Build signed iOS archive
         env:
           BUILD_NAME: ${{ needs.resolve.outputs.build_name }}
