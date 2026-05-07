@@ -14,15 +14,26 @@ The repository deploys Firebase automatically with GitHub Actions:
 Required repository secret:
 
 - `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Hosting and update Firestore and Storage rules.
-- `FIREBASE_WEB_PUSH_VAPID_KEY`: Firebase Cloud Messaging web push certificate key used when building the web app. Without it, web clients cannot opt in to broadcast push notifications; Android and iOS push still use native FCM tokens.
 
 The Firebase service account also needs permission to deploy Cloud Functions for the admin broadcast notification sender. Broadcast requests are created from the admin panel, then `functions/index.js` sends them to registered client tokens with the Firebase Admin SDK.
 
-## Android App Links Verification
+The web push VAPID public key is baked into [lib/features/notifications/data/notification_repository.dart](lib/features/notifications/data/notification_repository.dart), so Hosting builds do not need a separate GitHub secret or variable for it. It can still be overridden with the `FIREBASE_WEB_PUSH_VAPID_KEY` Dart define if the Firebase web push key pair changes in the future.
 
-Android only marks `https://sggw-days.web.app/scan/...` links as verified when Firebase Hosting serves a Digital Asset Links file at `https://sggw-days.web.app/.well-known/assetlinks.json`.
+## Verified App Links
 
-The repository includes [web/.well-known/assetlinks.json](web/.well-known/assetlinks.json) with the dev-container debug signing fingerprint so debug installs built here can be verified after Hosting deployment. Before a production deploy, add the exact SHA-256 certificate fingerprint Android will see:
+The app claims `https://sggw-days.web.app/scan/...` on both Android and iOS so the OS can open the app directly instead of showing the browser chooser.
+
+Android verifies the domain with Digital Asset Links at `https://sggw-days.web.app/.well-known/assetlinks.json`.
+
+The repository keeps [web/.well-known/assetlinks.json](web/.well-known/assetlinks.json) with the current fingerprints used by this project:
+
+- local debug builds in this dev container,
+- Google Play installs signed by Google Play App Signing,
+- direct installs signed with the current upload key.
+
+That is enough for the current setup without any extra Android Hosting variable. If signing changes in the future, update [web/.well-known/assetlinks.json](web/.well-known/assetlinks.json) directly.
+
+Add every production fingerprint Android can see there:
 
 - Google Play installs: use Play Console → Setup → App signing → App signing key certificate → SHA-256 certificate fingerprint.
 - Local debug installs: `keytool -list -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey`.
@@ -54,6 +65,29 @@ adb shell pm verify-app-links --re-verify com.silvernet.sggw_days
 
 The `prepare_web_deploy.dart` step copies `web/.well-known` into `build/web/.well-known`; Flutter does not copy dot-directories there by default. The Firebase Hosting workflows run this step automatically after web builds.
 
+iOS verifies the same domain with an Apple App Site Association file served from both `https://sggw-days.web.app/apple-app-site-association` and `https://sggw-days.web.app/.well-known/apple-app-site-association`.
+
+`tool/prepare_web_deploy.dart` now generates those files automatically during Hosting builds from:
+
+- `APPLE_TEAM_ID`
+- `IOS_BUNDLE_IDENTIFIER` (falls back to `com.silver.sggw-days` when the repo variable is not set)
+
+The generated association currently claims only the in-app scan route:
+
+```json
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.com.silver.sggw-days",
+        "paths": ["/scan/*"]
+      }
+    ]
+  }
+}
+```
+
 Additional secrets required by the Google Play workflow:
 
 - `KEYSTORE_BASE64`: Base64-encoded Android upload keystore.
@@ -76,6 +110,7 @@ Additional configuration required by the Google Play workflow:
 Additional configuration required by the iOS store workflows:
 
 - `APPSTORE_API_PRIVATE_KEY` is always required for App Store Connect API access.
+- `APPLE_TEAM_ID` is also reused by the Hosting deploy to generate the Apple App Site Association file for universal links.
 - `MATCH_PASSWORD` enables the preferred fastlane `match` signing path, using the private repo as encrypted signing storage on the `match-signing` branch by default.
 - When [ios-store.yml](.github/workflows/ios-store.yml) runs with `target=testflight`, it falls back to the existing direct-signing secrets if `MATCH_PASSWORD` is not present yet: `APPSTORE_CERTIFICATES_FILE_BASE64`, `APPSTORE_CERTIFICATES_PASSWORD`, and `IOS_APPSTORE_PROFILE_BASE64`.
 - When [ios-store.yml](.github/workflows/ios-store.yml) runs with `target=app_store`, it does not rebuild the app. It submits the exact build number that was already uploaded from the matching tag.

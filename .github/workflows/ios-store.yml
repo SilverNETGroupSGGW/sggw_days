@@ -54,13 +54,12 @@ concurrency:
     cancel-in-progress: true
 
 env:
-    IOS_DEFAULT_BUNDLE_IDENTIFIER: com.silvernet.sggwDays
+    IOS_DEFAULT_BUNDLE_IDENTIFIER: "com.silver.sggw-days"
     IOS_DEFAULT_BUILD_NUMBER_OFFSET: 1000
 
 jobs:
     resolve:
-        if: "${{ github.event_name != 'release' || (!github.event.release.draft &&
-            !github.event.release.prerelease) }}"
+        if: ${{ github.event_name != 'release' || (!github.event.release.draft && !github.event.release.prerelease) }}
         runs-on: ubuntu-latest
         outputs:
             target: ${{ steps.resolve.outputs.target }}

@@ -37,7 +37,7 @@ Required repository variables:
 
 ```bash
 gh variable set IOS_BUNDLE_IDENTIFIER \
-  --body com.silvernet.sggwDays \
+  --body com.silver.sggw-days \
   -R SilverNETGroupSGGW/sggw_days
 
 gh variable set IOS_BUILD_NUMBER_OFFSET \
@@ -73,7 +73,7 @@ gh variable set IOS_FIREBASE_MESSAGING_SENDER_ID --body 583939995714 -R SilverNE
 gh variable set IOS_FIREBASE_PROJECT_ID --body sggw-days -R SilverNETGroupSGGW/sggw_days
 gh variable set IOS_FIREBASE_STORAGE_BUCKET --body sggw-days.firebasestorage.app -R SilverNETGroupSGGW/sggw_days
 gh variable set IOS_FIREBASE_CLIENT_ID --body YOUR_FIREBASE_IOS_CLIENT_ID -R SilverNETGroupSGGW/sggw_days
-gh variable set IOS_FIREBASE_BUNDLE_ID --body com.silvernet.sggwDays -R SilverNETGroupSGGW/sggw_days
+gh variable set IOS_FIREBASE_BUNDLE_ID --body com.silver.sggw-days -R SilverNETGroupSGGW/sggw_days
 ```
 
 Required repository secret for every iOS deployment:

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_ce/hive.dart';
@@ -18,6 +21,7 @@ class EventReminderService {
 
   final Box<dynamic> _settingsBox;
   final FlutterLocalNotificationsPlugin _notifications;
+  StreamSubscription<RemoteMessage>? _foregroundMessageSubscription;
   bool _initialized = false;
 
   EventReminderService({
@@ -61,8 +65,13 @@ class EventReminderService {
     );
 
     await _createAndroidChannels();
+    await _configureForegroundPushHandling();
 
     _initialized = true;
+  }
+
+  Future<void> dispose() async {
+    await _foregroundMessageSubscription?.cancel();
   }
 
   Future<void> _createAndroidChannels() async {
@@ -87,6 +96,60 @@ class EventReminderService {
         description: _broadcastChannelDescription,
         importance: Importance.high,
       ),
+    );
+  }
+
+  Future<void> _configureForegroundPushHandling() async {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.iOS:
+      case TargetPlatform.macOS:
+        await FirebaseMessaging.instance
+            .setForegroundNotificationPresentationOptions(
+              alert: true,
+              badge: true,
+              sound: true,
+            );
+        return;
+      case TargetPlatform.android:
+        _foregroundMessageSubscription ??= FirebaseMessaging.onMessage.listen((
+          message,
+        ) {
+          unawaited(_showForegroundBroadcast(message));
+        });
+        return;
+      case TargetPlatform.linux:
+      case TargetPlatform.windows:
+      case TargetPlatform.fuchsia:
+        return;
+    }
+  }
+
+  Future<void> _showForegroundBroadcast(RemoteMessage message) async {
+    final notification = message.notification;
+    if (notification == null) return;
+
+    final identifier =
+        message.messageId ??
+        message.data['broadcastId']?.toString() ??
+        '${notification.title}:${notification.body}';
+
+    await _notifications.show(
+      id: _notificationIdForKey(identifier),
+      title: notification.title ?? 'Dni SGGW',
+      body: notification.body ?? '',
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          broadcastChannelId,
+          _broadcastChannelName,
+          channelDescription: _broadcastChannelDescription,
+          importance: Importance.high,
+          priority: Priority.high,
+          category: AndroidNotificationCategory.message,
+        ),
+      ),
+      payload: message.data['broadcastId'] != null
+          ? 'broadcast:${message.data['broadcastId']}'
+          : null,
     );
   }
 
@@ -116,7 +179,7 @@ class EventReminderService {
         .where((event) => favoriteIdSet.contains(event.id))
         .toList();
     final favoriteNotificationIds = favoriteEvents
-        .map((event) => _notificationIdForEvent(event.id))
+      .map((event) => _notificationIdForKey(event.id))
         .toSet();
 
     final pending = await _notifications.pendingNotificationRequests();
@@ -131,12 +194,12 @@ class EventReminderService {
     for (final event in favoriteEvents) {
       final scheduledAt = event.startTime.subtract(_leadTime);
       if (!scheduledAt.isAfter(now)) {
-        await _notifications.cancel(id: _notificationIdForEvent(event.id));
+        await _notifications.cancel(id: _notificationIdForKey(event.id));
         continue;
       }
 
       await _notifications.zonedSchedule(
-        id: _notificationIdForEvent(event.id),
+        id: _notificationIdForKey(event.id),
         title: event.title,
         body: '${_formatStartTime(event.startTime)} • ${event.location}',
         scheduledDate: timezone.TZDateTime.from(scheduledAt, timezone.local),
@@ -183,9 +246,9 @@ class EventReminderService {
     return macosGranted ?? true;
   }
 
-  int _notificationIdForEvent(String eventId) {
+  int _notificationIdForKey(String key) {
     var hash = 0;
-    for (final codeUnit in eventId.codeUnits) {
+    for (final codeUnit in key.codeUnits) {
       hash = 0x1fffffff & (hash + codeUnit);
       hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
       hash ^= hash >> 6;

@@ -1,5 +1,5 @@
-APP_BUNDLE_IDENTIFIER = com.silvernet.sggwDays
-APPLE_TEAM_ID =
-GID_CLIENT_ID = 583939995714-79ch2uvg3patcbs256bv0512nmarqdcp.apps.googleusercontent.com
+APP_BUNDLE_IDENTIFIER = com.silver.sggw-days
+APPLE_TEAM_ID = MZMZBQPXAR
+GID_CLIENT_ID = 583939995714-q3m5jvf4kv4f6bb4ejobfr2r923ieau8.apps.googleusercontent.com
 GID_SERVER_CLIENT_ID = 583939995714-5i0saton2o44el8a9j53turn8bj04uqt.apps.googleusercontent.com
-GOOGLE_REVERSED_CLIENT_ID = com.googleusercontent.apps.583939995714-79ch2uvg3patcbs256bv0512nmarqdcp
+GOOGLE_REVERSED_CLIENT_ID = com.googleusercontent.apps.583939995714-q3m5jvf4kv4f6bb4ejobfr2r923ieau8

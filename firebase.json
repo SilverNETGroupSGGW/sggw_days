@@ -28,7 +28,7 @@
           "projectId": "sggw-days",
           "configurations": {
             "android": "1:583939995714:android:7d3fc1983787b0610755db",
-            "ios": "1:583939995714:ios:4e932895299047780755db",
+            "ios": "1:583939995714:ios:bb8207bc872f33f40755db",
             "web": "1:583939995714:web:64bb87337df191160755db"
           }
         }
@@ -39,6 +39,33 @@
     "public": "build/web",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "headers": [
+      {
+        "source": "/apple-app-site-association",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
+      {
+        "source": "/.well-known/apple-app-site-association",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
+      {
+        "source": "/.well-known/assetlinks.json",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
       {
         "source": "**",
         "headers": [

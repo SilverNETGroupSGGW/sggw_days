@@ -48,11 +48,13 @@ jobs:
 
       - name: Build web
         run: >-
-          flutter build web --wasm --release --no-tree-shake-icons --base-href "/"
-          --dart-define=FIREBASE_WEB_PUSH_VAPID_KEY=${{
-          secrets.FIREBASE_WEB_PUSH_VAPID_KEY }}
+          flutter build web --wasm --release --no-tree-shake-icons --base-href
+          "/"
 
       - name: Prepare web preview files
+        env:
+          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+          IOS_BUNDLE_IDENTIFIER: ${{ vars.IOS_BUNDLE_IDENTIFIER }}
         run: dart run tool/prepare_web_deploy.dart
 
       - uses: FirebaseExtended/action-hosting-deploy@v0

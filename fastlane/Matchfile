@@ -6,4 +6,4 @@ clone_branch_directly(false)
 
 git_basic_authorization(ENV['MATCH_GIT_BASIC_AUTHORIZATION']) if ENV['MATCH_GIT_BASIC_AUTHORIZATION'].to_s.strip != ''
 
-app_identifier([ENV.fetch('IOS_BUNDLE_IDENTIFIER', 'com.silvernet.sggwDays')])
+app_identifier([ENV.fetch('IOS_BUNDLE_IDENTIFIER', 'com.silver.sggw-days')])

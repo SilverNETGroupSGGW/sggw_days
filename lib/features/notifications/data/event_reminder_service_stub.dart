@@ -16,6 +16,8 @@ class EventReminderService {
 
   Future<void> initialize() async {}
 
+  Future<void> dispose() async {}
+
   Future<bool> enableReminders() async {
     await _settingsBox.put(_enabledKey, false);
     return false;

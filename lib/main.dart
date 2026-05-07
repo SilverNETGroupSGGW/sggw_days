@@ -127,6 +127,7 @@ class _MyAppState extends State<MyApp> {
             unawaited(service.initialize());
             return service;
           },
+          dispose: (service) => unawaited(service.dispose()),
         ),
         RepositoryProvider(
           create: (context) {

@@ -18,6 +18,8 @@ class NotificationRepository {
   static const _installationIdKey = 'notification_installation_id';
   static const _webVapidKey = String.fromEnvironment(
     'FIREBASE_WEB_PUSH_VAPID_KEY',
+    defaultValue:
+        'BKJG3XNhTnltmW5iQqRus0TGlJ2KJEuQkSExGDcaJByV19-Sx7Wi8ycAIb0vW36gF7xtEODQaFfOeai2W69up1I',
   );
 
   final FirebaseFirestore _firestore;

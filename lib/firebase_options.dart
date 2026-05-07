@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
         : 'AIzaSyCisIDKK2e5gOv9qPhTlXOqxMMaecXQfIQ',
     appId: _iosAppIdOverride != ''
         ? _iosAppIdOverride
-        : '1:583939995714:ios:4e932895299047780755db',
+      : '1:583939995714:ios:bb8207bc872f33f40755db',
     messagingSenderId: _iosMessagingSenderIdOverride != ''
         ? _iosMessagingSenderIdOverride
         : '583939995714',
@@ -80,9 +80,9 @@ class DefaultFirebaseOptions {
         : 'sggw-days.firebasestorage.app',
     iosClientId: _iosClientIdOverride != ''
         ? _iosClientIdOverride
-        : '583939995714-79ch2uvg3patcbs256bv0512nmarqdcp.apps.googleusercontent.com',
+      : '583939995714-q3m5jvf4kv4f6bb4ejobfr2r923ieau8.apps.googleusercontent.com',
     iosBundleId: _iosBundleIdOverride != ''
         ? _iosBundleIdOverride
-        : 'com.silvernet.sggwDays',
+      : 'com.silver.sggw-days',
   );
 }
