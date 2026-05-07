@@ -2,8 +2,8 @@
 
 This repository ships iOS releases through fastlane:
 
-- `.github/workflows/testflight-deploy.yml` builds a signed IPA on semver tags such as `v1.2.3` and uploads it to TestFlight with fastlane `pilot`.
-- `.github/workflows/app-store-release.yml` runs when a GitHub Release is published from the same tag and submits the existing TestFlight build to App Store review with fastlane `deliver`.
+- `.github/workflows/ios-store.yml` handles both iOS store paths. Semver tags such as `v1.2.3` run it in `testflight` mode to build a signed IPA and upload it with fastlane `pilot`.
+- Published GitHub Releases from the same tag run `.github/workflows/ios-store.yml` in `app_store` mode and submit the existing TestFlight build to App Store review with fastlane `deliver`.
 
 App Store publication is still subject to Apple review. When `IOS_APPSTORE_AUTOMATIC_RELEASE=true`, the release workflow marks the approved build for automatic release after review completes.
 
@@ -18,7 +18,7 @@ The workflows expect strict semver tags and derive deterministic iOS build numbe
 
 ## Signing strategy
 
-The TestFlight workflow supports two iOS signing modes:
+The TestFlight path supports two iOS signing modes:
 
 1. Preferred: fastlane `match` in readonly mode.
 2. Fallback: the existing `.p12` and provisioning-profile secrets already configured in GitHub.
@@ -127,7 +127,7 @@ Recommended approach:
 2. Create the `match-signing` branch in this private repository if you want to keep the default storage location.
 3. Run fastlane `match import` locally to place your current certificate and profile into the encrypted match storage.
 4. Add `MATCH_PASSWORD` to GitHub secrets.
-5. Trigger `testflight-deploy.yml` manually and confirm that CI succeeds in `match` mode.
+5. Trigger `ios-store.yml` manually with `target=testflight` and confirm that CI succeeds in `match` mode.
 6. Remove the direct-signing fallback secrets only after the `match` path is proven.
 
 ## Manual runs
@@ -135,22 +135,25 @@ Recommended approach:
 Start a TestFlight upload manually:
 
 ```bash
-gh workflow run testflight-deploy.yml \
-  -R SilverNETGroupSGGW/sggw_days
+gh workflow run ios-store.yml \
+  -R SilverNETGroupSGGW/sggw_days \
+  -f target=testflight
 ```
 
 Start an App Store submission manually:
 
 ```bash
-gh workflow run app-store-release.yml \
+gh workflow run ios-store.yml \
   -R SilverNETGroupSGGW/sggw_days \
+  -f target=app_store \
   -f release_version=1.2.3
 ```
 
 Optional build number override for TestFlight:
 
 ```bash
-gh workflow run testflight-deploy.yml \
+gh workflow run ios-store.yml \
   -R SilverNETGroupSGGW/sggw_days \
+  -f target=testflight \
   -f build_number=1201
 ```

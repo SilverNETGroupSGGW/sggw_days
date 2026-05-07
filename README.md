@@ -8,8 +8,8 @@ The repository deploys Firebase automatically with GitHub Actions:
 
 - Pull requests run [firebase-hosting-pull-request.yml](.github/workflows/firebase-hosting-pull-request.yml) to validate the project, build a debug Android APK artifact, and create Hosting preview channels for branches in this repository.
 - Pushes to `main` and manual workflow dispatch run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml), which validates the Flutter project, builds the web app, and deploys Firebase Hosting, Functions, plus Firestore and Storage rules to the `sggw-days` project.
-- Semver tags such as `v1.2.3` automatically run [testflight-deploy.yml](.github/workflows/testflight-deploy.yml) and [play-store-deploy.yml](.github/workflows/play-store-deploy.yml) to build signed artifacts and upload testing builds through fastlane.
-- Published GitHub Releases from semver tags automatically run [app-store-release.yml](.github/workflows/app-store-release.yml) and [play-store-release.yml](.github/workflows/play-store-release.yml). The App Store workflow submits the already-uploaded TestFlight build for review, and the Google Play workflow promotes the already-uploaded testing release to the configured production track.
+- Semver tags such as `v1.2.3` automatically run [ios-store.yml](.github/workflows/ios-store.yml) and [android-store.yml](.github/workflows/android-store.yml) in their testing modes to build signed artifacts and upload them through fastlane.
+- Published GitHub Releases from semver tags automatically run [ios-store.yml](.github/workflows/ios-store.yml) in `app_store` mode and [android-store.yml](.github/workflows/android-store.yml) in `production` mode. The iOS workflow submits the already-uploaded TestFlight build for review, and the Android workflow promotes the already-uploaded testing release to the configured production track.
 
 Required repository secret:
 
@@ -64,21 +64,22 @@ Additional secrets required by the Google Play workflow:
 Additional configuration required by the Google Play workflow:
 
 - `GOOGLE_PLAY_PACKAGE_NAME`: Android application id used for Play uploads. Set this to `com.silvernet.sggw_days` for the current app.
-- `GOOGLE_PLAY_TESTING_TRACK`: Testing track used by [play-store-deploy.yml](.github/workflows/play-store-deploy.yml). The default is `beta`, which maps to Google Play open testing.
+- `GOOGLE_PLAY_TESTING_TRACK`: Testing track used by [android-store.yml](.github/workflows/android-store.yml) when `target=testing`. The default is `beta`, which maps to Google Play open testing.
 - `GOOGLE_PLAY_TESTING_STATUS`: Release status used for testing uploads. The default is `completed`.
-- `GOOGLE_PLAY_PRODUCTION_TRACK`: Production track used by [play-store-release.yml](.github/workflows/play-store-release.yml). The default is `production`.
+- `GOOGLE_PLAY_PRODUCTION_TRACK`: Production track used by [android-store.yml](.github/workflows/android-store.yml) when `target=production`. The default is `production`.
 - `GOOGLE_PLAY_PRODUCTION_STATUS`: Release status used when promoting the testing release into production. The default is `completed`.
 - `GOOGLE_PLAY_BUILD_NUMBER_OFFSET`: Manual builds without a semver release version still fall back to a unique Android `versionCode` based on the GitHub Actions run number and this offset.
 - Store tags must be strict semver (`v1.2.3` or `1.2.3`). The workflows derive deterministic testing and production build numbers from that version.
-- Manual testing runs can override the workflow defaults with the `release_version`, `play_track`, `release_status`, `build_number`, and `commit_range` inputs.
+- Manual Android runs use `target` to choose `testing` or `production`, then can override defaults with `release_version`, `play_track`, `release_status`, `build_number`, and `commit_range` as needed.
 - Production Play release notes are taken from the GitHub Release body. Testing release notes are generated automatically from commit subjects since the previous tag.
 
 Additional configuration required by the iOS store workflows:
 
 - `APPSTORE_API_PRIVATE_KEY` is always required for App Store Connect API access.
 - `MATCH_PASSWORD` enables the preferred fastlane `match` signing path, using the private repo as encrypted signing storage on the `match-signing` branch by default.
-- If `MATCH_PASSWORD` is not present yet, the TestFlight workflow falls back to the existing direct-signing secrets: `APPSTORE_CERTIFICATES_FILE_BASE64`, `APPSTORE_CERTIFICATES_PASSWORD`, and `IOS_APPSTORE_PROFILE_BASE64`.
-- The iOS GitHub Release workflow does not rebuild the app. It submits the exact build number that was already uploaded from the matching tag.
+- When [ios-store.yml](.github/workflows/ios-store.yml) runs with `target=testflight`, it falls back to the existing direct-signing secrets if `MATCH_PASSWORD` is not present yet: `APPSTORE_CERTIFICATES_FILE_BASE64`, `APPSTORE_CERTIFICATES_PASSWORD`, and `IOS_APPSTORE_PROFILE_BASE64`.
+- When [ios-store.yml](.github/workflows/ios-store.yml) runs with `target=app_store`, it does not rebuild the app. It submits the exact build number that was already uploaded from the matching tag.
+- Manual iOS runs use `target` to choose `testflight` or `app_store`, and can override `release_version`, `build_number`, `commit_range`, `wait_for_processing`, or `automatic_release` when appropriate.
 
 Flutter-specific versioning note:
 
@@ -86,7 +87,7 @@ Flutter-specific versioning note:
 
 Google Play upload prerequisite:
 
-- The Android release bundle includes `android.permission.CAMERA` for QR scanning. Before [play-store-deploy.yml](.github/workflows/play-store-deploy.yml) can upload successfully, the app's Play Console listing must have a public privacy policy URL configured in App content. Use `https://sggw-days.web.app/privacy-policy`. Without that, Google Play rejects the upload with an error like `The apk has permissions that require a privacy policy set for the app`.
+- The Android release bundle includes `android.permission.CAMERA` for QR scanning. Before [android-store.yml](.github/workflows/android-store.yml) can upload successfully in `target=testing`, the app's Play Console listing must have a public privacy policy URL configured in App content. Use `https://sggw-days.web.app/privacy-policy`. Without that, Google Play rejects the upload with an error like `The apk has permissions that require a privacy policy set for the app`.
 
 Storage rules are deployed through the explicit Firebase Storage target `main`, mapped in [.firebaserc](.firebaserc) to the bucket `sggw-days.firebasestorage.app`. The service account behind `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS` also needs Firebase Security Rules permissions including `firebaserules.rulesets.test` for the Firebase CLI deploy path.
 
