@@ -18,8 +18,8 @@ on:
                     - testflight
                     - app_store
             release_version:
-                description: Optional semver release version (for example 1.2.3). Tag pushes
-                    and GitHub Releases derive this automatically.
+                description: Optional semver release version (for example 1.2.3). Tag pushes and
+                    GitHub Releases derive this automatically.
                 required: false
                 type: string
             build_number:
@@ -49,7 +49,8 @@ permissions:
     contents: read
 
 concurrency:
-    group: "ios-store-${{ github.event.inputs.target || github.event.release.tag_name || github.ref }}"
+    group: "ios-store-${{ github.event.inputs.target ||
+        github.event.release.tag_name || github.ref }}"
     cancel-in-progress: true
 
 env:
@@ -58,7 +59,8 @@ env:
 
 jobs:
     resolve:
-        if: "${{ github.event_name != 'release' || (!github.event.release.draft && !github.event.release.prerelease) }}"
+        if: "${{ github.event_name != 'release' || (!github.event.release.draft &&
+            !github.event.release.prerelease) }}"
         runs-on: ubuntu-latest
         outputs:
             target: ${{ steps.resolve.outputs.target }}
