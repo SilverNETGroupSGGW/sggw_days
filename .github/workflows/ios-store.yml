@@ -24,12 +24,14 @@ on:
         required: false
         type: string
       wait_for_processing:
-        description: Wait for App Store Connect processing to finish after TestFlight upload.
+        description: Wait for App Store Connect processing to finish after TestFlight
+          upload.
         required: false
         default: "true"
         type: string
       automatic_release:
-        description: Automatically release after App Review approval for App Store submissions.
+        description: Automatically release after App Review approval for App Store
+          submissions.
         required: false
         type: string
       release_body:
@@ -81,7 +83,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: "ios-store-${{ github.event_name == 'workflow_dispatch' && github.event.inputs.target || inputs.target || github.ref }}"
+  group: "ios-store-${{ github.event_name == 'workflow_dispatch' &&
+    github.event.inputs.target || inputs.target || github.ref }}"
   cancel-in-progress: true
 
 env:
@@ -105,15 +108,21 @@ jobs:
         id: resolve
         env:
           RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
-          INPUT_TARGET: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.target || inputs.target }}
-          INPUT_RELEASE_VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_version || inputs.release_version }}
-          INPUT_BUILD_NUMBER: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_number || inputs.build_number }}
+          INPUT_TARGET: ${{ github.event_name == 'workflow_dispatch' &&
+            github.event.inputs.target || inputs.target }}
+          INPUT_RELEASE_VERSION: ${{ github.event_name == 'workflow_dispatch' &&
+            github.event.inputs.release_version || inputs.release_version }}
+          INPUT_BUILD_NUMBER: ${{ github.event_name == 'workflow_dispatch' &&
+            github.event.inputs.build_number || inputs.build_number }}
           BUILD_NUMBER_OFFSET: ${{ vars['IOS_BUILD_NUMBER_OFFSET'] }}
           DEFAULT_BUILD_NUMBER_OFFSET: ${{ env.IOS_DEFAULT_BUILD_NUMBER_OFFSET }}
           RUN_NUMBER: ${{ github.run_number }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
-          INPUT_WAIT_FOR_PROCESSING: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.wait_for_processing || inputs.wait_for_processing }}
-          INPUT_AUTOMATIC_RELEASE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.automatic_release || inputs.automatic_release }}
+          INPUT_WAIT_FOR_PROCESSING: ${{ github.event_name == 'workflow_dispatch' &&
+            github.event.inputs.wait_for_processing ||
+            inputs.wait_for_processing }}
+          INPUT_AUTOMATIC_RELEASE: ${{ github.event_name == 'workflow_dispatch' &&
+            github.event.inputs.automatic_release || inputs.automatic_release }}
           IOS_BUNDLE_IDENTIFIER: ${{ vars['IOS_BUNDLE_IDENTIFIER'] }}
           DEFAULT_IOS_BUNDLE_IDENTIFIER: ${{ env.IOS_DEFAULT_BUNDLE_IDENTIFIER }}
           IOS_APPSTORE_AUTOMATIC_RELEASE: ${{ vars['IOS_APPSTORE_AUTOMATIC_RELEASE'] }}
@@ -230,14 +239,17 @@ jobs:
 
   validate:
     needs: resolve
-    if: ${{ needs.resolve.outputs.target == 'testflight' && (github.event_name == 'workflow_dispatch' || inputs.perform_validation) }}
+    if: ${{ needs.resolve.outputs.target == 'testflight' && (github.event_name ==
+      'workflow_dispatch' || inputs.perform_validation) }}
     uses: ./.github/workflows/flutter-validate.yml
 
   build_and_upload:
     needs:
       - resolve
       - validate
-    if: ${{ always() && needs.resolve.outputs.target == 'testflight' && (needs.validate.result == 'success' || needs.validate.result == 'skipped') }}
+    if: ${{ always() && needs.resolve.outputs.target == 'testflight' &&
+      (needs.validate.result == 'success' || needs.validate.result == 'skipped')
+      }}
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -415,7 +427,8 @@ jobs:
       - name: Generate TestFlight release notes
         id: release_notes
         env:
-          INPUT_RANGE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.commit_range || inputs.commit_range }}
+          INPUT_RANGE: ${{ github.event_name == 'workflow_dispatch' &&
+            github.event.inputs.commit_range || inputs.commit_range }}
           REF_NAME: ${{ github.ref_name }}
           CURRENT_SHA: ${{ github.sha }}
         run: |

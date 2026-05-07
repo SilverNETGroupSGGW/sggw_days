@@ -1,64 +1,68 @@
 name: Store Release
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
-      - "*.*.*"
-  release:
-    types:
-      - published
+    push:
+        tags:
+            - "v*.*.*"
+            - "*.*.*"
+    release:
+        types:
+            - published
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  group: "store-release-${{ github.event.release.tag_name || github.ref }}"
-  cancel-in-progress: true
+    group: "store-release-${{ github.event.release.tag_name || github.ref }}"
+    cancel-in-progress: true
 
 jobs:
-  validate:
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-    uses: ./.github/workflows/flutter-validate.yml
+    validate:
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+        uses: ./.github/workflows/flutter-validate.yml
 
-  android_testing:
-    needs: validate
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' && needs.validate.result == 'success' }}
-    uses: ./.github/workflows/android-store.yml
-    with:
-      target: testing
-      release_version: ${{ github.ref_name }}
-      perform_validation: false
-    secrets: inherit
+    android_testing:
+        needs: validate
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' &&
+            needs.validate.result == 'success' }}
+        uses: ./.github/workflows/android-store.yml
+        with:
+            target: testing
+            release_version: ${{ github.ref_name }}
+            perform_validation: false
+        secrets: inherit
 
-  ios_testflight:
-    needs: validate
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' && needs.validate.result == 'success' }}
-    uses: ./.github/workflows/ios-store.yml
-    with:
-      target: testflight
-      release_version: ${{ github.ref_name }}
-      perform_validation: false
-    secrets: inherit
+    ios_testflight:
+        needs: validate
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' &&
+            needs.validate.result == 'success' }}
+        uses: ./.github/workflows/ios-store.yml
+        with:
+            target: testflight
+            release_version: ${{ github.ref_name }}
+            perform_validation: false
+        secrets: inherit
 
-  android_production:
-    if: ${{ github.event_name == 'release' && !github.event.release.draft && !github.event.release.prerelease }}
-    uses: ./.github/workflows/android-store.yml
-    with:
-      target: production
-      release_version: ${{ github.event.release.tag_name }}
-      release_body: ${{ github.event.release.body }}
-      release_name: ${{ github.event.release.name }}
-      perform_validation: false
-    secrets: inherit
+    android_production:
+        if: ${{ github.event_name == 'release' && !github.event.release.draft &&
+            !github.event.release.prerelease }}
+        uses: ./.github/workflows/android-store.yml
+        with:
+            target: production
+            release_version: ${{ github.event.release.tag_name }}
+            release_body: ${{ github.event.release.body }}
+            release_name: ${{ github.event.release.name }}
+            perform_validation: false
+        secrets: inherit
 
-  ios_app_store:
-    if: ${{ github.event_name == 'release' && !github.event.release.draft && !github.event.release.prerelease }}
-    uses: ./.github/workflows/ios-store.yml
-    with:
-      target: app_store
-      release_version: ${{ github.event.release.tag_name }}
-      release_tag: ${{ github.event.release.tag_name }}
-      release_body: ${{ github.event.release.body }}
-      perform_validation: false
-    secrets: inherit
+    ios_app_store:
+        if: ${{ github.event_name == 'release' && !github.event.release.draft &&
+            !github.event.release.prerelease }}
+        uses: ./.github/workflows/ios-store.yml
+        with:
+            target: app_store
+            release_version: ${{ github.event.release.tag_name }}
+            release_tag: ${{ github.event.release.tag_name }}
+            release_body: ${{ github.event.release.body }}
+            perform_validation: false
+        secrets: inherit
