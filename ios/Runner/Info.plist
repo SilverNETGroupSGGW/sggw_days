@@ -30,6 +30,10 @@
 		<string>Camera access is used to scan QR codes during the treasure hunt.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>Location access verifies that you are near a treasure hunt point before a QR code can be accepted.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>Location access verifies that you are near a treasure hunt point before a QR code can be accepted.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>Location access verifies that you are near a treasure hunt point before a QR code can be accepted.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Photo library access lets administrators choose images for wiki articles and timetable events.</string>
 		<key>UILaunchStoryboardName</key>
