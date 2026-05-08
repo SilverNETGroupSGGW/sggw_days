@@ -37,6 +37,7 @@ target 'Runner' do
   pod 'FirebaseAppCheckInterop', :modular_headers => true
   pod 'FirebaseAuthInterop', :modular_headers => true
   pod 'FirebaseFirestoreInternal', :modular_headers => true
+  pod 'FirebaseMessaging', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   pod 'RecaptchaInterop', :modular_headers => true
 
