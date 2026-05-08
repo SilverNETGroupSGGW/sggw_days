@@ -609,6 +609,7 @@ jobs:
           {
             echo 'release_notes<<EOF'
             cat "$notes_path"
+            printf '\n'
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
