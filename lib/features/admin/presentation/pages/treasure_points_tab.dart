@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/core/icons/material_symbol_field.dart';
+import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
@@ -109,20 +112,39 @@ class TreasurePointsTab extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 16),
                                     if (point.qrCode.isNotEmpty)
-                                      Center(
-                                        child: Container(
-                                          padding: const EdgeInsets.all(8.0),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              8.0,
+                                      Column(
+                                        children: [
+                                          Center(
+                                            child: Container(
+                                              padding: const EdgeInsets.all(8.0),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                                color: Colors.white,
+                                              ),
+                                              child: QrCodeWidget(
+                                                data: point.qrCode,
+                                                size: 200,
+                                              ),
                                             ),
-                                            color: Colors.white,
                                           ),
-                                          child: QrCodeWidget(
-                                            data: point.qrCode,
-                                            size: 200,
+                                          const SizedBox(height: 12),
+                                          Center(
+                                            child: FilledButton.icon(
+                                              onPressed: () =>
+                                                  _openCheckpointPoster(
+                                                    context,
+                                                    point,
+                                                  ),
+                                              icon: const Icon(
+                                                Icons.local_printshop_outlined,
+                                              ),
+                                              label: const Text(
+                                                'Poster: STREFA ZADAŃ',
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                   ],
                                 ),
@@ -136,6 +158,34 @@ class TreasurePointsTab extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Future<void> _openCheckpointPoster(
+    BuildContext context,
+    TreasurePoint point,
+  ) async {
+    final uri = posterGeneratorUri(
+      checkpointUrl: point.qrCode,
+      pointName: point.name,
+      openCheckpointPoster: true,
+    );
+    final opened = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+      webOnlyWindowName: '_blank',
+    );
+    if (opened || !context.mounted) {
+      return;
+    }
+
+    await Clipboard.setData(ClipboardData(text: uri.toString()));
+    if (!context.mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Poster generator link copied.')),
     );
   }
 

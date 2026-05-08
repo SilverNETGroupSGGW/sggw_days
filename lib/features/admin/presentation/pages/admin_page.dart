@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
@@ -121,7 +121,7 @@ class _AdminPageState extends State<AdminPage>
   }
 
   Future<void> _openPosterGenerator() async {
-    final uri = _posterGeneratorUri();
+    final uri = posterGeneratorUri();
     final opened = await launchUrl(
       uri,
       mode: LaunchMode.externalApplication,
@@ -139,20 +139,5 @@ class _AdminPageState extends State<AdminPage>
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Poster generator link copied.')),
     );
-  }
-
-  Uri _posterGeneratorUri() {
-    if (kIsWeb) {
-      final base = Uri.base;
-      final isLocalhost =
-          base.host == 'localhost' ||
-          base.host == '127.0.0.1' ||
-          base.host == '0.0.0.0';
-      if (!isLocalhost) {
-        return base.resolve('/posters/');
-      }
-    }
-
-    return Uri.https('sggw-days.web.app', '/posters/');
   }
 }

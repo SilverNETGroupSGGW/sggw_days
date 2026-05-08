@@ -84,6 +84,15 @@
       }
     </style>
     <script>
+      const FIXED_LINKS = Object.freeze({
+        play: "https://play.google.com/store/apps/details?id=com.silvernet.sggw_days",
+        app: "https://apps.apple.com/us/app/dni-sggw/id6767240418",
+        web: "https://sggw-days.web.app/",
+      });
+
+      const DEFAULT_CHECKPOINT_URL = "https://sggw-days.web.app/scan";
+      const DEFAULT_POINT_NAME = "Punkt Kontrolny";
+
       function printPoster(wrapperId) {
         // Ukryj wszystkie inne elementy
         const wrappers = document.querySelectorAll(".poster-wrapper");
@@ -101,26 +110,57 @@
         }, 500);
       }
 
-      // Funkcja do dynamicznej aktualizacji kodów QR
-      function updateQRCodes() {
-        const playUrl = document.getElementById("input-play").value;
-        const appUrl = document.getElementById("input-app").value;
-        const webUrl = document.getElementById("input-web").value;
-        const checkUrl = document.getElementById("input-check").value;
-
-        const updateGroup = (className, url) => {
-          if (!url) return;
-          document.querySelectorAll("." + className).forEach((img) => {
-            const size = img.dataset.size || "300x300";
-            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}&data=${encodeURIComponent(url)}`;
-          });
-        };
-
-        updateGroup("qr-play", playUrl);
-        updateGroup("qr-app", appUrl);
-        updateGroup("qr-web", webUrl);
-        updateGroup("qr-check", checkUrl);
+      function updateGroup(className, url) {
+        if (!url) return;
+        document.querySelectorAll("." + className).forEach((img) => {
+          const size = img.dataset.size || "300x300";
+          img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}&data=${encodeURIComponent(url)}`;
+        });
       }
+
+      function updateCheckpointPoster() {
+        const pointInput = document.getElementById("input-point");
+        const checkInput = document.getElementById("input-check");
+        const pointName = pointInput.value.trim() || DEFAULT_POINT_NAME;
+        const checkUrl = checkInput.value.trim() || DEFAULT_CHECKPOINT_URL;
+
+        updateGroup("qr-check", checkUrl);
+
+        document.querySelectorAll(".checkpoint-point-name").forEach((node) => {
+          node.textContent = pointName;
+        });
+      }
+
+      function applyQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        const pointName = params.get("point");
+        const checkUrl = params.get("checkpoint");
+        if (pointName) {
+          document.getElementById("input-point").value = pointName;
+        }
+        if (checkUrl) {
+          document.getElementById("input-check").value = checkUrl;
+        }
+      }
+
+      function initializePosters() {
+        updateGroup("qr-play", FIXED_LINKS.play);
+        updateGroup("qr-app", FIXED_LINKS.app);
+        updateGroup("qr-web", FIXED_LINKS.web);
+        applyQueryParams();
+        updateCheckpointPoster();
+
+        if (window.location.hash === "#wrapper-3") {
+          requestAnimationFrame(() => {
+            document.getElementById("wrapper-3")?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", initializePosters);
     </script>
   </head>
   <body class="text-gray-800 pb-20">
@@ -145,57 +185,69 @@
         <!-- Panel Konfiguracyjny -->
         <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 text-left">
           <h3 class="font-bold text-lg mb-4 text-[#00543d]">
-            ⚙️ Konfiguracja linków (Kody QR zaktualizują się automatycznie na
-            wszystkich plakatach)
+            ⚙️ Ustawienia plakatu punktu kontrolnego
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-bold text-gray-700 mb-1"
-                >Link - Google Play</label
+                >Nazwa punktu</label
               >
               <input
                 type="text"
-                id="input-play"
-                oninput="updateQRCodes()"
+                id="input-point"
+                oninput="updateCheckpointPoster()"
                 class="w-full p-2 border border-gray-300 rounded shadow-sm focus:ring-[#00543d] focus:border-[#00543d] outline-none"
-                value="https://play.google.com/store/apps/details?id=com.silvernet.sggw_days"
+                value="Punkt Kontrolny"
               />
             </div>
             <div>
               <label class="block text-sm font-bold text-gray-700 mb-1"
-                >Link - App Store</label
-              >
-              <input
-                type="text"
-                id="input-app"
-                oninput="updateQRCodes()"
-                class="w-full p-2 border border-gray-300 rounded shadow-sm focus:ring-[#00543d] focus:border-[#00543d] outline-none"
-                value="https://apps.apple.com/pl/app/sggw-days"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-1"
-                >Link - Przeglądarka (WWW)</label
-              >
-              <input
-                type="text"
-                id="input-web"
-                oninput="updateQRCodes()"
-                class="w-full p-2 border border-gray-300 rounded shadow-sm focus:ring-[#00543d] focus:border-[#00543d] outline-none"
-                value="https://sggwdays.pl"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-1"
-                >Link - Punkt Kontrolny (Gra Terenowa)</label
+                >Link punktu kontrolnego</label
               >
               <input
                 type="text"
                 id="input-check"
-                oninput="updateQRCodes()"
+                oninput="updateCheckpointPoster()"
                 class="w-full p-2 border border-gray-300 rounded shadow-sm focus:ring-[#00543d] focus:border-[#00543d] outline-none"
-                value="sggwdays://checkpoint/01"
+                value="https://sggw-days.web.app/scan"
               />
+            </div>
+          </div>
+          <div class="mt-6 rounded-xl border border-[#dbe7dc] bg-white p-4">
+            <p class="text-sm font-bold uppercase tracking-wide text-[#00543d]">
+              Stałe linki aplikacji
+            </p>
+            <div class="mt-3 space-y-3 text-sm text-gray-700">
+              <div>
+                <span class="font-semibold">Google Play:</span>
+                <a
+                  class="ml-2 break-all text-[#00543d] underline decoration-[#8dc63f] underline-offset-4"
+                  href="https://play.google.com/store/apps/details?id=com.silvernet.sggw_days"
+                  target="_blank"
+                  rel="noreferrer"
+                  >https://play.google.com/store/apps/details?id=com.silvernet.sggw_days</a
+                >
+              </div>
+              <div>
+                <span class="font-semibold">App Store:</span>
+                <a
+                  class="ml-2 break-all text-[#00543d] underline decoration-[#8dc63f] underline-offset-4"
+                  href="https://apps.apple.com/us/app/dni-sggw/id6767240418"
+                  target="_blank"
+                  rel="noreferrer"
+                  >https://apps.apple.com/us/app/dni-sggw/id6767240418</a
+                >
+              </div>
+              <div>
+                <span class="font-semibold">WWW:</span>
+                <a
+                  class="ml-2 break-all text-[#00543d] underline decoration-[#8dc63f] underline-offset-4"
+                  href="https://sggw-days.web.app/"
+                  target="_blank"
+                  rel="noreferrer"
+                  >https://sggw-days.web.app/</a
+                >
+              </div>
             </div>
           </div>
         </div>
@@ -520,7 +572,7 @@
                     >
                       <img
                         data-size="300x300"
-                        src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://apps.apple.com/pl/app/sggw-days"
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://apps.apple.com/us/app/dni-sggw/id6767240418"
                         alt="App Store"
                         class="qr-app w-20 h-20 mix-blend-multiply"
                       />
@@ -547,7 +599,7 @@
                     >
                       <img
                         data-size="300x300"
-                        src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://sggwdays.pl"
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://sggw-days.web.app/"
                         alt="Browser App"
                         class="qr-web w-20 h-20 mix-blend-multiply"
                       />
@@ -744,7 +796,7 @@
                   >
                     <img
                       data-size="150x150"
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://apps.apple.com/pl/app/sggw-days"
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://apps.apple.com/us/app/dni-sggw/id6767240418"
                       class="qr-app w-16 h-16"
                       alt="App"
                     />
@@ -765,7 +817,7 @@
                   >
                     <img
                       data-size="150x150"
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sggwdays.pl"
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sggw-days.web.app/"
                       class="qr-web w-16 h-16 shrink-0"
                       alt="Web"
                     />
@@ -999,6 +1051,11 @@
                     Skanuj Kod
                   </h3>
                 </div>
+                <p
+                  class="checkpoint-point-name mb-6 rounded-full bg-[#00543d]/8 px-5 py-2 text-lg font-bold text-[#00543d]"
+                >
+                  Punkt Kontrolny
+                </p>
 
                 <!-- Wielki QR Kod dla punktu -->
                 <div
@@ -1006,7 +1063,7 @@
                 >
                   <img
                     data-size="400x400"
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=sggwdays://checkpoint/01"
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://sggw-days.web.app/scan"
                     alt="Kod Punktu Kontrolnego"
                     class="qr-check w-72 h-72 mix-blend-multiply"
                   />
@@ -1075,7 +1132,7 @@
                 >
                   <img
                     data-size="100x100"
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://apps.apple.com/pl/app/sggw-days"
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://apps.apple.com/us/app/dni-sggw/id6767240418"
                     class="qr-app w-10 h-10 shrink-0"
                     alt="App"
                   />
@@ -1093,7 +1150,7 @@
                 >
                   <img
                     data-size="100x100"
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://sggwdays.pl"
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://sggw-days.web.app/"
                     class="qr-web w-10 h-10 shrink-0"
                     alt="Web"
                   />
