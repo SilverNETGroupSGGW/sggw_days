@@ -7,6 +7,7 @@ const _sourceSvgPath = 'assets/icon/source/app_icon.svg';
 const _backgroundColor = 0xFFC8F0B4;
 const _foregroundColor = 0xFF003228;
 const _masterOutputPath = 'assets/icon/app_icon_master.png';
+const _iosOutputPath = 'assets/icon/app_icon_ios.png';
 const _androidForegroundOutputPath =
     'assets/icon/android_dynamic_foreground.png';
 const _androidMonochromeOutputPath =
@@ -23,6 +24,7 @@ const _androidForegroundEffectiveMaxRatio = _androidForegroundLayerRatio;
 const _androidMonochromeEffectiveMinRatio = 55 / 108;
 const _androidMonochromeEffectiveMaxRatio = _androidMonochromeLayerRatio;
 const _masterRatio = 0.56;
+const _iosRatio = 0.64;
 const _horizontalAlignmentGroupLabel = 'pinpoint';
 
 void main() {
@@ -50,6 +52,12 @@ void main() {
 
   final masterIcon = _composeMasterIcon(
     glyphCrop,
+    maxDimensionRatio: _masterRatio,
+    horizontalAnchorX: horizontalAnchorX,
+  );
+  final iosIcon = _composeMasterIcon(
+    glyphCrop,
+    maxDimensionRatio: _iosRatio,
     horizontalAnchorX: horizontalAnchorX,
   );
   final androidForeground = _composeTransparentLayer(
@@ -66,6 +74,7 @@ void main() {
   );
 
   _writePng(_masterOutputPath, masterIcon);
+  _writePng(_iosOutputPath, iosIcon);
   _writePng(_androidForegroundOutputPath, androidForeground);
   _writePng(_androidMonochromeOutputPath, androidMonochrome);
 
@@ -75,6 +84,7 @@ void main() {
     horizontalAnchorX: horizontalAnchorX,
     renderedSize: rendered.width,
     masterIcon: masterIcon,
+    iosIcon: iosIcon,
     androidForeground: androidForeground,
     androidMonochrome: androidMonochrome,
   );
@@ -202,6 +212,7 @@ bool _sameRgb(img.Pixel pixel, img.Color color) {
 
 img.Image _composeMasterIcon(
   img.Image glyphCrop, {
+  required double maxDimensionRatio,
   required double horizontalAnchorX,
 }) {
   final canvas = img.Image(
@@ -211,7 +222,7 @@ img.Image _composeMasterIcon(
   );
   _fillSolid(canvas, _color(_backgroundColor));
 
-  final glyph = _resizeToFit(glyphCrop, _outputSize * _masterRatio);
+  final glyph = _resizeToFit(glyphCrop, _outputSize * maxDimensionRatio);
   final x = ((_outputSize / 2) - (glyph.width * horizontalAnchorX)).round();
   final y = ((_outputSize - glyph.height) / 2).round();
   img.compositeImage(canvas, glyph, dstX: x, dstY: y);
@@ -317,6 +328,7 @@ void _writeAnalysis({
   required double horizontalAnchorX,
   required int renderedSize,
   required img.Image masterIcon,
+  required img.Image iosIcon,
   required img.Image androidForeground,
   required img.Image androidMonochrome,
 }) {
@@ -326,6 +338,7 @@ void _writeAnalysis({
     masterIcon,
     _color(_backgroundColor),
   );
+  final iosBounds = _findNonBackgroundBounds(iosIcon, _color(_backgroundColor));
   final androidBounds = _findOpaqueBounds(androidForeground);
   final androidSourceMaxDimension = math.max(
     androidBounds.width,
@@ -367,6 +380,7 @@ void _writeAnalysis({
     ..writeln('## Generated outputs')
     ..writeln()
     ..writeln('- Master icon: `$_masterOutputPath`')
+    ..writeln('- iOS icon: `$_iosOutputPath`')
     ..writeln('- Android adaptive foreground: `$_androidForegroundOutputPath`')
     ..writeln('- Android adaptive monochrome: `$_androidMonochromeOutputPath`')
     ..writeln('- Browser favicon SVG: `web/favicon.svg`')
@@ -375,7 +389,10 @@ void _writeAnalysis({
     ..writeln('## Validation')
     ..writeln()
     ..writeln(
-      '- Native flat icon visible max dimension: ${math.max(masterBounds.width, masterBounds.height)} px (${(math.max(masterBounds.width, masterBounds.height) / _outputSize * 100).toStringAsFixed(1)}% of canvas)',
+      '- Master icon visible max dimension: ${math.max(masterBounds.width, masterBounds.height)} px (${(math.max(masterBounds.width, masterBounds.height) / _outputSize * 100).toStringAsFixed(1)}% of canvas)',
+    )
+    ..writeln(
+      '- iOS icon visible max dimension: ${math.max(iosBounds.width, iosBounds.height)} px (${(math.max(iosBounds.width, iosBounds.height) / _outputSize * 100).toStringAsFixed(1)}% of canvas)',
     )
     ..writeln(
       '- Android foreground source max dimension: $androidSourceMaxDimension px (${(androidSourceMaxDimension / _outputSize * 100).toStringAsFixed(1)}% of canvas, target <= ${(_androidForegroundLayerRatio * 100).toStringAsFixed(1)}%)',
