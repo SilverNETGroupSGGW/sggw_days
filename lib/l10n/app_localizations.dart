@@ -854,6 +854,12 @@ abstract class AppLocalizations {
   /// **'Kontynuuj'**
   String get continueScan;
 
+  /// No description provided for @pointAlreadyScanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten punkt został już zeskanowany.'**
+  String get pointAlreadyScanned;
+
   /// No description provided for @reorderPoints.
   ///
   /// In pl, this message translates to:

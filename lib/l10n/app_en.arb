@@ -147,6 +147,7 @@
   },
   "seeDetails": "See Details",
   "continueScan": "Continue",
+  "pointAlreadyScanned": "This point was already scanned.",
   "reorderPoints": "Reorder Points",
   "trackOnMap": "Track on Map",
   "pointLocked": "This point is not yet unlocked",

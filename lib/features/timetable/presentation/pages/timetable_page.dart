@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -584,40 +586,121 @@ class _TimetablePageState extends State<TimetablePage> {
     );
   }
 
-  void _openCheckInScanner(BuildContext context) {
+  void _openCheckInScanner(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final bloc = context.read<TimetableBloc>();
 
-    Navigator.push(
+    final eventId = await Navigator.push<String>(
       context,
       MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(title: Text(l10n.checkIn)),
-          body: MobileScanner(
+        builder: (context) => _CheckInScannerPage(
+          validEventIds: bloc.state.events.map((event) => event.id).toSet(),
+        ),
+      ),
+    );
+
+    if (!context.mounted || eventId == null) return;
+
+    final matchingEvent = bloc.state.events
+        .where((event) => event.id == eventId)
+        .firstOrNull;
+    if (matchingEvent == null) return;
+
+    bloc.add(CheckInEvent(eventId));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${l10n.checkedIn}: ${matchingEvent.title}'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+    );
+  }
+}
+
+class _CheckInScannerPage extends StatefulWidget {
+  final Set<String> validEventIds;
+
+  const _CheckInScannerPage({required this.validEventIds});
+
+  @override
+  State<_CheckInScannerPage> createState() => _CheckInScannerPageState();
+}
+
+class _CheckInScannerPageState extends State<_CheckInScannerPage> {
+  late final MobileScannerController _controller;
+  bool _isClosing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = MobileScannerController(
+      detectionSpeed: DetectionSpeed.noDuplicates,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _completeScan(String code) async {
+    if (!mounted || _isClosing) return;
+    _isClosing = true;
+    await _controller.stop();
+    if (!mounted) return;
+    Navigator.of(context).pop(code);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.checkIn)),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          MobileScanner(
+            controller: _controller,
             onDetect: (capture) {
+              if (_isClosing) return;
+
               final barcode = capture.barcodes.firstOrNull;
-              if (barcode?.rawValue == null) return;
-              final code = barcode!.rawValue!;
-
-              // Check if code matches an event ID
-              final matchingEvent = bloc.state.events
-                  .where((e) => e.id == code)
-                  .firstOrNull;
-
-              if (matchingEvent != null) {
-                bloc.add(CheckInEvent(code));
-                Navigator.pop(context);
-                if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${l10n.checkedIn}: ${matchingEvent.title}'),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                  ),
-                );
+              final code = barcode?.rawValue;
+              if (code == null || !widget.validEventIds.contains(code)) {
+                return;
               }
+
+              unawaited(_completeScan(code));
             },
           ),
-        ),
+          ValueListenableBuilder<MobileScannerState>(
+            valueListenable: _controller,
+            builder: (context, state, _) {
+              final isReady =
+                  state.isInitialized && state.isRunning && state.error == null;
+              if (isReady) {
+                return const SizedBox.shrink();
+              }
+
+              return Container(
+                color: Colors.black.withValues(alpha: 0.85),
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(color: Colors.white),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.cameraLoading,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

@@ -230,4 +230,59 @@ void main() {
     await bloc.close();
     await repository.controller.close();
   });
+
+  test('shows feedback when a point is scanned twice', () async {
+    const firstPoint = TreasurePoint(
+      id: 'point-1',
+      name: 'First Point',
+      description: 'First description',
+      latitude: 52.1598,
+      longitude: 21.0463,
+      qrCode: 'https://sggw-days.web.app/scan/point-1',
+      type: PointType.treasurePoint,
+      order: 0,
+    );
+    final progressBox = await Hive.openBox<List<String>>('progress_bloc_test');
+    final bloc = _SeededTreasureHuntBloc(
+      repository: _FakeTreasureHuntRepository(const [firstPoint]),
+      progressBox: progressBox,
+      points: const [firstPoint],
+    );
+
+    final firstScanCompleted = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TreasureHuntState>().having(
+          (state) => state.lastScannedPointId,
+          'lastScannedPointId',
+          'point-1',
+        ),
+      ),
+    );
+    bloc.add(const ScanQRCode('https://sggw-days.web.app/scan/point-1'));
+    await firstScanCompleted;
+
+    final duplicateScanFeedback = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TreasureHuntState>()
+            .having(
+              (state) => state.scanFeedback,
+              'scanFeedback',
+              TreasureHuntScanFeedback.alreadyScanned,
+            )
+            .having(
+              (state) => state.foundPointIds,
+              'foundPointIds',
+              equals(const ['point-1']),
+            ),
+      ),
+    );
+    bloc.add(const ScanQRCode('https://sggw-days.web.app/scan/point-1'));
+    await duplicateScanFeedback;
+
+    expect(bloc.state.foundPointIds, equals(const ['point-1']));
+
+    await bloc.close();
+  });
 }

@@ -3,6 +3,8 @@ import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart
 
 enum TreasureHuntStatus { initial, loading, success, error }
 
+enum TreasureHuntScanFeedback { alreadyScanned }
+
 class TreasureHuntState extends Equatable {
   final TreasureHuntStatus status;
   final List<TreasurePoint> points;
@@ -11,6 +13,8 @@ class TreasureHuntState extends Equatable {
   final String? errorMessage;
   final String? trackedPointId;
   final String? lastScannedPointId;
+  final TreasureHuntScanFeedback? scanFeedback;
+  final int scanFeedbackVersion;
 
   const TreasureHuntState({
     this.status = TreasureHuntStatus.initial,
@@ -20,6 +24,8 @@ class TreasureHuntState extends Equatable {
     this.errorMessage,
     this.trackedPointId,
     this.lastScannedPointId,
+    this.scanFeedback,
+    this.scanFeedbackVersion = 0,
   });
 
   /// Returns treasure points sorted by order.
@@ -88,7 +94,8 @@ class TreasureHuntState extends Equatable {
     return visible;
   }
 
-  /// [errorMessage] and [lastScannedPointId] are transient UI-event flags.
+  /// [errorMessage], [lastScannedPointId], and [scanFeedback] are transient
+  /// UI-event flags.
   /// They intentionally reset on unrelated emits so listeners fire once.
   TreasureHuntState copyWith({
     TreasureHuntStatus? status,
@@ -98,6 +105,8 @@ class TreasureHuntState extends Equatable {
     String? errorMessage,
     String? trackedPointId,
     String? lastScannedPointId,
+    TreasureHuntScanFeedback? scanFeedback,
+    int? scanFeedbackVersion,
   }) {
     return TreasureHuntState(
       status: status ?? this.status,
@@ -107,6 +116,8 @@ class TreasureHuntState extends Equatable {
       errorMessage: errorMessage,
       trackedPointId: trackedPointId ?? this.trackedPointId,
       lastScannedPointId: lastScannedPointId,
+      scanFeedback: scanFeedback,
+      scanFeedbackVersion: scanFeedbackVersion ?? this.scanFeedbackVersion,
     );
   }
 
@@ -119,5 +130,7 @@ class TreasureHuntState extends Equatable {
     errorMessage,
     trackedPointId,
     lastScannedPointId,
+    scanFeedback,
+    scanFeedbackVersion,
   ];
 }

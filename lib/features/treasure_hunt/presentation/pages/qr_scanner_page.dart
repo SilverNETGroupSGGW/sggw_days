@@ -9,13 +9,11 @@ import 'package:sggw_days/features/treasure_hunt/data/models/treasure_scan_code.
 import 'package:sggw_days/l10n/app_localizations.dart';
 
 class QrScannerPage extends StatefulWidget {
-  final Position currentPosition;
   final List<TreasurePoint> treasurePoints;
   final Set<String> unlockedPointIds;
 
   const QrScannerPage({
     super.key,
-    required this.currentPosition,
     required this.treasurePoints,
     required this.unlockedPointIds,
   });
@@ -25,10 +23,15 @@ class QrScannerPage extends StatefulWidget {
 }
 
 class _QrScannerPageState extends State<QrScannerPage> {
+  static const Duration _scanErrorCooldown = Duration(seconds: 3);
+
   late final MobileScannerController _controller;
+  Position? _currentPosition;
+  Object? _locationError;
   bool _allowPop = false;
   bool _hasHandledScan = false;
   bool _isClosing = false;
+  DateTime? _scanErrorCooldownUntil;
 
   @override
   void initState() {
@@ -36,6 +39,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
     _controller = MobileScannerController(
       detectionSpeed: DetectionSpeed.noDuplicates,
     );
+    unawaited(_loadCurrentPosition());
   }
 
   @override
@@ -52,13 +56,32 @@ class _QrScannerPageState extends State<QrScannerPage> {
     return widget.treasurePoints.where((p) => p.qrCode == code).firstOrNull;
   }
 
+  Future<void> _loadCurrentPosition() async {
+    try {
+      final position = await Geolocator.getCurrentPosition();
+      if (!mounted) return;
+      setState(() {
+        _currentPosition = position;
+        _locationError = null;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _locationError = error;
+      });
+    }
+  }
+
   bool _isNearTreasurePoint(TreasurePoint point) {
     if (kDebugMode) return true;
 
+    final currentPosition = _currentPosition;
+    if (currentPosition == null) return false;
+
     const maxDistance = 50.0;
     final distance = Geolocator.distanceBetween(
-      widget.currentPosition.latitude,
-      widget.currentPosition.longitude,
+      currentPosition.latitude,
+      currentPosition.longitude,
       point.latitude,
       point.longitude,
     );
@@ -80,6 +103,25 @@ class _QrScannerPageState extends State<QrScannerPage> {
     if (_hasHandledScan) return;
     _hasHandledScan = true;
     unawaited(_closeScanner(code));
+  }
+
+  bool get _isInScanErrorCooldown {
+    final cooldownUntil = _scanErrorCooldownUntil;
+    return cooldownUntil != null && DateTime.now().isBefore(cooldownUntil);
+  }
+
+  void _showScanError(BuildContext context, String message) {
+    _scanErrorCooldownUntil = DateTime.now().add(_scanErrorCooldown);
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+        duration: _scanErrorCooldown,
+      ),
+    );
   }
 
   @override
@@ -109,7 +151,13 @@ class _QrScannerPageState extends State<QrScannerPage> {
             MobileScanner(
               controller: _controller,
               onDetect: (capture) {
-                if (_hasHandledScan || _isClosing) return;
+                if (_hasHandledScan ||
+                    _isClosing ||
+                    _isInScanErrorCooldown ||
+                    _currentPosition == null ||
+                    _locationError != null) {
+                  return;
+                }
                 final barcodes = capture.barcodes;
                 for (final barcode in barcodes) {
                   final rawValue = barcode.rawValue;
@@ -119,28 +167,13 @@ class _QrScannerPageState extends State<QrScannerPage> {
 
                   final point = _findPoint(rawValue);
                   if (point == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.invalidQrCode),
-                        backgroundColor: Theme.of(context).colorScheme.error,
-                      ),
-                    );
+                    _showScanError(context, l10n.invalidQrCode);
                   } else if (!widget.unlockedPointIds.contains(point.id)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.pointLocked),
-                        backgroundColor: Theme.of(context).colorScheme.error,
-                      ),
-                    );
+                    _showScanError(context, l10n.pointLocked);
                   } else if (_isNearTreasurePoint(point)) {
                     _completeScan(rawValue);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.mustBeCloser),
-                        backgroundColor: Theme.of(context).colorScheme.error,
-                      ),
-                    );
+                    _showScanError(context, l10n.mustBeCloser);
                   }
                   break;
                 }
@@ -149,12 +182,46 @@ class _QrScannerPageState extends State<QrScannerPage> {
             ValueListenableBuilder<MobileScannerState>(
               valueListenable: _controller,
               builder: (context, state, _) {
-                final isReady =
+                final isCameraReady =
                     state.isInitialized &&
                     state.isRunning &&
                     state.error == null;
-                if (isReady) {
+                if (isCameraReady && _currentPosition != null) {
                   return const SizedBox.shrink();
+                }
+
+                if (_locationError != null) {
+                  return Container(
+                    color: Colors.black.withValues(alpha: 0.85),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.location_off,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.permissionDeniedLocationBody,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 20),
+                        FilledButton(
+                          onPressed: () {
+                            setState(() {
+                              _locationError = null;
+                            });
+                            unawaited(_loadCurrentPosition());
+                          },
+                          child: Text(l10n.permissionDeniedRetry),
+                        ),
+                      ],
+                    ),
+                  );
                 }
 
                 return Container(

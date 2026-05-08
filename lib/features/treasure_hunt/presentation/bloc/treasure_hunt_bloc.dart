@@ -98,6 +98,12 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
     Emitter<TreasureHuntState> emit,
   ) async {
     if (state.foundPointIds.contains(event.pointId)) {
+      emit(
+        state.copyWith(
+          scanFeedback: TreasureHuntScanFeedback.alreadyScanned,
+          scanFeedbackVersion: state.scanFeedbackVersion + 1,
+        ),
+      );
       return;
     }
 

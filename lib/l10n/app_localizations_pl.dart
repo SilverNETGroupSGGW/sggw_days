@@ -428,6 +428,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get continueScan => 'Kontynuuj';
 
   @override
+  String get pointAlreadyScanned => 'Ten punkt został już zeskanowany.';
+
+  @override
   String get reorderPoints => 'Zmień kolejność';
 
   @override

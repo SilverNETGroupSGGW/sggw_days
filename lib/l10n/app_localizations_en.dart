@@ -426,6 +426,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueScan => 'Continue';
 
   @override
+  String get pointAlreadyScanned => 'This point was already scanned.';
+
+  @override
   String get reorderPoints => 'Reorder Points';
 
   @override

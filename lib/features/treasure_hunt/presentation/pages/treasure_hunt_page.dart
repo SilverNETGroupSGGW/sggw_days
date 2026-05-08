@@ -165,6 +165,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
       ),
       body: BlocConsumer<TreasureHuntBloc, TreasureHuntState>(
         listener: (context, state) {
+          if (state.scanFeedback == TreasureHuntScanFeedback.alreadyScanned) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(l10n.pointAlreadyScanned)));
+          }
           if (state.status == TreasureHuntStatus.error) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.errorMessage ?? 'Error')),
@@ -196,6 +201,22 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
               if (allPointsFound) {
                 _completionCelebrated = true;
               }
+              return;
+            }
+            if (scannedPoint != null &&
+                scannedPoint.type == PointType.pointOfInterest) {
+              unawaited(
+                _showPointDetails(context, scannedPoint, true).then((_) {
+                  if (!mounted ||
+                      !context.mounted ||
+                      !allPointsFound ||
+                      _completionCelebrated) {
+                    return;
+                  }
+                  _completionCelebrated = true;
+                  _showCelebration(context);
+                }),
+              );
               return;
             }
           }
@@ -291,11 +312,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                   confettiController: _confettiController,
                   blastDirection: 1.5708,
                   blastDirectionality: BlastDirectionality.explosive,
-                  maxBlastForce: 20,
-                  minBlastForce: 8,
-                  emissionFrequency: 0.04,
-                  numberOfParticles: 30,
-                  gravity: 0.1,
+                  maxBlastForce: 24,
+                  minBlastForce: 10,
+                  emissionFrequency: 0.08,
+                  numberOfParticles: 50,
+                  gravity: 0.14,
                   colors: [
                     colorScheme.primary,
                     colorScheme.secondary,
@@ -1099,32 +1120,21 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     final locationOk = await _ensureLocationPermission(context);
     if (!context.mounted || !locationOk) return;
 
-    try {
-      final position = await Geolocator.getCurrentPosition();
-
-      if (!context.mounted) return;
-
-      final scannedCode = await Navigator.of(context, rootNavigator: true)
-          .push<String>(
-            MaterialPageRoute(
-              fullscreenDialog: true,
-              builder: (context) => QrScannerPage(
-                currentPosition: position,
-                treasurePoints: context.read<TreasureHuntBloc>().state.points,
-                unlockedPointIds: context
-                    .read<TreasureHuntBloc>()
-                    .state
-                    .unlockedPointIds,
-              ),
+    final scannedCode = await Navigator.of(context, rootNavigator: true)
+        .push<String>(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => QrScannerPage(
+              treasurePoints: context.read<TreasureHuntBloc>().state.points,
+              unlockedPointIds: context
+                  .read<TreasureHuntBloc>()
+                  .state
+                  .unlockedPointIds,
             ),
-          );
-      if (!context.mounted || scannedCode == null) return;
-      context.read<TreasureHuntBloc>().add(ScanQRCode(scannedCode));
-    } catch (_) {
-      if (!context.mounted) return;
-      // Re-ask for location instead of showing an error.
-      await _ensureLocationPermission(context);
-    }
+          ),
+        );
+    if (!context.mounted || scannedCode == null) return;
+    context.read<TreasureHuntBloc>().add(ScanQRCode(scannedCode));
   }
 
   Future<bool> _ensurePermission(

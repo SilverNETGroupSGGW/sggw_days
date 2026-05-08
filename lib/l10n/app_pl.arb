@@ -150,6 +150,7 @@
   },
   "seeDetails": "Szczegóły",
   "continueScan": "Kontynuuj",
+  "pointAlreadyScanned": "Ten punkt został już zeskanowany.",
   "reorderPoints": "Zmień kolejność",
   "trackOnMap": "Śledź na mapie",
   "pointLocked": "Ten punkt nie jest jeszcze odblokowany",
