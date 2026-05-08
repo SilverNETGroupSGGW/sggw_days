@@ -10,10 +10,26 @@ project 'Runner', {
   'Release' => :release,
 }
 
+def ios_project_path(*segments)
+  File.expand_path(File.join(*segments), __dir__)
+end
+
+def flutter_project_path(*segments)
+  File.expand_path(File.join('..', *segments), __dir__)
+end
+
+def resolve_existing_path(*paths)
+  paths.each do |path|
+    return path if File.exist?(path)
+  end
+
+  nil
+end
+
 def flutter_root
-  generated_xcode_build_settings_path = File.expand_path(
-    File.join('..', 'Flutter', 'Generated.xcconfig'),
-    __FILE__,
+  generated_xcode_build_settings_path = ios_project_path(
+    'Flutter',
+    'Generated.xcconfig',
   )
 
   unless File.exist?(generated_xcode_build_settings_path)
@@ -29,13 +45,13 @@ def flutter_root
 end
 
 def firebase_ios_sdk_version
-  flutter_plugins_dependencies_path = File.expand_path(
-    File.join('..', '.flutter-plugins-dependencies'),
-    __FILE__,
+  flutter_plugins_dependencies_path = resolve_existing_path(
+    flutter_project_path('.flutter-plugins-dependencies'),
+    ios_project_path('.flutter-plugins-dependencies'),
   )
 
-  unless File.exist?(flutter_plugins_dependencies_path)
-    raise "#{flutter_plugins_dependencies_path} must exist. Run flutter pub get before pod install."
+  unless flutter_plugins_dependencies_path
+    raise "#{flutter_project_path('.flutter-plugins-dependencies')} must exist. Run flutter pub get before pod install."
   end
 
   plugins = JSON.parse(File.read(flutter_plugins_dependencies_path))
