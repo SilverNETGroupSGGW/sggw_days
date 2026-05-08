@@ -11,7 +11,29 @@ void main() {
   final wellKnownDirectory = Directory('${buildWebDirectory.path}/.well-known');
 
   _copyDirectory(Directory('web/.well-known'), wellKnownDirectory);
+  _preparePosterGenerator(buildWebDirectory);
   _prepareAppleAppSiteAssociation(buildWebDirectory, wellKnownDirectory);
+}
+
+void _preparePosterGenerator(Directory buildWebDirectory) {
+  final docsDirectory = Directory('docs');
+  if (!docsDirectory.existsSync()) {
+    stderr.writeln('Skipping poster generator copy because docs/ is missing.');
+    return;
+  }
+
+  final posterDirectory = Directory('${buildWebDirectory.path}/posters');
+  _copyDirectory(docsDirectory, posterDirectory);
+
+  final source = File('${docsDirectory.path}/promo.html');
+  if (!source.existsSync()) {
+    stderr.writeln(
+      'Skipping poster generator index creation because docs/promo.html is missing.',
+    );
+    return;
+  }
+
+  source.copySync('${posterDirectory.path}/index.html');
 }
 
 void _prepareAppleAppSiteAssociation(

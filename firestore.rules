@@ -5,9 +5,16 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function hasAdminRecord(adminId) {
+      return adminId is string &&
+          adminId.size() > 0 &&
+          exists(/databases/$(database)/documents/admins/$(adminId));
+    }
+
     function isAdmin() {
       return isSignedIn() &&
-          exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+          (hasAdminRecord(request.auth.uid) ||
+              hasAdminRecord(request.auth.token.email));
     }
 
     function validImageUrl(value) {
@@ -203,8 +210,10 @@ service cloud.firestore {
           data.createdAt == request.time;
     }
 
-    match /admins/{uid} {
-      allow read: if isSignedIn() && request.auth.uid == uid;
+    match /admins/{adminId} {
+      allow read: if isSignedIn() &&
+          (request.auth.uid == adminId ||
+              request.auth.token.email == adminId);
       allow write: if false;
     }
 

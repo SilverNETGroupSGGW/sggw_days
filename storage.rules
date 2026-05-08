@@ -5,11 +5,18 @@ service firebase.storage {
       return request.auth != null;
     }
 
+    function hasAdminRecord(adminId) {
+      return adminId is string &&
+          adminId.size() > 0 &&
+          firestore.exists(
+            /databases/(default)/documents/admins/$(adminId)
+          );
+    }
+
     function isAdmin() {
       return isSignedIn() &&
-          firestore.exists(
-            /databases/(default)/documents/admins/$(request.auth.uid)
-          );
+          (hasAdminRecord(request.auth.uid) ||
+              hasAdminRecord(request.auth.token.email));
     }
 
     function isValidImageUpload() {

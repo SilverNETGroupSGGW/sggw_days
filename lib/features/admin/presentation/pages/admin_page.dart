@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
@@ -44,6 +47,11 @@ class _AdminPageState extends State<AdminPage>
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
         actions: [
+          TextButton.icon(
+            onPressed: _openPosterGenerator,
+            icon: const Icon(Icons.local_printshop_outlined),
+            label: const Text('Posters'),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
@@ -110,5 +118,41 @@ class _AdminPageState extends State<AdminPage>
         },
       ),
     );
+  }
+
+  Future<void> _openPosterGenerator() async {
+    final uri = _posterGeneratorUri();
+    final opened = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+      webOnlyWindowName: '_blank',
+    );
+    if (opened || !mounted) {
+      return;
+    }
+
+    await Clipboard.setData(ClipboardData(text: uri.toString()));
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Poster generator link copied.')),
+    );
+  }
+
+  Uri _posterGeneratorUri() {
+    if (kIsWeb) {
+      final base = Uri.base;
+      final isLocalhost =
+          base.host == 'localhost' ||
+          base.host == '127.0.0.1' ||
+          base.host == '0.0.0.0';
+      if (!isLocalhost) {
+        return base.resolve('/posters/');
+      }
+    }
+
+    return Uri.https('sggw-days.web.app', '/posters/');
   }
 }

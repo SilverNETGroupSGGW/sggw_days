@@ -85,13 +85,12 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
   }
 
   Future<void> _finishAdminSignIn(User? user, {bool emitLoading = true}) async {
-    final uid = user?.uid;
-    if (uid == null) {
+    if (user == null) {
       throw Exception('No UID after sign-in');
     }
 
-    final doc = await _firestore.collection('admins').doc(uid).get();
-    if (!doc.exists) {
+    final isAuthorized = await _hasAdminRecord(user);
+    if (!isAuthorized) {
       await _auth.signOut();
       if (emitLoading) {
         emit(
@@ -113,6 +112,29 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
         clearError: true,
       ),
     );
+  }
+
+  Future<bool> _hasAdminRecord(User user) async {
+    for (final adminDocId in _adminDocIds(user)) {
+      final doc = await _firestore.collection('admins').doc(adminDocId).get();
+      if (doc.exists) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Iterable<String> _adminDocIds(User user) sync* {
+    final uid = user.uid.trim();
+    if (uid.isNotEmpty) {
+      yield uid;
+    }
+
+    final email = user.email?.trim();
+    if (email != null && email.isNotEmpty && email != uid) {
+      yield email;
+    }
   }
 
   String _friendlyAuthMessage(Object error) {
