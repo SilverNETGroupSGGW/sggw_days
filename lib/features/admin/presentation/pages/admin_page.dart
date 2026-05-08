@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
@@ -12,6 +10,8 @@ import 'package:sggw_days/features/admin/presentation/pages/notifications_tab.da
 import 'package:sggw_days/features/admin/presentation/pages/timetable_events_tab.dart';
 import 'package:sggw_days/features/admin/presentation/pages/treasure_points_tab.dart';
 import 'package:sggw_days/features/admin/presentation/pages/wiki_articles_tab.dart';
+import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});

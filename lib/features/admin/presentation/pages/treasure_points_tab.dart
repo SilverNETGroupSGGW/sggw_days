@@ -3,19 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/core/icons/material_symbol_field.dart';
-import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
+import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/invalid_entries_banner.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/location_picker_map.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/qr_code_widget.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/point_type_presentation.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TreasurePointsTab extends StatelessWidget {
   const TreasurePointsTab({super.key});
@@ -116,7 +116,9 @@ class TreasurePointsTab extends StatelessWidget {
                                         children: [
                                           Center(
                                             child: Container(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(8.0),
