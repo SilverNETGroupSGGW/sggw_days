@@ -402,6 +402,45 @@ jobs:
             printf '%s = %s\n' DEVELOPMENT_TEAM "$APPLE_TEAM_ID" >> "$config_path"
           fi
 
+      - name: Create direct iOS export options
+        if: ${{ steps.signing.outputs.mode == 'direct' }}
+        env:
+          APPLE_TEAM_ID: ${{ vars['APPLE_TEAM_ID'] }}
+          IOS_BUNDLE_IDENTIFIER: ${{ needs.resolve.outputs.bundle_identifier }}
+        run: |
+          set -euo pipefail
+
+          export_options_path="$RUNNER_TEMP/sggw-days-export-options.plist"
+          profile_plist="$RUNNER_TEMP/sggw-days-appstore.plist"
+          profile_name=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$profile_plist")
+
+          EXPORT_OPTIONS_PATH="$export_options_path" \
+          PROFILE_NAME="$profile_name" \
+          IOS_BUNDLE_IDENTIFIER="$IOS_BUNDLE_IDENTIFIER" \
+          APPLE_TEAM_ID="${APPLE_TEAM_ID:-}" \
+          python3 - <<'PY'
+          import os
+          import plistlib
+
+          export_options = {
+              'method': 'app-store',
+              'provisioningProfiles': {
+                  os.environ['IOS_BUNDLE_IDENTIFIER']: os.environ['PROFILE_NAME'],
+              },
+              'signingCertificate': 'Apple Distribution',
+              'signingStyle': 'manual',
+          }
+
+          team_id = os.environ.get('APPLE_TEAM_ID', '').strip()
+          if team_id:
+              export_options['teamID'] = team_id
+
+          with open(os.environ['EXPORT_OPTIONS_PATH'], 'wb') as plist_file:
+              plistlib.dump(export_options, plist_file)
+          PY
+
+          echo "IOS_EXPORT_OPTIONS_PLIST=$export_options_path" >> "$GITHUB_ENV"
+
       - name: Build signed iOS archive
         env:
           BUILD_NAME: ${{ needs.resolve.outputs.build_name }}
@@ -445,7 +484,16 @@ jobs:
           append_define IOS_FIREBASE_CLIENT_ID "${IOS_FIREBASE_CLIENT_ID:-}"
           append_define IOS_FIREBASE_BUNDLE_ID "${IOS_FIREBASE_BUNDLE_ID:-$IOS_BUNDLE_IDENTIFIER}"
 
+          if [ -n "${IOS_EXPORT_OPTIONS_PLIST:-}" ]; then
+            build_args+=(--export-options-plist "$IOS_EXPORT_OPTIONS_PLIST")
+          fi
+
           flutter build ipa "${build_args[@]}" "${dart_defines[@]}"
+
+          if ! compgen -G 'build/ios/ipa/*.ipa' >/dev/null; then
+            echo 'flutter build ipa completed without producing build/ios/ipa/*.ipa.'
+            exit 1
+          fi
 
       - name: Generate TestFlight release notes
         id: release_notes
@@ -502,7 +550,7 @@ jobs:
         if: always()
         run: |
           rm -f ios/Flutter/GitHubActions.xcconfig
-          rm -f "$RUNNER_TEMP/sggw-days-appstore.mobileprovision" "$RUNNER_TEMP/sggw-days-appstore.plist"
+          rm -f "$RUNNER_TEMP/sggw-days-appstore.mobileprovision" "$RUNNER_TEMP/sggw-days-appstore.plist" "$RUNNER_TEMP/sggw-days-export-options.plist"
 
   submit_existing_build:
     needs: resolve
