@@ -52,10 +52,11 @@
       }
 
       @media print {
+        html,
         body {
           background: transparent;
-          padding: 0;
-          margin: 0;
+          padding: 0 !important;
+          margin: 0 !important;
         }
         .no-print {
           display: none !important;
@@ -63,8 +64,21 @@
         .hidden-print {
           display: none !important;
         }
+        .poster-stack {
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        .poster-wrapper {
+          margin: 0 !important;
+          border: none !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          overflow: visible !important;
+        }
         .poster-container {
           margin: 0 !important;
+          padding: 0 !important;
           box-shadow: none !important;
         }
         .poster-v,
@@ -92,23 +106,39 @@
 
       const DEFAULT_CHECKPOINT_URL = "https://sggw-days.web.app/scan";
       const DEFAULT_POINT_NAME = "Punkt Kontrolny";
+      let restorePrintedPoster = null;
+
+      function clearPrintSelection() {
+        if (!restorePrintedPoster) {
+          return;
+        }
+
+        restorePrintedPoster();
+        restorePrintedPoster = null;
+      }
 
       function printPoster(wrapperId) {
+        clearPrintSelection();
+
         // Ukryj wszystkie inne elementy
-        const wrappers = document.querySelectorAll(".poster-wrapper");
+        const wrappers = [...document.querySelectorAll(".poster-wrapper")];
         wrappers.forEach((w) => w.classList.add("hidden-print"));
 
         // Pokaż tylko wybrany plakat
-        document.getElementById(wrapperId).classList.remove("hidden-print");
+        document.getElementById(wrapperId)?.classList.remove("hidden-print");
+
+        restorePrintedPoster = () => {
+          wrappers.forEach((w) => w.classList.remove("hidden-print"));
+        };
 
         // Drukuj
         window.print();
 
-        // Przywróć widoczność
-        setTimeout(() => {
-          wrappers.forEach((w) => w.classList.remove("hidden-print"));
-        }, 500);
+        // Przywróć widoczność nawet jeśli afterprint nie odpali.
+        setTimeout(clearPrintSelection, 1000);
       }
+
+      window.addEventListener("afterprint", clearPrintSelection);
 
       function updateGroup(className, url) {
         if (!url) return;
@@ -254,7 +284,7 @@
       </header>
     </div>
 
-    <div class="max-w-[297mm] mx-auto space-y-16">
+    <div class="poster-stack max-w-[297mm] mx-auto space-y-16">
       <!-- ============================================== -->
       <!-- PLAKAT 1: PIONOWY PROMOCYJNY                   -->
       <!-- ============================================== -->
