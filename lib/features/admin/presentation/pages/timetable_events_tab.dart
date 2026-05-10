@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
@@ -9,9 +10,12 @@ import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
+import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/invalid_entries_banner.dart';
+import 'package:sggw_days/features/admin/presentation/widgets/qr_code_widget.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/treasure_point_selector.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TimetableEventsTab extends StatelessWidget {
   const TimetableEventsTab({super.key});
@@ -51,7 +55,7 @@ class TimetableEventsTab extends StatelessWidget {
                             horizontal: 16,
                             vertical: 8,
                           ),
-                          child: ListTile(
+                          child: ExpansionTile(
                             leading: Icon(
                               materialSymbolForName(
                                 event.iconName,
@@ -62,7 +66,7 @@ class TimetableEventsTab extends StatelessWidget {
                             subtitle: Text(
                               '${event.location}\n${event.startTime.toLocal()} - ${event.endTime.toLocal()}',
                             ),
-                            isThreeLine: true,
+                            initiallyExpanded: false,
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -78,6 +82,87 @@ class TimetableEventsTab extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Description: ${event.description}'),
+                                    const SizedBox(height: 8),
+                                    if (event.imageUrl != null) ...[
+                                      Text('Image: ${event.imageUrl}'),
+                                      const SizedBox(height: 8),
+                                    ],
+                                    if (event.iconName != null) ...[
+                                      Text('Symbol: ${event.iconName}'),
+                                      const SizedBox(height: 8),
+                                    ],
+                                    if (event.tags.isNotEmpty) ...[
+                                      Text('Tags: ${event.tags.join(', ')}'),
+                                      const SizedBox(height: 8),
+                                    ],
+                                    if (event.treasurePointIds.isNotEmpty) ...[
+                                      Text(
+                                        'Related points: ${event.treasurePointIds.join(', ')}',
+                                      ),
+                                      const SizedBox(height: 8),
+                                    ],
+                                    const Text('Check-in code:'),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: SelectableText(event.id),
+                                        ),
+                                        IconButton(
+                                          onPressed: () =>
+                                              _copyEventCode(context, event.id),
+                                          icon: const Icon(Icons.copy_all),
+                                          tooltip: 'Copy check-in code',
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16),
+                                    if (event.id.isNotEmpty)
+                                      Column(
+                                        children: [
+                                          Center(
+                                            child: Container(
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                                color: Colors.white,
+                                              ),
+                                              child: QrCodeWidget(
+                                                data: event.id,
+                                                size: 200,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Center(
+                                            child: FilledButton.icon(
+                                              onPressed: () => _openEventPoster(
+                                                context,
+                                                event,
+                                              ),
+                                              icon: const Icon(
+                                                Icons.local_printshop_outlined,
+                                              ),
+                                              label: const Text(
+                                                'Poster: CHECK-IN',
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
@@ -451,6 +536,45 @@ class TimetableEventsTab extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _copyEventCode(BuildContext context, String eventCode) async {
+    await Clipboard.setData(ClipboardData(text: eventCode));
+    if (!context.mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Check-in code copied.')));
+  }
+
+  Future<void> _openEventPoster(
+    BuildContext context,
+    TimetableEvent event,
+  ) async {
+    final uri = posterGeneratorUri(
+      eventCode: event.id,
+      eventTitle: event.title,
+      openEventPoster: true,
+    );
+    final opened = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+      webOnlyWindowName: '_blank',
+    );
+    if (opened || !context.mounted) {
+      return;
+    }
+
+    await Clipboard.setData(ClipboardData(text: uri.toString()));
+    if (!context.mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Poster generator link copied.')),
     );
   }
 
