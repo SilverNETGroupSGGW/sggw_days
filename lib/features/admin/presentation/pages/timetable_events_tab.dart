@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/core/icons/material_symbol_field.dart';
+import 'package:sggw_days/core/widgets/app_alert_dialog.dart';
 import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
@@ -22,6 +23,9 @@ class TimetableEventsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
+        final sortedEvents = List<TimetableEvent>.from(state.timetableEvents)
+          ..sort(_compareTimetableEvents);
+
         if (state.status == AdminStatus.loading &&
             state.timetableEvents.isEmpty) {
           return const Center(child: CircularProgressIndicator());
@@ -42,12 +46,12 @@ class TimetableEventsTab extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: state.timetableEvents.isEmpty
+              child: sortedEvents.isEmpty
                   ? const Center(child: Text('No timetable events yet'))
                   : ListView.builder(
-                      itemCount: state.timetableEvents.length,
+                      itemCount: sortedEvents.length,
                       itemBuilder: (context, index) {
-                        final event = state.timetableEvents[index];
+                        final event = sortedEvents[index];
                         return Card(
                           margin: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -172,6 +176,19 @@ class TimetableEventsTab extends StatelessWidget {
     );
   }
 
+  int _compareTimetableEvents(TimetableEvent a, TimetableEvent b) {
+    final start = a.startTime.compareTo(b.startTime);
+    if (start != 0) return start;
+
+    final end = a.endTime.compareTo(b.endTime);
+    if (end != 0) return end;
+
+    final title = a.title.compareTo(b.title);
+    if (title != 0) return title;
+
+    return a.id.compareTo(b.id);
+  }
+
   void _showAddEditDialog(BuildContext context, {TimetableEvent? event}) {
     final titleController = TextEditingController(text: event?.title ?? '');
     final descController = TextEditingController(
@@ -205,7 +222,7 @@ class TimetableEventsTab extends StatelessWidget {
     showDialog(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
+        builder: (context, setState) => AppAlertDialog(
           title: Text(
             event == null ? 'Add Timetable Event' : 'Edit Timetable Event',
           ),
@@ -579,7 +596,7 @@ class TimetableEventsTab extends StatelessWidget {
   void _showDeleteDialog(BuildContext context, TimetableEvent event) {
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => AppAlertDialog(
         title: const Text('Delete Timetable Event'),
         content: Text('Are you sure you want to delete "${event.title}"?'),
         actions: [

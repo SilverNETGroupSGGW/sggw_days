@@ -588,6 +588,23 @@ class AppLocalizationsPl extends AppLocalizations {
       'Powiadomienia organizatorów są włączone.';
 
   @override
+  String get notificationsDefaultsEnabledSnack =>
+      'Powiadomienia organizatorów i przypomnienia o wydarzeniach są włączone.';
+
+  @override
+  String favoriteEventReminderScheduledSnack(String eventTitle, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '# minuty',
+      many: '# minut',
+      few: '# minuty',
+      one: '# minutę',
+    );
+    return 'O wydarzeniu $eventTitle dostaniesz powiadomienie za $_temp0.';
+  }
+
+  @override
   String get notificationPermissionDenied =>
       'Nie przyznano uprawnienia do powiadomień.';
 

@@ -199,9 +199,10 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     _TimetableEventsUpdated event,
     Emitter<TimetableState> emit,
   ) {
-    final selectedDate = state.selectedDate ?? _firstEventDate(event.events);
+    final sortedEvents = _sortEvents(event.events);
+    final selectedDate = state.selectedDate ?? _firstEventDate(sortedEvents);
     final filtered = _filterEvents(
-      event.events,
+      sortedEvents,
       selectedDate,
       state.selectedTag,
       state.favoriteIds,
@@ -211,20 +212,18 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     emit(
       state.copyWith(
         status: TimetableStatus.success,
-        events: event.events,
+        events: sortedEvents,
         filteredEvents: filtered,
         selectedDate: selectedDate,
         errorMessage: null,
       ),
     );
-    unawaited(_syncEventReminders(event.events, state.favoriteIds));
+    unawaited(_syncEventReminders(sortedEvents, state.favoriteIds));
   }
 
   DateTime? _firstEventDate(List<model.TimetableEvent> events) {
     if (events.isEmpty) return null;
-    final sorted = List<model.TimetableEvent>.from(events)
-      ..sort((a, b) => a.startTime.compareTo(b.startTime));
-    final first = sorted.first.startTime;
+    final first = _sortEvents(events).first.startTime;
     return DateTime(first.year, first.month, first.day);
   }
 
@@ -269,7 +268,26 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
           .toList();
     }
 
-    return filtered;
+    return _sortEvents(filtered);
+  }
+
+  List<model.TimetableEvent> _sortEvents(
+    Iterable<model.TimetableEvent> events,
+  ) {
+    return List<model.TimetableEvent>.from(events)..sort(_compareEvents);
+  }
+
+  int _compareEvents(model.TimetableEvent a, model.TimetableEvent b) {
+    final start = a.startTime.compareTo(b.startTime);
+    if (start != 0) return start;
+
+    final end = a.endTime.compareTo(b.endTime);
+    if (end != 0) return end;
+
+    final title = a.title.compareTo(b.title);
+    if (title != 0) return title;
+
+    return a.id.compareTo(b.id);
   }
 
   Future<void> _onCheckInEvent(

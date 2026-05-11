@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sggw_days/core/widgets/app_alert_dialog.dart';
 import 'package:sggw_days/core/theme/dynamic_color_availability.dart';
 import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
 import 'package:sggw_days/features/notifications/data/notification_repository.dart';
@@ -32,21 +33,27 @@ class _SettingsPageState extends State<SettingsPage> {
         .pushNotificationsEnabled;
   }
 
+  Future<bool> _enableEventReminders() async {
+    final reminderService = context.read<EventReminderService>();
+    final granted = await reminderService.enableReminders();
+    if (granted) {
+      if (!mounted) return false;
+      final timetableState = context.read<TimetableBloc>().state;
+      await reminderService.scheduleFavoriteEventReminders(
+        timetableState.events,
+        timetableState.favoriteIds,
+      );
+    }
+    return granted;
+  }
+
   Future<void> _toggleEventReminders(bool value) async {
     final l10n = AppLocalizations.of(context)!;
     final reminderService = context.read<EventReminderService>();
     setState(() => _notificationBusy = true);
     try {
       if (value) {
-        final granted = await reminderService.enableReminders();
-        if (granted) {
-          if (!mounted) return;
-          final timetableState = context.read<TimetableBloc>().state;
-          await reminderService.scheduleFavoriteEventReminders(
-            timetableState.events,
-            timetableState.favoriteIds,
-          );
-        }
+        final granted = await _enableEventReminders();
         if (!mounted) return;
         setState(() => _eventRemindersEnabled = granted);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -71,17 +78,29 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _togglePushNotifications(bool value) async {
     final l10n = AppLocalizations.of(context)!;
     final notificationRepository = context.read<NotificationRepository>();
+    final reminderService = context.read<EventReminderService>();
     setState(() => _notificationBusy = true);
     try {
       if (value) {
         final result = await notificationRepository.enablePushNotifications();
+        var remindersEnabled = _eventRemindersEnabled;
+        if (result.enabled &&
+            reminderService.supportsLocalReminders &&
+            !_eventRemindersEnabled) {
+          remindersEnabled = await _enableEventReminders();
+        }
         if (!mounted) return;
-        setState(() => _pushNotificationsEnabled = result.enabled);
+        setState(() {
+          _pushNotificationsEnabled = result.enabled;
+          _eventRemindersEnabled = remindersEnabled;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               result.enabled
-                  ? l10n.pushNotificationsEnabledSnack
+                  ? remindersEnabled
+                        ? l10n.notificationsDefaultsEnabledSnack
+                        : l10n.pushNotificationsEnabledSnack
                   : result.message ?? l10n.notificationPermissionDenied,
             ),
           ),
@@ -145,7 +164,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onTap: () async {
                   final locale = await showDialog<Locale?>(
                     context: context,
-                    builder: (context) => AlertDialog(
+                    builder: (context) => AppAlertDialog(
                       title: Text(l10n.language),
                       content: RadioGroup<String?>(
                         groupValue: state.locale?.languageCode,
@@ -198,7 +217,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onTap: () async {
                   final themeMode = await showDialog<ThemeMode>(
                     context: context,
-                    builder: (context) => AlertDialog(
+                    builder: (context) => AppAlertDialog(
                       title: Text(l10n.theme),
                       content: RadioGroup<ThemeMode>(
                         groupValue: state.themeMode,
@@ -297,6 +316,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             Navigator.of(context).pop();
                           },
                           settingsBox: settingsCubit.settingsBox,
+                          eventReminderService: context
+                              .read<EventReminderService>(),
+                          notificationRepository: context
+                              .read<NotificationRepository>(),
                         ),
                       ),
                     );

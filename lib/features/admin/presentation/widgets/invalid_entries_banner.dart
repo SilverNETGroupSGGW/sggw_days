@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sggw_days/core/widgets/app_alert_dialog.dart';
 import 'package:sggw_days/features/admin/data/models/invalid_entry.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
@@ -187,7 +188,7 @@ class _InvalidEntryTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => AppAlertDialog(
         title: Text(l10n.adminDeleteEntry),
         content: Text(
           'Delete entry "${entry.rawData['name'] ?? entry.rawData['title'] ?? entry.id}"?',
@@ -227,7 +228,7 @@ class _InvalidEntryTile extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => AppAlertDialog(
         title: Text(l10n.adminFixPreviewTitle),
         content: SizedBox(
           width: double.maxFinite,

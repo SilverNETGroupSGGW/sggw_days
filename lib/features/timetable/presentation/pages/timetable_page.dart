@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
+import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
     as model;
@@ -23,6 +24,42 @@ class TimetablePage extends StatefulWidget {
 
 class _TimetablePageState extends State<TimetablePage> {
   bool _showTimeline = false;
+
+  void _toggleFavorite(BuildContext context, model.TimetableEvent event) {
+    final bloc = context.read<TimetableBloc>();
+    final wasFavorite = bloc.state.favoriteIds.contains(event.id);
+    bloc.add(ToggleFavorite(event.id));
+
+    if (!wasFavorite) {
+      _showFavoriteReminderSnack(context, event);
+    }
+  }
+
+  void _showFavoriteReminderSnack(
+    BuildContext context,
+    model.TimetableEvent event,
+  ) {
+    final reminderService = context.read<EventReminderService>();
+    if (!reminderService.supportsLocalReminders ||
+        !reminderService.remindersEnabled) {
+      return;
+    }
+
+    final delay = reminderService.reminderDelayFor(event);
+    if (delay == null) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    final minutes = (delay.inSeconds / Duration.secondsPerMinute).ceil();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          l10n.favoriteEventReminderScheduledSnack(event.title, minutes),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -328,9 +365,7 @@ class _TimetablePageState extends State<TimetablePage> {
                 isFavorite ? Icons.favorite : Icons.favorite_border,
                 color: isFavorite ? Theme.of(context).colorScheme.error : null,
               ),
-              onPressed: () {
-                context.read<TimetableBloc>().add(ToggleFavorite(event.id));
-              },
+              onPressed: () => _toggleFavorite(context, event),
             ),
             onTap: () => _showEventDetails(context, event),
           ),
@@ -433,9 +468,7 @@ class _TimetablePageState extends State<TimetablePage> {
                                         : null,
                                   ),
                                   onPressed: () {
-                                    context.read<TimetableBloc>().add(
-                                      ToggleFavorite(event.id),
-                                    );
+                                    _toggleFavorite(context, event);
                                   },
                                   constraints: const BoxConstraints(),
                                   padding: EdgeInsets.zero,

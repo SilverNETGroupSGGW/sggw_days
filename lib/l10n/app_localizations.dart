@@ -1136,6 +1136,18 @@ abstract class AppLocalizations {
   /// **'Powiadomienia organizatorów są włączone.'**
   String get pushNotificationsEnabledSnack;
 
+  /// No description provided for @notificationsDefaultsEnabledSnack.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiadomienia organizatorów i przypomnienia o wydarzeniach są włączone.'**
+  String get notificationsDefaultsEnabledSnack;
+
+  /// No description provided for @favoriteEventReminderScheduledSnack.
+  ///
+  /// In pl, this message translates to:
+  /// **'O wydarzeniu {eventTitle} dostaniesz powiadomienie za {minutes, plural, one{# minutę} few{# minuty} many{# minut} other{# minuty}}.'**
+  String favoriteEventReminderScheduledSnack(String eventTitle, int minutes);
+
   /// No description provided for @notificationPermissionDenied.
   ///
   /// In pl, this message translates to:

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/core/icons/material_symbol_field.dart';
+import 'package:sggw_days/core/widgets/app_alert_dialog.dart';
 import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
@@ -119,7 +120,7 @@ class WikiArticlesTab extends StatelessWidget {
     showDialog(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
+        builder: (context, setState) => AppAlertDialog(
           title: Text(
             article == null ? 'Add Wiki Article' : 'Edit Wiki Article',
           ),
@@ -382,7 +383,7 @@ class WikiArticlesTab extends StatelessWidget {
   void _showDeleteDialog(BuildContext context, WikiArticle article) {
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => AppAlertDialog(
         title: const Text('Delete Wiki Article'),
         content: Text('Are you sure you want to delete "${article.title}"?'),
         actions: [

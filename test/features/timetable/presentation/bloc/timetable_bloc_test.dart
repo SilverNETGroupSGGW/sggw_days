@@ -208,6 +208,55 @@ void main() {
     await bloc.close();
     await repository.controller.close();
   });
+
+  test('sorts loaded events by start time', () async {
+    final repository = _StreamingTimetableRepository();
+    final bloc = TimetableBloc(repository: repository);
+    final day = DateTime(2026, 5, 20);
+    final lateEvent = _event(
+      id: 'late',
+      title: 'Late Event',
+      startTime: DateTime(day.year, day.month, day.day, 12),
+      tags: const ['science'],
+    );
+    final earlyEvent = _event(
+      id: 'early',
+      title: 'Early Event',
+      startTime: DateTime(day.year, day.month, day.day, 9),
+      tags: const ['science'],
+    );
+    final midEvent = _event(
+      id: 'mid',
+      title: 'Mid Event',
+      startTime: DateTime(day.year, day.month, day.day, 10, 30),
+      tags: const ['science'],
+    );
+
+    final loaded = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TimetableState>()
+            .having(
+              (state) => state.events.map((event) => event.title).toList(),
+              'sorted events',
+              ['Early Event', 'Mid Event', 'Late Event'],
+            )
+            .having(
+              (state) =>
+                  state.filteredEvents.map((event) => event.title).toList(),
+              'sorted filtered events',
+              ['Early Event', 'Mid Event', 'Late Event'],
+            ),
+      ),
+    );
+
+    bloc.add(const LoadTimetableEvents());
+    repository.controller.add([lateEvent, earlyEvent, midEvent]);
+    await loaded;
+
+    await bloc.close();
+    await repository.controller.close();
+  });
 }
 
 model.TimetableEvent _event({

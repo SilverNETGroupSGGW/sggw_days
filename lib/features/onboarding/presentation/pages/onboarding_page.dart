@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
+import 'package:sggw_days/features/notifications/data/notification_repository.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
 class OnboardingPage extends StatefulWidget {
   final VoidCallback onComplete;
   final Box settingsBox;
+  final EventReminderService eventReminderService;
+  final NotificationRepository notificationRepository;
 
   const OnboardingPage({
     super.key,
     required this.onComplete,
     required this.settingsBox,
+    required this.eventReminderService,
+    required this.notificationRepository,
   });
 
   @override
@@ -72,9 +78,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
     if (_requestingNotifications) return;
     setState(() => _requestingNotifications = true);
     try {
-      await Permission.notification.request();
+      final pushResult = await widget.notificationRepository
+          .enablePushNotifications();
+      if (pushResult.enabled &&
+          widget.eventReminderService.supportsLocalReminders) {
+        await widget.eventReminderService.enableReminders();
+      }
       if (!mounted) return;
-      setState(() => _notificationsHandled = true);
+      setState(() => _notificationsHandled = pushResult.enabled);
       await _completeOnboarding();
     } finally {
       if (mounted) {

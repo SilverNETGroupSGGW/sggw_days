@@ -211,6 +211,18 @@
   "pushNotificationsSettingTitle": "Powiadomienia organizatorów",
   "pushNotificationsSettingDesc": "Otrzymuj ważne komunikaty wysyłane przez organizatorów wydarzenia.",
   "pushNotificationsEnabledSnack": "Powiadomienia organizatorów są włączone.",
+  "notificationsDefaultsEnabledSnack": "Powiadomienia organizatorów i przypomnienia o wydarzeniach są włączone.",
+  "favoriteEventReminderScheduledSnack": "O wydarzeniu {eventTitle} dostaniesz powiadomienie za {minutes, plural, one{# minutę} few{# minuty} many{# minut} other{# minuty}}.",
+  "@favoriteEventReminderScheduledSnack": {
+    "placeholders": {
+      "eventTitle": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "notificationPermissionDenied": "Nie przyznano uprawnienia do powiadomień.",
   "permissionDeniedTitle": "Potrzebujemy jeszcze jednej rzeczy",
   "permissionDeniedCameraBody": "Kamera pozwala skanować QR-y podczas gry po kampusie.",

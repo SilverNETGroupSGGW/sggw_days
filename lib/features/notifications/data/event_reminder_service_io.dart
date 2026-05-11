@@ -36,6 +36,8 @@ class EventReminderService {
   bool get remindersEnabled =>
       _settingsBox.get(_enabledKey, defaultValue: false) as bool? ?? false;
 
+  Duration get reminderLeadTime => _leadTime;
+
   Future<void> initialize() async {
     if (_initialized) return;
 
@@ -221,6 +223,15 @@ class EventReminderService {
         payload: 'event:${event.id}',
       );
     }
+  }
+
+  Duration? reminderDelayFor(TimetableEvent event, {DateTime? now}) {
+    final scheduledAt = event.startTime.subtract(_leadTime);
+    final reference = now ?? DateTime.now();
+    if (!scheduledAt.isAfter(reference)) {
+      return null;
+    }
+    return scheduledAt.difference(reference);
   }
 
   Future<bool> _requestPermissions() async {

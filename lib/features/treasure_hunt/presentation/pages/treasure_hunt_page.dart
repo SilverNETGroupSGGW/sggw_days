@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sggw_days/core/config/scan_distance_config.dart';
+import 'package:sggw_days/core/widgets/app_alert_dialog.dart';
 import 'package:sggw_days/features/rewards/data/repositories/reward_repository.dart';
 import 'package:sggw_days/features/rewards/presentation/reward_claim_sheet.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
@@ -921,7 +922,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
 
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => AppAlertDialog(
         icon: Icon(
           Icons.emoji_events,
           size: 64,
@@ -984,7 +985,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
 
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => AppAlertDialog(
         icon: Icon(
           allPointsFound ? Icons.auto_awesome : Icons.emoji_events,
           size: 64,
@@ -1330,7 +1331,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     final nextPoint = huntState.nextUnscannedTreasurePoint;
     final focusNext = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => AppAlertDialog(
         icon: const Icon(Icons.route_outlined, size: 48),
         title: Text(l10n.lockedTreasureScannedTitle),
         content: Text(l10n.lockedTreasureScannedBody),
@@ -1376,7 +1377,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
       if (!context.mounted) return false;
       final action = await showDialog<String>(
         context: context,
-        builder: (ctx) => AlertDialog(
+        builder: (ctx) => AppAlertDialog(
           icon: const Icon(Icons.lock_outline, size: 48),
           title: Text(l10n.permissionDeniedTitle),
           content: Text(explanation),
@@ -1426,7 +1427,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
       if (!context.mounted) return false;
       final action = await showDialog<String>(
         context: context,
-        builder: (ctx) => AlertDialog(
+        builder: (ctx) => AppAlertDialog(
           icon: const Icon(Icons.lock_outline, size: 48),
           title: Text(l10n.permissionDeniedTitle),
           content: Text(l10n.permissionDeniedLocationBody),
@@ -1464,7 +1465,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => AppAlertDialog(
         icon: const Icon(Icons.skip_next_outlined, size: 48),
         title: Text(l10n.skipTreasureHuntDialogTitle),
         content: Text(l10n.skipTreasureHuntDialogBody),

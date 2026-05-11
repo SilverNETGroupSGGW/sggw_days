@@ -97,11 +97,29 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late bool _onboardingCompleted;
+  late final EventReminderService _eventReminderService;
+  late final NotificationRepository _notificationRepository;
 
   @override
   void initState() {
     super.initState();
     _onboardingCompleted = widget.initialOnboardingCompleted;
+    _eventReminderService = EventReminderService(
+      settingsBox: widget.settingsBox,
+    );
+    unawaited(_eventReminderService.initialize());
+    _notificationRepository = NotificationRepository(
+      settingsBox: widget.settingsBox,
+    );
+    _notificationRepository.startTokenRefreshListener();
+    unawaited(_notificationRepository.refreshRegistrationIfEnabled());
+  }
+
+  @override
+  void dispose() {
+    unawaited(_eventReminderService.dispose());
+    unawaited(_notificationRepository.dispose());
+    super.dispose();
   }
 
   void _completeOnboarding() {
@@ -126,6 +144,8 @@ class _MyAppState extends State<MyApp> {
         home: OnboardingPage(
           onComplete: _completeOnboarding,
           settingsBox: widget.settingsBox,
+          eventReminderService: _eventReminderService,
+          notificationRepository: _notificationRepository,
         ),
       );
     }
@@ -146,27 +166,8 @@ class _MyAppState extends State<MyApp> {
             deviceIdentityService: context.read<DeviceIdentityService>(),
           ),
         ),
-        RepositoryProvider(
-          create: (context) {
-            final service = EventReminderService(
-              settingsBox: widget.settingsBox,
-            );
-            unawaited(service.initialize());
-            return service;
-          },
-          dispose: (service) => unawaited(service.dispose()),
-        ),
-        RepositoryProvider(
-          create: (context) {
-            final repository = NotificationRepository(
-              settingsBox: widget.settingsBox,
-            );
-            repository.startTokenRefreshListener();
-            unawaited(repository.refreshRegistrationIfEnabled());
-            return repository;
-          },
-          dispose: (repository) => unawaited(repository.dispose()),
-        ),
+        RepositoryProvider.value(value: _eventReminderService),
+        RepositoryProvider.value(value: _notificationRepository),
       ],
       child: MultiBlocProvider(
         providers: [

@@ -586,6 +586,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Broadcast notifications are enabled.';
 
   @override
+  String get notificationsDefaultsEnabledSnack =>
+      'Broadcast notifications and event reminders are enabled.';
+
+  @override
+  String favoriteEventReminderScheduledSnack(String eventTitle, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+    );
+    return 'You will be notified about $eventTitle in $_temp0.';
+  }
+
+  @override
   String get notificationPermissionDenied =>
       'Notification permission was not granted.';
 

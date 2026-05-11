@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/core/icons/material_symbol_field.dart';
+import 'package:sggw_days/core/widgets/app_alert_dialog.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
@@ -362,14 +363,14 @@ class TreasurePointsTab extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
+                  AppDialogActionBar(
+                    leading: [
                       TextButton(
                         onPressed: () => Navigator.of(dialogContext).pop(),
                         child: Text(l10n.cancel),
                       ),
-                      const SizedBox(width: 8),
+                    ],
+                    trailing: [
                       ElevatedButton(
                         onPressed: () {
                           final name = nameController.text.trim();
@@ -493,7 +494,7 @@ class TreasurePointsTab extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => AppAlertDialog(
         title: const Text('Delete Point'),
         content: Text('Are you sure you want to delete "${point.name}"?'),
         actions: [
@@ -609,14 +610,14 @@ class _ReorderDialogState extends State<_ReorderDialog> {
                 ),
               ),
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
+              AppDialogActionBar(
+                leading: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(widget.l10n.cancel),
                   ),
-                  const SizedBox(width: 8),
+                ],
+                trailing: [
                   FilledButton(
                     onPressed: () {
                       widget.onSave(_items);
