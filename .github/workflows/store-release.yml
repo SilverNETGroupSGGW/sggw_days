@@ -1,7 +1,10 @@
-name: Store Release
+name: Delivery
 
 "on":
+  pull_request:
   push:
+    branches:
+      - "**"
     tags:
       - "v*.*.*"
       - "*.*.*"
@@ -13,54 +16,86 @@ permissions:
   contents: read
 
 concurrency:
-  group: store-release-${{ github.event.release.tag_name || github.ref_name }}
-  cancel-in-progress: true
+  group: delivery-${{ github.event_name }}-${{ github.event.release.tag_name || github.ref_name || github.run_id }}
+  cancel-in-progress: false
 
 jobs:
   resolve:
     runs-on: ubuntu-latest
     outputs:
+      is_tag: ${{ steps.resolve.outputs.is_tag }}
+      is_release: ${{ steps.resolve.outputs.is_release }}
+      should_build_release_artifacts: ${{ steps.resolve.outputs.should_build_release_artifacts }}
       release_tag: ${{ steps.resolve.outputs.release_tag }}
       build_number: ${{ steps.resolve.outputs.build_number }}
     steps:
-      - name: Resolve release metadata
+      - name: Resolve workflow mode
         id: resolve
         env:
-          RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          REF_NAME: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || '' }}
         run: |
           set -euo pipefail
 
-          release_tag="${RELEASE_TAG#refs/tags/}"
-          release_version="${release_tag#v}"
+          is_tag=false
+          is_release=false
+          should_build_release_artifacts=false
+          release_tag=""
+          build_number=""
 
-          if ! [[ "$release_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-            echo "Release version must match X.Y.Z or vX.Y.Z, got: $release_tag"
-            exit 1
+          if [ "$EVENT_NAME" = "release" ]; then
+            is_release=true
+            should_build_release_artifacts=true
+            release_tag="$RELEASE_TAG"
+          elif [[ "$REF" == refs/tags/* ]]; then
+            is_tag=true
+            should_build_release_artifacts=true
+            release_tag="$REF_NAME"
           fi
 
-          major="${BASH_REMATCH[1]}"
-          minor="${BASH_REMATCH[2]}"
-          patch="${BASH_REMATCH[3]}"
+          if [ "$should_build_release_artifacts" = "true" ]; then
+            release_tag="${release_tag#refs/tags/}"
 
-          if [ "$major" -gt 2099 ] || [ "$minor" -gt 99 ] || [ "$patch" -gt 99 ]; then
-            echo "Release version components must satisfy major <= 2099, minor <= 99, patch <= 99."
-            exit 1
+            if [ -z "$release_tag" ]; then
+              echo "Release tag could not be resolved for $EVENT_NAME event."
+              exit 1
+            fi
+
+            release_version="${release_tag#v}"
+
+            if ! [[ "$release_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              echo "Release version must match X.Y.Z or vX.Y.Z, got: $release_tag"
+              exit 1
+            fi
+
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+            patch="${BASH_REMATCH[3]}"
+
+            if [ "$major" -gt 2099 ] || [ "$minor" -gt 99 ] || [ "$patch" -gt 99 ]; then
+              echo "Release version components must satisfy major <= 2099, minor <= 99, patch <= 99."
+              exit 1
+            fi
+
+            build_number=$((major * 1000000 + minor * 10000 + patch * 100 + 1))
           fi
 
-          build_number=$((major * 1000000 + minor * 10000 + patch * 100 + 1))
-
+          echo "is_tag=$is_tag" >> "$GITHUB_OUTPUT"
+          echo "is_release=$is_release" >> "$GITHUB_OUTPUT"
+          echo "should_build_release_artifacts=$should_build_release_artifacts" >> "$GITHUB_OUTPUT"
           echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
           echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
 
   validate:
-    if: ${{ github.event_name == 'push' }}
     uses: ./.github/workflows/flutter-validate.yml
 
   build_android:
     needs:
       - resolve
       - validate
-    if: ${{ github.event_name == 'release' || needs.validate.result == 'success' }}
+    if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_release_artifacts == 'true' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: testing
@@ -74,7 +109,7 @@ jobs:
     needs:
       - resolve
       - validate
-    if: ${{ github.event_name == 'release' || needs.validate.result == 'success' }}
+    if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_release_artifacts == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -118,7 +153,7 @@ jobs:
     needs:
       - resolve
       - validate
-    if: ${{ github.event_name == 'release' || needs.validate.result == 'success' }}
+    if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_release_artifacts == 'true' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: testflight
@@ -134,7 +169,7 @@ jobs:
       - build_android
       - build_web
       - build_ios
-    if: ${{ always() && needs.build_android.result == 'success' && needs.build_web.result == 'success' && needs.build_ios.result == 'success' }}
+    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.build_android.result == 'success' && needs.build_web.result == 'success' && needs.build_ios.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -157,72 +192,56 @@ jobs:
           name: ios-release
           path: release-assets/ios
 
-      - name: Check existing release state
-        if: ${{ github.event_name == 'push' }}
-        id: release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ needs.resolve.outputs.release_tag }}
+      - name: Attach release assets
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ needs.resolve.outputs.release_tag }}
+          fail_on_unmatched_files: true
+          files: |
+            release-assets/android/sggw-days-android.apk
+            release-assets/web/sggw-days-web.zip
+            release-assets/ios/sggw-days-ios.ipa
+
+  deploy_beta_hosting:
+    needs:
+      - resolve
+      - build_web
+    if: ${{ always() && needs.resolve.outputs.is_tag == 'true' && needs.build_web.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download web build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: web-release
+          path: ${{ github.workspace }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Install Firebase CLI
+        run: npm install --global firebase-tools
+
+      - name: Prepare Firebase service account
         run: |
-          set -euo pipefail
+          printf '%s' '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS }}' > "$RUNNER_TEMP/firebase-service-account.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_ENV"
 
-          if gh release view "$RELEASE_TAG" --json isDraft >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "is_draft=$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft')" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "is_draft=false" >> "$GITHUB_OUTPUT"
-          fi
+      - name: Deploy beta Firebase Hosting
+        run: firebase deploy --project "sggw-days" --only "hosting:beta" --non-interactive
 
-      - name: Create draft release with assets
-        if: ${{ github.event_name == 'push' && steps.release.outputs.exists != 'true' }}
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ needs.resolve.outputs.release_tag }}
-          draft: true
-          fail_on_unmatched_files: true
-          files: |
-            release-assets/android/sggw-days-android.apk
-            release-assets/web/sggw-days-web.zip
-            release-assets/ios/sggw-days-ios.ipa
+      - name: Clean up Firebase service account
+        if: always()
+        run: rm -f "$RUNNER_TEMP/firebase-service-account.json"
 
-      - name: Update draft release assets
-        if: ${{ github.event_name == 'push' && steps.release.outputs.exists == 'true' && steps.release.outputs.is_draft == 'true' }}
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ needs.resolve.outputs.release_tag }}
-          draft: true
-          fail_on_unmatched_files: true
-          files: |
-            release-assets/android/sggw-days-android.apk
-            release-assets/web/sggw-days-web.zip
-            release-assets/ios/sggw-days-ios.ipa
-
-      - name: Update published release assets from tag build
-        if: ${{ github.event_name == 'push' && steps.release.outputs.exists == 'true' && steps.release.outputs.is_draft != 'true' }}
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ needs.resolve.outputs.release_tag }}
-          fail_on_unmatched_files: true
-          files: |
-            release-assets/android/sggw-days-android.apk
-            release-assets/web/sggw-days-web.zip
-            release-assets/ios/sggw-days-ios.ipa
-
-      - name: Update published release assets
-        if: ${{ github.event_name == 'release' }}
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ needs.resolve.outputs.release_tag }}
-          fail_on_unmatched_files: true
-          files: |
-            release-assets/android/sggw-days-android.apk
-            release-assets/web/sggw-days-web.zip
-            release-assets/ios/sggw-days-ios.ipa
-
-  deploy_production:
-    needs: build_web
-    if: ${{ github.event_name == 'push' }}
+  deploy_live_firebase:
+    needs:
+      - resolve
+      - build_web
+    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.build_web.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -247,10 +266,10 @@ jobs:
       - name: Install Firebase CLI
         run: npm install --global firebase-tools
 
-      - name: Deploy Firebase Hosting, Functions, and rules to production
+      - name: Deploy live Firebase Hosting, Functions, and rules
         run: >-
           firebase deploy --project "sggw-days" --only
-          "hosting:sggw-days,functions,firestore:rules,storage:main"
+          "hosting:live,functions,firestore:rules,storage:main"
           --non-interactive
 
       - name: Clean up Firebase service account
@@ -261,7 +280,7 @@ jobs:
     needs:
       - resolve
       - build_android
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ always() && needs.resolve.outputs.is_tag == 'true' && needs.build_android.result == 'success' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: testing
@@ -274,7 +293,7 @@ jobs:
     needs:
       - resolve
       - build_ios
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ always() && needs.resolve.outputs.is_tag == 'true' && needs.build_ios.result == 'success' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: testflight
@@ -284,8 +303,10 @@ jobs:
     secrets: inherit
 
   android_production:
-    needs: resolve
-    if: ${{ github.event_name == 'release' && !github.event.release.draft && !github.event.release.prerelease }}
+    needs:
+      - resolve
+      - build_android
+    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.build_android.result == 'success' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: production
@@ -295,8 +316,10 @@ jobs:
     secrets: inherit
 
   ios_app_store:
-    needs: resolve
-    if: ${{ github.event_name == 'release' && !github.event.release.draft && !github.event.release.prerelease }}
+    needs:
+      - resolve
+      - build_ios
+    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.build_ios.result == 'success' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: app_store

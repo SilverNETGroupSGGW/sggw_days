@@ -4,6 +4,14 @@
   },
   "targets": {
     "sggw-days": {
+      "hosting": {
+        "live": [
+          "sggw-days"
+        ],
+        "beta": [
+          "beta-sggw-days"
+        ]
+      },
       "storage": {
         "main": [
           "sggw-days.firebasestorage.app"

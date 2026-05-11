@@ -37,7 +37,7 @@
   },
   "hosting": [
     {
-      "site": "sggw-days",
+      "target": "live",
       "public": "build/web",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
@@ -98,7 +98,7 @@
       ]
     },
     {
-      "site": "beta-sggw-days",
+      "target": "beta",
       "public": "build/web",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [

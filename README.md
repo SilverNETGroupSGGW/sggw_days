@@ -4,19 +4,19 @@ A new Flutter project.
 
 ## GitHub Actions Deployment
 
-The repository deploys Firebase automatically with GitHub Actions:
+The repository deploys Firebase and store releases through one top-level GitHub Actions workflow:
 
-- Pull requests run [firebase-verify-pull-request.yml](.github/workflows/firebase-verify-pull-request.yml) to validate the project, build a debug Android APK artifact, build the web app, prepare the Hosting payload, and install cached Cloud Functions dependencies without deploying to Firebase.
-- Pushes to `main` run [firebase-verify-and-manual-deploy.yml](.github/workflows/firebase-verify-and-manual-deploy.yml) in verification mode only: it validates the Flutter project, builds the web app, prepares the Hosting payload, and installs cached Cloud Functions dependencies without deploying to Firebase.
-- Manual runs of [firebase-verify-and-manual-deploy.yml](.github/workflows/firebase-verify-and-manual-deploy.yml) support `verify` and `production`, so production Firebase deploys can still be triggered explicitly without going through the tag pipeline.
-- Semver tags such as `v1.2.3` automatically run [store-release.yml](.github/workflows/store-release.yml), which validates the repo once, builds Android, web, and iOS artifacts on separate jobs, stores them as Actions artifacts, uploads `.apk`, web `.zip`, and `.ipa` assets to the matching GitHub Release, deploys the live `sggw-days` Hosting site plus Functions and rules, and then reuses those prebuilt Android and iOS artifacts for Google Play testing and TestFlight uploads.
-- Published GitHub Releases from semver tags also run [store-release.yml](.github/workflows/store-release.yml), which rebuilds the Android, web, and iOS release artifacts, refreshes the GitHub Release assets, promotes the Android testing build to the configured production track, and submits the already-uploaded iOS build for App Store review.
+- Pull requests and branch pushes run [store-release.yml](.github/workflows/store-release.yml) in validation mode only.
+- Semver tags such as `v1.2.3` run [store-release.yml](.github/workflows/store-release.yml), which validates the repo, builds Android, web, and iOS artifacts in parallel, stores them as Actions artifacts, deploys web to the beta Hosting site, uploads Android to the configured Google Play testing track, and uploads iOS to TestFlight.
+- Published GitHub Releases from semver tags run [store-release.yml](.github/workflows/store-release.yml), which validates the repo, rebuilds Android, web, and iOS artifacts in parallel, attaches `.apk`, web `.zip`, and `.ipa` assets to the GitHub Release, deploys the live Hosting site together with Cloud Functions and Firestore and Storage rules, promotes Android to the configured production track, and submits the iOS build for App Store review.
 
 Required repository secret:
 
-- `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Hosting, Cloud Functions, and Firestore and Storage rules in the `sggw-days` Firebase project. The automated workflows currently deploy the live `sggw-days` Hosting site.
+- `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Firebase Hosting, Cloud Functions, and Firestore and Storage rules in the `sggw-days` Firebase project. The automated workflow deploys the beta Hosting site for semver tag builds and the live Hosting site for published GitHub Releases.
 
-The Firebase Hosting configuration in [firebase.json](firebase.json) still declares both sites explicitly, but the current automated workflows deploy only `hosting:sggw-days`. The extra `beta-sggw-days` site remains available in Firebase config if you want to reuse it manually later.
+The Firebase Hosting configuration in [firebase.json](firebase.json) now uses explicit deploy targets: `hosting:beta` maps to `beta-sggw-days`, and `hosting:live` maps to `sggw-days`. This keeps workflow names and deploy commands aligned with the actual site roles.
+
+The beta Hosting site is not a separate Firebase environment. It shares the same Firebase project resources as the live site, so only Hosting content is deployed to beta automatically; Functions and rules still change only during live production deploys.
 
 The Firebase service account also needs permission to deploy Cloud Functions for the admin broadcast notification sender. Broadcast requests are created from the admin panel, then `functions/index.js` sends them to registered client tokens with the Firebase Admin SDK.
 
