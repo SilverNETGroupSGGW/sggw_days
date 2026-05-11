@@ -13,6 +13,7 @@ class TimetableState extends Equatable {
   final List<String> favoriteIds;
   final bool showFavoritesOnly;
   final List<String> checkedInIds;
+  final Map<String, DateTime> checkedInHistory;
   final String? errorMessage;
 
   const TimetableState({
@@ -24,6 +25,7 @@ class TimetableState extends Equatable {
     this.favoriteIds = const [],
     this.showFavoritesOnly = false,
     this.checkedInIds = const [],
+    this.checkedInHistory = const {},
     this.errorMessage,
   });
 
@@ -36,6 +38,7 @@ class TimetableState extends Equatable {
     List<String>? favoriteIds,
     bool? showFavoritesOnly,
     List<String>? checkedInIds,
+    Map<String, DateTime>? checkedInHistory,
     Object? errorMessage = _noChange,
   }) {
     return TimetableState(
@@ -49,6 +52,7 @@ class TimetableState extends Equatable {
       favoriteIds: favoriteIds ?? this.favoriteIds,
       showFavoritesOnly: showFavoritesOnly ?? this.showFavoritesOnly,
       checkedInIds: checkedInIds ?? this.checkedInIds,
+      checkedInHistory: checkedInHistory ?? this.checkedInHistory,
       errorMessage: identical(errorMessage, _noChange)
           ? this.errorMessage
           : errorMessage as String?,
@@ -67,6 +71,7 @@ class TimetableState extends Equatable {
     favoriteIds,
     showFavoritesOnly,
     checkedInIds,
+    checkedInHistory,
     errorMessage,
   ];
 }

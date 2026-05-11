@@ -37,13 +37,15 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     emit(state.copyWith(status: TimetableStatus.loading));
     try {
       await _eventsSubscription?.cancel();
-      final (:favoriteIds, :checkedInIds) = await _loadLocalSelections();
+      final (:favoriteIds, :checkedInIds, :checkedInHistory) =
+          await _loadLocalSelections();
 
       emit(
         state.copyWith(
           selectedTag: state.selectedTag,
           favoriteIds: favoriteIds,
           checkedInIds: checkedInIds,
+          checkedInHistory: checkedInHistory,
         ),
       );
 
@@ -62,7 +64,13 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     }
   }
 
-  Future<({List<String> favoriteIds, List<String> checkedInIds})>
+  Future<
+    ({
+      List<String> favoriteIds,
+      List<String> checkedInIds,
+      Map<String, DateTime> checkedInHistory,
+    })
+  >
   _loadLocalSelections() async {
     final favBox = await Hive.openBox<List<String>>('favorites');
     final favoriteIds =
@@ -74,7 +82,29 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
         checkInBox.get('event_check_ins', defaultValue: <String>[]) ??
         <String>[];
 
-    return (favoriteIds: favoriteIds, checkedInIds: checkedInIds);
+    final historyBox = await Hive.openBox('event_check_in_history');
+    final checkedInHistory = <String, DateTime>{};
+    for (final key in historyBox.keys) {
+      final value = historyBox.get(key);
+      if (key is String && value is String) {
+        final parsed = DateTime.tryParse(value);
+        if (parsed != null) checkedInHistory[key] = parsed;
+      }
+    }
+
+    final migratedAt = DateTime.now();
+    for (final id in checkedInIds) {
+      if (!checkedInHistory.containsKey(id)) {
+        checkedInHistory[id] = migratedAt;
+        await historyBox.put(id, migratedAt.toIso8601String());
+      }
+    }
+
+    return (
+      favoriteIds: favoriteIds,
+      checkedInIds: checkedInIds,
+      checkedInHistory: checkedInHistory,
+    );
   }
 
   void _onFilterEventsByDate(
@@ -247,13 +277,23 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     Emitter<TimetableState> emit,
   ) async {
     final updatedCheckIns = List<String>.from(state.checkedInIds);
+    final updatedHistory = Map<String, DateTime>.from(state.checkedInHistory);
     if (!updatedCheckIns.contains(event.eventId)) {
       updatedCheckIns.add(event.eventId);
+      final checkedInAt = DateTime.now();
+      updatedHistory[event.eventId] = checkedInAt;
 
       final checkInBox = await Hive.openBox<List<String>>('check_ins');
       await checkInBox.put('event_check_ins', updatedCheckIns);
+      final historyBox = await Hive.openBox('event_check_in_history');
+      await historyBox.put(event.eventId, checkedInAt.toIso8601String());
 
-      emit(state.copyWith(checkedInIds: updatedCheckIns));
+      emit(
+        state.copyWith(
+          checkedInIds: updatedCheckIns,
+          checkedInHistory: updatedHistory,
+        ),
+      );
     }
   }
 

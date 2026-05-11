@@ -18,6 +18,17 @@ IconData iconForPoint(TreasurePoint point) {
   );
 }
 
+IconData iconForMapPoint(TreasurePoint point, {required bool useTreasureIcon}) {
+  if (useTreasureIcon) return iconForPointType(PointType.treasurePoint);
+  if (point.type == PointType.treasurePoint) {
+    return materialSymbolForName(
+      point.iconName,
+      fallback: iconForPointType(PointType.pointOfInterest),
+    );
+  }
+  return iconForPoint(point);
+}
+
 String labelForPointType(PointType type, AppLocalizations l10n) {
   return switch (type) {
     PointType.treasurePoint => l10n.typeTreasurePoint,
@@ -30,4 +41,14 @@ Color colorForPointType(PointType type, ColorScheme colorScheme) {
     PointType.treasurePoint => colorScheme.primary,
     PointType.pointOfInterest => colorScheme.secondary,
   };
+}
+
+Color colorForMapPoint(
+  TreasurePoint point,
+  ColorScheme colorScheme, {
+  required bool useTreasureColor,
+}) {
+  if (useTreasureColor) return colorScheme.primary;
+  if (point.type == PointType.treasurePoint) return colorScheme.secondary;
+  return colorForPointType(point.type, colorScheme);
 }

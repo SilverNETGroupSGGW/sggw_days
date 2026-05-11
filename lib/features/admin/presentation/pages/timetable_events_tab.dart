@@ -151,7 +151,7 @@ class TimetableEventsTab extends StatelessWidget {
                                                 Icons.local_printshop_outlined,
                                               ),
                                               label: const Text(
-                                                'Poster: CHECK-IN',
+                                                'Event check-in poster',
                                               ),
                                             ),
                                           ),

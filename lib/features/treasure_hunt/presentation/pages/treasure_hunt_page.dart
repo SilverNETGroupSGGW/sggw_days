@@ -9,6 +9,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sggw_days/core/config/scan_distance_config.dart';
+import 'package:sggw_days/features/rewards/data/repositories/reward_repository.dart';
+import 'package:sggw_days/features/rewards/presentation/reward_claim_sheet.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
@@ -121,8 +124,9 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
         actions: [
           BlocBuilder<TreasureHuntBloc, TreasureHuntState>(
             builder: (context, state) {
-              final total = state.points.length;
-              final found = state.points
+              final treasurePoints = state.sortedTreasurePoints;
+              final total = treasurePoints.length;
+              final found = treasurePoints
                   .where((p) => state.foundPointIds.contains(p.id))
                   .length;
               final progress = total == 0 ? 0.0 : found / total;
@@ -176,10 +180,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
             );
           }
           final allPointsFound =
-              state.points.isNotEmpty &&
-              state.points.every(
-                (point) => state.foundPointIds.contains(point.id),
-              ) &&
+              state.allTreasurePointsFound &&
               state.status == TreasureHuntStatus.success;
           if (!allPointsFound) {
             _completionCelebrated = false;
@@ -275,6 +276,8 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                         points: visiblePoints,
                         foundPointIds: state.foundPointIds.toSet(),
                         trackedPointId: state.trackedPointId,
+                        nextTreasurePointId:
+                            state.nextUnscannedTreasurePoint?.id,
                         markerAnimationDuration: markerAnimationDuration,
                         markerLabelBackgroundColor: markerLabelBackgroundColor,
                         markerDistanceBackgroundColor:
@@ -408,31 +411,71 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           );
         },
       ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          if (_currentPosition != null)
-            FloatingActionButton.small(
-              heroTag: 'my_location_fab',
-              onPressed: () {
-                _mapController.move(_currentPosition!, 16.0);
-              },
-              child: const Icon(Icons.my_location),
-            ),
-          const SizedBox(height: 8),
+      floatingActionButton: _buildFloatingActions(context),
+    );
+  }
+
+  Widget _buildFloatingActions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final huntState = context.watch<TreasureHuntBloc>().state;
+    final timetableState = context.watch<TimetableBloc>().state;
+    final skipTreasureHunt = context
+        .watch<SettingsCubit>()
+        .state
+        .skipTreasureHunt;
+    final rewardEligibility = context.read<RewardRepository>().eligibility(
+      treasureHuntState: huntState,
+      timetableState: timetableState,
+    );
+
+    Widget? primaryAction;
+    if (!skipTreasureHunt) {
+      if (!rewardEligibility.treasureComplete) {
+        primaryAction = FloatingActionButton(
+          heroTag: 'qr_scanner_fab',
+          onPressed: () => _openQRScanner(context),
+          child: const Icon(Icons.qr_code_scanner),
+        );
+      } else if (!rewardEligibility.hasEventCheckIn) {
+        primaryAction = FloatingActionButton.extended(
+          heroTag: 'event_check_in_fab',
+          onPressed: () => GoRouter.of(context).go('/timetable'),
+          icon: const Icon(Icons.event_available_rounded),
+          label: Text(l10n.rewardClaimEventRequiredAction),
+        );
+      } else {
+        primaryAction = FloatingActionButton.extended(
+          heroTag: 'reward_claim_fab',
+          onPressed: () => _showRewardClaimSheet(context),
+          icon: const Icon(Icons.redeem_rounded),
+          label: Text(l10n.claimReward),
+        );
+      }
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (_currentPosition != null)
           FloatingActionButton.small(
-            heroTag: 'checklist_fab',
-            onPressed: () => _showChecklist(context),
-            child: const Icon(Icons.checklist),
+            heroTag: 'my_location_fab',
+            onPressed: () {
+              _mapController.move(_currentPosition!, 16.0);
+            },
+            child: const Icon(Icons.my_location),
           ),
+        const SizedBox(height: 8),
+        FloatingActionButton.small(
+          heroTag: 'checklist_fab',
+          onPressed: () => _showChecklist(context),
+          child: const Icon(Icons.checklist),
+        ),
+        if (primaryAction != null) ...[
           const SizedBox(height: 16),
-          FloatingActionButton(
-            heroTag: 'qr_scanner_fab',
-            onPressed: () => _openQRScanner(context),
-            child: const Icon(Icons.qr_code_scanner),
-          ),
+          primaryAction,
         ],
-      ),
+      ],
     );
   }
 
@@ -441,6 +484,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     required List<TreasurePoint> points,
     required Set<String> foundPointIds,
     required String? trackedPointId,
+    required String? nextTreasurePointId,
     required Duration markerAnimationDuration,
     required Color markerLabelBackgroundColor,
     required Color markerDistanceBackgroundColor,
@@ -468,6 +512,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
         point: cluster.points.single,
         foundPointIds: foundPointIds,
         trackedPointId: trackedPointId,
+        nextTreasurePointId: nextTreasurePointId,
         markerAnimationDuration: markerAnimationDuration,
         markerLabelBackgroundColor: markerLabelBackgroundColor,
         markerDistanceBackgroundColor: markerDistanceBackgroundColor,
@@ -486,18 +531,26 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final hasUnfoundTreasure = cluster.points.any(
-      (point) =>
-          point.type == PointType.treasurePoint &&
-          !foundPointIds.contains(point.id),
-    );
+    final firstUnfoundTreasure = cluster.points
+        .where(
+          (point) =>
+              point.type == PointType.treasurePoint &&
+              !foundPointIds.contains(point.id),
+        )
+        .firstOrNull;
+    final hasUnfoundTreasure = firstUnfoundTreasure != null;
     final clusterColor = hasUnfoundTreasure
         ? colorScheme.primary
         : colorScheme.secondary;
-    final representativePoint = cluster.points.firstWhere(
-      (point) => point.type == PointType.treasurePoint,
-      orElse: () => cluster.points.first,
-    );
+    final representativePoint = hasUnfoundTreasure
+        ? firstUnfoundTreasure
+        : cluster.points.firstWhere(
+            (point) => point.type == PointType.pointOfInterest,
+            orElse: () => cluster.points.first,
+          );
+    final representativeIcon = hasUnfoundTreasure
+        ? iconForPointType(PointType.treasurePoint)
+        : iconForMapPoint(representativePoint, useTreasureIcon: false);
 
     return Marker(
       point: cluster.center,
@@ -530,11 +583,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Icon(
-                    iconForPoint(representativePoint),
-                    color: clusterColor,
-                    size: 20,
-                  ),
+                  Icon(representativeIcon, color: clusterColor, size: 20),
                   Positioned(
                     right: 1,
                     top: 0,
@@ -573,6 +622,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     required TreasurePoint point,
     required Set<String> foundPointIds,
     required String? trackedPointId,
+    required String? nextTreasurePointId,
     required Duration markerAnimationDuration,
     required Color markerLabelBackgroundColor,
     required Color markerDistanceBackgroundColor,
@@ -582,7 +632,16 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isFound = foundPointIds.contains(point.id);
-    final typeColor = colorForPointType(point.type, colorScheme);
+    final isActiveTreasure =
+        point.type == PointType.treasurePoint &&
+        !isFound &&
+        point.id == nextTreasurePointId;
+    final typeColor = colorForMapPoint(
+      point,
+      colorScheme,
+      useTreasureColor: isActiveTreasure || isFound,
+    );
+    final pointIcon = iconForMapPoint(point, useTreasureIcon: isActiveTreasure);
     final isTracked = trackedPointId == point.id;
     final isSelected = _selectedPointId == point.id;
     final showMarkerLabel = isTracked || isSelected;
@@ -666,7 +725,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                     ],
                   ),
                   child: Icon(
-                    isFound ? Icons.check_circle : iconForPoint(point),
+                    isFound ? Icons.check_circle : pointIcon,
                     color: isFound
                         ? typeColor.withValues(alpha: 0.82)
                         : typeColor,
@@ -829,20 +888,55 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   void _showCelebration(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final hasEventCheckIn = context
+        .read<TimetableBloc>()
+        .state
+        .checkedInIds
+        .isNotEmpty;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         icon: Icon(
           Icons.emoji_events,
           size: 64,
           color: theme.colorScheme.primary,
         ),
         title: Text(l10n.congratulations),
-        content: Text(l10n.allPointsFound, textAlign: TextAlign.center),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.allPointsFound, textAlign: TextAlign.center),
+            const SizedBox(height: 12),
+            Text(
+              hasEventCheckIn
+                  ? l10n.rewardClaimReadyBody
+                  : l10n.rewardClaimEventRequiredBody,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
         actions: [
+          if (!hasEventCheckIn)
+            FilledButton.tonalIcon(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                GoRouter.of(context).go('/timetable');
+              },
+              icon: const Icon(Icons.event_available_rounded),
+              label: Text(l10n.rewardClaimEventRequiredAction),
+            )
+          else
+            FilledButton.tonalIcon(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                _showRewardClaimSheet(context);
+              },
+              icon: const Icon(Icons.redeem_rounded),
+              label: Text(l10n.claimReward),
+            ),
           FilledButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(l10n.ok),
           ),
         ],
@@ -857,6 +951,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   }) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final hasEventCheckIn = context
+        .read<TimetableBloc>()
+        .state
+        .checkedInIds
+        .isNotEmpty;
 
     showDialog(
       context: context,
@@ -887,7 +986,9 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                l10n.treasureHuntCompleteEasterEgg,
+                hasEventCheckIn
+                    ? l10n.rewardClaimReadyBody
+                    : l10n.rewardClaimEventRequiredBody,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -901,6 +1002,24 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
             },
             child: Text(l10n.seeDetails),
           ),
+          if (allPointsFound && !hasEventCheckIn)
+            FilledButton.tonalIcon(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                GoRouter.of(context).go('/timetable');
+              },
+              icon: const Icon(Icons.event_available_rounded),
+              label: Text(l10n.rewardClaimEventRequiredAction),
+            )
+          else if (allPointsFound)
+            FilledButton.tonalIcon(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                _showRewardClaimSheet(context);
+              },
+              icon: const Icon(Icons.redeem_rounded),
+              label: Text(l10n.claimReward),
+            ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(allPointsFound ? l10n.ok : l10n.continueScan),
@@ -1026,8 +1145,13 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
         .visiblePointIds(skipTreasureHunt: skipTreasureHunt)
         .contains(point.id);
     final isUnlocked = huntState.unlockedPointIds.contains(point.id);
+    final isNextTreasure = huntState.nextUnscannedTreasurePoint?.id == point.id;
     final canScan =
-        point.type == PointType.treasurePoint && isUnlocked && !isFound;
+        !skipTreasureHunt &&
+        point.type == PointType.treasurePoint &&
+        isUnlocked &&
+        isNextTreasure &&
+        !isFound;
     final hasScanned = huntState.foundPointIds.isNotEmpty;
     String? distanceText;
     double? distanceMeters;
@@ -1107,6 +1231,16 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
 
   void _openQRScanner(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
+    if (context.read<SettingsCubit>().state.skipTreasureHunt) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.treasureHuntSkippedScanUnavailable)),
+      );
+      return;
+    }
+
+    final scanDistanceMeters = context
+        .read<ScanDistanceConfig>()
+        .distanceMeters;
 
     // Ensure camera permission (re-ask instead of failing)
     final cameraOk = await _ensurePermission(
@@ -1116,12 +1250,14 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     );
     if (!context.mounted || !cameraOk) return;
 
-    // Ensure location permission (re-ask instead of failing)
-    final locationOk = await _ensureLocationPermission(context);
-    if (!context.mounted || !locationOk) return;
+    if (scanDistanceMeters > 0) {
+      // Ensure location permission (re-ask instead of failing)
+      final locationOk = await _ensureLocationPermission(context);
+      if (!context.mounted || !locationOk) return;
+    }
 
-    final scannedCode = await Navigator.of(context, rootNavigator: true)
-        .push<String>(
+    final scanResult = await Navigator.of(context, rootNavigator: true)
+        .push<QrScannerResult>(
           MaterialPageRoute(
             fullscreenDialog: true,
             builder: (context) => QrScannerPage(
@@ -1130,11 +1266,69 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                   .read<TreasureHuntBloc>()
                   .state
                   .unlockedPointIds,
+              scanDistanceMeters: scanDistanceMeters,
             ),
           ),
         );
-    if (!context.mounted || scannedCode == null) return;
-    context.read<TreasureHuntBloc>().add(ScanQRCode(scannedCode));
+    if (!context.mounted || scanResult == null) return;
+    switch (scanResult.type) {
+      case QrScannerResultType.success:
+        final scannedCode = scanResult.scannedCode;
+        if (scannedCode == null) return;
+        context.read<TreasureHuntBloc>().add(ScanQRCode(scannedCode));
+        break;
+      case QrScannerResultType.lockedPoint:
+        _showLockedTreasureScannedDialog(context);
+        break;
+    }
+  }
+
+  Future<void> _showRewardClaimSheet(BuildContext context) async {
+    final payload = await context.read<RewardRepository>().buildClaimPayload(
+      treasureHuntState: context.read<TreasureHuntBloc>().state,
+      timetableState: context.read<TimetableBloc>().state,
+    );
+    if (!context.mounted) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) => RewardClaimSheet(payload: payload),
+    );
+  }
+
+  Future<void> _showLockedTreasureScannedDialog(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final huntState = context.read<TreasureHuntBloc>().state;
+    final nextPoint = huntState.nextUnscannedTreasurePoint;
+    final focusNext = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.route_outlined, size: 48),
+        title: Text(l10n.lockedTreasureScannedTitle),
+        content: Text(l10n.lockedTreasureScannedBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.ok),
+          ),
+          if (nextPoint != null)
+            FilledButton.icon(
+              onPressed: () => Navigator.pop(ctx, true),
+              icon: const Icon(Icons.near_me_rounded),
+              label: Text(l10n.focusNextPoint),
+            ),
+        ],
+      ),
+    );
+    if (focusNext == true && context.mounted && nextPoint != null) {
+      _trackPointAndZoom(
+        context,
+        nextPoint,
+        hasScanned: huntState.foundPointIds.isNotEmpty,
+      );
+    }
   }
 
   Future<bool> _ensurePermission(

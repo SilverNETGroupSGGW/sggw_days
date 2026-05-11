@@ -67,9 +67,23 @@ void main() {
 
       expect(
         state.visiblePointIds(skipTreasureHunt: true),
-        equals({'treasure-1', 'poi-1'}),
+        equals({'treasure-1', 'treasure-2', 'poi-1'}),
       );
       expect(state.unlockedPointIds, equals({'treasure-1'}));
+    },
+  );
+
+  test(
+    'tracks treasure-only completion separately from points of interest',
+    () {
+      const state = TreasureHuntState(
+        points: [firstTreasure, secondTreasure, pointOfInterest],
+        foundPointIds: ['treasure-1', 'treasure-2'],
+      );
+
+      expect(state.allTreasurePointsFound, isTrue);
+      expect(state.remainingTreasureCount, 0);
+      expect(state.nextUnscannedTreasurePoint, isNull);
     },
   );
 }

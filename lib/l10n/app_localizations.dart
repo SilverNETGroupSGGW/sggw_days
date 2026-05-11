@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTreasureHuntDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Szukaj oznaczonych miejsc na kampusie i skanuj QR-y, kiedy jesteś blisko. Każdy skan odblokowuje więcej aplikacji.'**
+  /// **'Szukaj oznaczonych miejsc na kampusie i skanuj QR-y, kiedy jesteś blisko. Zeskanuj wszystkie punkty skarbowe i zamelduj się na jednym wydarzeniu, aby odebrać małą nagrodę.'**
   String get onboardingTreasureHuntDesc;
 
   /// No description provided for @onboardingWikiTitle.
@@ -413,7 +413,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyCollectedStorage.
   ///
   /// In pl, this message translates to:
-  /// **'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, wybory dotyczące powiadomień, dane z pamięci podręcznej oraz postęp skanowania.'**
+  /// **'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, wybory dotyczące powiadomień, dane z pamięci podręcznej, postęp skanowania, zameldowania na wydarzeniach oraz identyfikator urządzenia do odbioru nagrody.'**
   String get privacyPolicyCollectedStorage;
 
   /// No description provided for @privacyPolicyCollectedAdmin.
@@ -467,7 +467,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicySharingFirebase.
   ///
   /// In pl, this message translates to:
-  /// **'Dane przesłane przez narzędzia administracyjne oraz rejestrację tokenów powiadomień mogą być przetwarzane przez Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions i Firebase Storage w celu działania aplikacji.'**
+  /// **'Dane przesłane przez narzędzia administracyjne, rejestrację tokenów powiadomień oraz weryfikację nagrody mogą być przetwarzane przez Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions i Firebase Storage w celu działania aplikacji.'**
   String get privacyPolicySharingFirebase;
 
   /// No description provided for @privacyPolicySharingLegal.
@@ -821,7 +821,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Zeskanuj QR przy pobliskim punkcie, żeby odblokować resztę aplikacji i zacząć zbieranie.'**
+  /// **'Zeskanuj pierwszy pobliski QR skarbu, aby odkryć punkty kampusu. Ukończ trasę i jedno zameldowanie na wydarzeniu, aby odebrać małą nagrodę.'**
   String get tutorialDesc;
 
   /// No description provided for @appLocked.
@@ -893,7 +893,7 @@ abstract class AppLocalizations {
   /// No description provided for @treasureHuntCompleteEasterEgg.
   ///
   /// In pl, this message translates to:
-  /// **'Trasa po kampusie ukończona. Zapytaj ekipę o zieloną odznakę.'**
+  /// **'Trasa po kampusie ukończona. Pokaż QR nagrody osobie z Silver.NET.'**
   String get treasureHuntCompleteEasterEgg;
 
   /// No description provided for @treasurePointNumber.
@@ -983,26 +983,116 @@ abstract class AppLocalizations {
   /// No description provided for @skipTreasureHuntDialogBody.
   ///
   /// In pl, this message translates to:
-  /// **'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Zbieranie QR-ów zostanie opcjonalne, ale nagrody związane z grą pozostaną niedostępne.'**
+  /// **'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Skanowanie QR-ów skarbu zostanie wyłączone, więc nie weźmiesz udziału w grze ani nie odbierzesz nagród za grę.'**
   String get skipTreasureHuntDialogBody;
 
   /// No description provided for @skipTreasureHuntEnabledSnack.
   ///
   /// In pl, this message translates to:
-  /// **'Odblokowanie gry terenowej jest teraz opcjonalne.'**
+  /// **'Udział w grze terenowej jest wyłączony.'**
   String get skipTreasureHuntEnabledSnack;
 
   /// No description provided for @skipTreasureHuntSettingTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Pomiń blokadę gry terenowej'**
+  /// **'Używaj mapy bez gry terenowej'**
   String get skipTreasureHuntSettingTitle;
 
   /// No description provided for @skipTreasureHuntSettingDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Pokazuj punkty na mapie, wiedzę i harmonogram bez skanowania pierwszego punktu skarbu.'**
+  /// **'Pokazuj punkty kampusu bez skanowania QR-ów skarbu. To wyłącza udział w grze i nagrody.'**
   String get skipTreasureHuntSettingDesc;
+
+  /// No description provided for @treasureHuntSkippedScanUnavailable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skanowanie QR-ów skarbu jest wyłączone, gdy gra terenowa jest pominięta.'**
+  String get treasureHuntSkippedScanUnavailable;
+
+  /// No description provided for @lockedTreasureScannedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten punkt jest dalej na trasie'**
+  String get lockedTreasureScannedTitle;
+
+  /// No description provided for @lockedTreasureScannedBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten QR należy do punktu skarbowego, do którego jeszcze nie dotarłeś. Najpierw idź do aktualnie wyróżnionego punktu, a potem wróć tutaj.'**
+  String get lockedTreasureScannedBody;
+
+  /// No description provided for @focusNextPoint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokaż następny punkt'**
+  String get focusNextPoint;
+
+  /// No description provided for @claimReward.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbierz nagrodę'**
+  String get claimReward;
+
+  /// No description provided for @rewardClaimTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbierz nagrodę'**
+  String get rewardClaimTitle;
+
+  /// No description provided for @rewardClaimBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokaż ten kod QR osobie z Silver.NET. Zeskanuje go raz i oznaczy Twoją małą nagrodę jako odebraną.'**
+  String get rewardClaimBody;
+
+  /// No description provided for @rewardClaimReadyBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Możesz już odebrać małą nagrodę. Pokaż QR nagrody osobie z Silver.NET.'**
+  String get rewardClaimReadyBody;
+
+  /// No description provided for @rewardClaimEventRequiredBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Już prawie gotowe. Zamelduj się na co najmniej jednym wydarzeniu skanerem QR w harmonogramie, aby odblokować QR nagrody.'**
+  String get rewardClaimEventRequiredBody;
+
+  /// No description provided for @rewardClaimEventRequiredAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamelduj się na wydarzeniu'**
+  String get rewardClaimEventRequiredAction;
+
+  /// No description provided for @rewardClaimDeviceId.
+  ///
+  /// In pl, this message translates to:
+  /// **'ID urządzenia'**
+  String get rewardClaimDeviceId;
+
+  /// No description provided for @rewardClaimPayloadHash.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kod weryfikacji'**
+  String get rewardClaimPayloadHash;
+
+  /// No description provided for @rewardClaimTreasureScans.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skany skarbów'**
+  String get rewardClaimTreasureScans;
+
+  /// No description provided for @rewardClaimEventCheckIns.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zameldowania na wydarzeniach'**
+  String get rewardClaimEventCheckIns;
+
+  /// No description provided for @rewardClaimCompletedAt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ukończono'**
+  String get rewardClaimCompletedAt;
 
   /// No description provided for @eventRemindersSettingTitle.
   ///

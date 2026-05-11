@@ -38,8 +38,12 @@ void main() {
     if (Hive.isBoxOpen('check_ins')) {
       await Hive.box<List<String>>('check_ins').close();
     }
+    if (Hive.isBoxOpen('event_check_in_history')) {
+      await Hive.box('event_check_in_history').close();
+    }
     await Hive.deleteBoxFromDisk('favorites');
     await Hive.deleteBoxFromDisk('check_ins');
+    await Hive.deleteBoxFromDisk('event_check_in_history');
   });
 
   tearDownAll(() async {
@@ -112,6 +116,94 @@ void main() {
     );
     repository.controller.add([updatedFavorite, otherDay]);
     await updatedSnapshot;
+
+    await bloc.close();
+    await repository.controller.close();
+  });
+
+  test('records a timestamp when checking in to an event', () async {
+    final event = _event(
+      id: 'event-1',
+      title: 'Open Lab',
+      startTime: DateTime(2026, 5, 20),
+      tags: const ['science'],
+    );
+    final repository = _StreamingTimetableRepository();
+    final bloc = TimetableBloc(repository: repository);
+
+    final loaded = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TimetableState>().having(
+          (state) => state.events.single.id,
+          'event id',
+          'event-1',
+        ),
+      ),
+    );
+    bloc.add(const LoadTimetableEvents());
+    repository.controller.add([event]);
+    await loaded;
+
+    final checkedIn = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TimetableState>()
+            .having((state) => state.checkedInIds, 'checked in ids', [
+              'event-1',
+            ])
+            .having(
+              (state) => state.checkedInHistory.containsKey('event-1'),
+              'has check-in timestamp',
+              isTrue,
+            ),
+      ),
+    );
+    bloc.add(const CheckInEvent('event-1'));
+    await checkedIn;
+
+    final historyBox = await Hive.openBox('event_check_in_history');
+    expect(historyBox.get('event-1'), isA<String>());
+
+    await bloc.close();
+    await repository.controller.close();
+  });
+
+  test('migrates existing check-ins into timestamp history', () async {
+    final event = _event(
+      id: 'legacy-event',
+      title: 'Legacy Event',
+      startTime: DateTime(2026, 5, 20),
+      tags: const ['science'],
+    );
+    final checkInBox = await Hive.openBox<List<String>>('check_ins');
+    await checkInBox.put('event_check_ins', const ['legacy-event']);
+    final repository = _StreamingTimetableRepository();
+    final bloc = TimetableBloc(repository: repository);
+
+    final loaded = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TimetableState>()
+            .having((state) => state.checkedInIds, 'checked in ids', [
+              'legacy-event',
+            ])
+            .having(
+              (state) => state.checkedInHistory.containsKey('legacy-event'),
+              'migrated check-in timestamp',
+              isTrue,
+            ),
+      ),
+    );
+    bloc.add(const LoadTimetableEvents());
+    repository.controller.add([event]);
+    await loaded;
+
+    final historyBox = await Hive.openBox('event_check_in_history');
+    expect(
+      DateTime.tryParse(historyBox.get('legacy-event') as String),
+      isNotNull,
+    );
 
     await bloc.close();
     await repository.controller.close();

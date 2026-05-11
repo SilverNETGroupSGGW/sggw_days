@@ -70,12 +70,37 @@ class TreasureHuntBloc extends Bloc<TreasureHuntEvent, TreasureHuntState> {
     return (foundIds: foundIds, history: history);
   }
 
-  void _onTreasurePointsUpdated(
+  Future<void> _onTreasurePointsUpdated(
     _TreasurePointsUpdated event,
     Emitter<TreasureHuntState> emit,
-  ) {
+  ) async {
+    final activePointIds = event.points.map((point) => point.id).toSet();
+    final filteredFoundIds = state.foundPointIds
+        .where(activePointIds.contains)
+        .toList();
+    final filteredHistory = Map<String, DateTime>.fromEntries(
+      state.scanHistory.entries.where(
+        (entry) => activePointIds.contains(entry.key),
+      ),
+    );
+
+    if (filteredFoundIds.length != state.foundPointIds.length) {
+      await _progressBox.put('found_points', filteredFoundIds);
+      final historyBox = await Hive.openBox('scan_history');
+      for (final id in state.foundPointIds) {
+        if (!activePointIds.contains(id)) {
+          await historyBox.delete(id);
+        }
+      }
+    }
+
     emit(
-      state.copyWith(status: TreasureHuntStatus.success, points: event.points),
+      state.copyWith(
+        status: TreasureHuntStatus.success,
+        points: event.points,
+        foundPointIds: filteredFoundIds,
+        scanHistory: filteredHistory,
+      ),
     );
   }
 

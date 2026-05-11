@@ -39,6 +39,29 @@ class TreasureHuntState extends Equatable {
     return sortedTreasurePoints.any((p) => foundPointIds.contains(p.id));
   }
 
+  TreasurePoint? get nextUnscannedTreasurePoint {
+    for (final point in sortedTreasurePoints) {
+      if (!foundPointIds.contains(point.id)) return point;
+    }
+    return null;
+  }
+
+  bool get allTreasurePointsFound {
+    final treasurePoints = sortedTreasurePoints;
+    return treasurePoints.isNotEmpty &&
+        treasurePoints.every((point) => foundPointIds.contains(point.id));
+  }
+
+  int get remainingTreasureCount {
+    return sortedTreasurePoints
+        .where((point) => !foundPointIds.contains(point.id))
+        .length;
+  }
+
+  Set<String> get treasurePointIds {
+    return sortedTreasurePoints.map((point) => point.id).toSet();
+  }
+
   /// Returns the set of unlocked point IDs based on sequential logic.
   /// The first treasure point is always visible.
   /// Scanning the Nth treasure point unlocks the (N+1)th.
@@ -78,17 +101,14 @@ class TreasureHuntState extends Equatable {
   }
 
   /// Returns the set of point IDs that should be shown in the UI.
-  /// Skipping the treasure hunt reveals points of interest immediately,
-  /// while scan/QR progression still relies on [unlockedPointIds].
+  /// After the first treasure scan, all points become visible as points of
+  /// interest. Skipping also reveals the map, while QR progression still relies
+  /// on [unlockedPointIds].
   Set<String> visiblePointIds({required bool skipTreasureHunt}) {
     final visible = <String>{...unlockedPointIds};
 
-    if (skipTreasureHunt) {
-      for (final point in points) {
-        if (point.type == PointType.pointOfInterest) {
-          visible.add(point.id);
-        }
-      }
+    if (skipTreasureHunt || hasFoundAnyTreasurePoint) {
+      visible.addAll(points.map((point) => point.id));
     }
 
     return visible;

@@ -7,6 +7,7 @@ import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
 import 'package:sggw_days/features/admin/presentation/cubit/admin_auth_cubit.dart';
 import 'package:sggw_days/features/admin/presentation/pages/notifications_tab.dart';
+import 'package:sggw_days/features/admin/presentation/pages/reward_claims_tab.dart';
 import 'package:sggw_days/features/admin/presentation/pages/timetable_events_tab.dart';
 import 'package:sggw_days/features/admin/presentation/pages/treasure_points_tab.dart';
 import 'package:sggw_days/features/admin/presentation/pages/wiki_articles_tab.dart';
@@ -27,7 +28,7 @@ class _AdminPageState extends State<AdminPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
 
     // Load initial data
     context.read<AdminBloc>().add(LoadTreasurePoints());
@@ -74,6 +75,7 @@ class _AdminPageState extends State<AdminPage>
             Tab(icon: Icon(Icons.place), text: 'Points'),
             Tab(icon: Icon(Icons.article), text: 'Wiki Articles'),
             Tab(icon: Icon(Icons.event), text: 'Timetable'),
+            Tab(icon: Icon(Icons.redeem), text: 'Rewards'),
             Tab(icon: Icon(Icons.campaign), text: 'Notify'),
           ],
         ),
@@ -112,6 +114,7 @@ class _AdminPageState extends State<AdminPage>
               TreasurePointsTab(),
               WikiArticlesTab(),
               TimetableEventsTab(),
+              RewardClaimsTab(),
               NotificationsTab(),
             ],
           );

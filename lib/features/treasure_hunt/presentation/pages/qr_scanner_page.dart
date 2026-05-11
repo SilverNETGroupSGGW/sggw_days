@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -8,14 +7,32 @@ import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_scan_code.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
+enum QrScannerResultType { success, lockedPoint }
+
+class QrScannerResult {
+  final QrScannerResultType type;
+  final String? scannedCode;
+  final String? pointId;
+
+  const QrScannerResult._({this.scannedCode, this.pointId, required this.type});
+
+  const QrScannerResult.success(String scannedCode)
+    : this._(type: QrScannerResultType.success, scannedCode: scannedCode);
+
+  const QrScannerResult.lockedPoint(String pointId)
+    : this._(type: QrScannerResultType.lockedPoint, pointId: pointId);
+}
+
 class QrScannerPage extends StatefulWidget {
   final List<TreasurePoint> treasurePoints;
   final Set<String> unlockedPointIds;
+  final double scanDistanceMeters;
 
   const QrScannerPage({
     super.key,
     required this.treasurePoints,
     required this.unlockedPointIds,
+    required this.scanDistanceMeters,
   });
 
   @override
@@ -33,13 +50,20 @@ class _QrScannerPageState extends State<QrScannerPage> {
   bool _isClosing = false;
   DateTime? _scanErrorCooldownUntil;
 
+  bool get _distanceCheckEnabled => widget.scanDistanceMeters > 0;
+  bool get _canEvaluateScans =>
+      !_distanceCheckEnabled ||
+      (_currentPosition != null && _locationError == null);
+
   @override
   void initState() {
     super.initState();
     _controller = MobileScannerController(
       detectionSpeed: DetectionSpeed.noDuplicates,
     );
-    unawaited(_loadCurrentPosition());
+    if (_distanceCheckEnabled) {
+      unawaited(_loadCurrentPosition());
+    }
   }
 
   @override
@@ -73,22 +97,21 @@ class _QrScannerPageState extends State<QrScannerPage> {
   }
 
   bool _isNearTreasurePoint(TreasurePoint point) {
-    if (kDebugMode) return true;
+    if (!_distanceCheckEnabled) return true;
 
     final currentPosition = _currentPosition;
     if (currentPosition == null) return false;
 
-    const maxDistance = 50.0;
     final distance = Geolocator.distanceBetween(
       currentPosition.latitude,
       currentPosition.longitude,
       point.latitude,
       point.longitude,
     );
-    return distance <= maxDistance;
+    return distance <= widget.scanDistanceMeters;
   }
 
-  Future<void> _closeScanner([String? scannedCode]) async {
+  Future<void> _closeScanner([QrScannerResult? result]) async {
     if (!mounted || _isClosing) return;
     _isClosing = true;
     setState(() => _allowPop = true);
@@ -96,13 +119,13 @@ class _QrScannerPageState extends State<QrScannerPage> {
     if (!mounted) return;
     await _controller.stop();
     if (!mounted) return;
-    Navigator.of(context).pop(scannedCode);
+    Navigator.of(context).pop(result);
   }
 
-  void _completeScan(String code) {
+  void _completeScan(QrScannerResult result) {
     if (_hasHandledScan) return;
     _hasHandledScan = true;
-    unawaited(_closeScanner(code));
+    unawaited(_closeScanner(result));
   }
 
   bool get _isInScanErrorCooldown {
@@ -154,8 +177,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
                 if (_hasHandledScan ||
                     _isClosing ||
                     _isInScanErrorCooldown ||
-                    _currentPosition == null ||
-                    _locationError != null) {
+                    !_canEvaluateScans) {
                   return;
                 }
                 final barcodes = capture.barcodes;
@@ -169,9 +191,9 @@ class _QrScannerPageState extends State<QrScannerPage> {
                   if (point == null) {
                     _showScanError(context, l10n.invalidQrCode);
                   } else if (!widget.unlockedPointIds.contains(point.id)) {
-                    _showScanError(context, l10n.pointLocked);
+                    _completeScan(QrScannerResult.lockedPoint(point.id));
                   } else if (_isNearTreasurePoint(point)) {
-                    _completeScan(rawValue);
+                    _completeScan(QrScannerResult.success(rawValue));
                   } else {
                     _showScanError(context, l10n.mustBeCloser);
                   }
@@ -186,6 +208,10 @@ class _QrScannerPageState extends State<QrScannerPage> {
                     state.isInitialized &&
                     state.isRunning &&
                     state.error == null;
+                if (isCameraReady && !_distanceCheckEnabled) {
+                  return const SizedBox.shrink();
+                }
+
                 if (isCameraReady && _currentPosition != null) {
                   return const SizedBox.shrink();
                 }

@@ -8,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+import 'package:sggw_days/core/config/scan_distance_config.dart';
 import 'package:sggw_days/core/connectivity/connectivity_cubit.dart';
+import 'package:sggw_days/core/device/device_identity_service.dart';
 import 'package:sggw_days/core/router/app_router.dart';
 import 'package:sggw_days/core/theme/app_theme.dart';
 import 'package:sggw_days/core/theme/dynamic_color_availability.dart';
@@ -17,6 +19,7 @@ import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
 import 'package:sggw_days/features/notifications/data/notification_repository.dart';
 import 'package:sggw_days/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:sggw_days/features/rewards/data/repositories/reward_repository.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
@@ -50,6 +53,7 @@ void main() async {
   await Hive.initFlutter();
   final progressBox = await Hive.openBox<List<String>>('progress');
   final settingsBox = await Hive.openBox('settings');
+  final scanDistanceConfig = await _createScanDistanceConfig();
   final onboardingCompleted =
       settingsBox.get('onboarding_completed', defaultValue: false) as bool;
 
@@ -57,20 +61,33 @@ void main() async {
     MyApp(
       progressBox: progressBox,
       settingsBox: settingsBox,
+      scanDistanceConfig: scanDistanceConfig,
       initialOnboardingCompleted: onboardingCompleted,
     ),
   );
 }
 
+Future<ScanDistanceConfig> _createScanDistanceConfig() async {
+  try {
+    final config = ScanDistanceConfig();
+    await config.initialize();
+    return config;
+  } catch (_) {
+    return ScanDistanceConfig.fallback();
+  }
+}
+
 class MyApp extends StatefulWidget {
   final Box<List<String>> progressBox;
   final Box<dynamic> settingsBox;
+  final ScanDistanceConfig scanDistanceConfig;
   final bool initialOnboardingCompleted;
 
   const MyApp({
     super.key,
     required this.progressBox,
     required this.settingsBox,
+    required this.scanDistanceConfig,
     required this.initialOnboardingCompleted,
   });
 
@@ -119,6 +136,16 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(create: (context) => WikiRepository()),
         RepositoryProvider(create: (context) => TimetableRepository()),
         RepositoryProvider(create: (context) => AdminRepository()),
+        RepositoryProvider.value(value: widget.scanDistanceConfig),
+        RepositoryProvider(
+          create: (context) =>
+              DeviceIdentityService(settingsBox: widget.settingsBox),
+        ),
+        RepositoryProvider(
+          create: (context) => RewardRepository(
+            deviceIdentityService: context.read<DeviceIdentityService>(),
+          ),
+        ),
         RepositoryProvider(
           create: (context) {
             final service = EventReminderService(

@@ -80,7 +80,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get onboardingTreasureHuntDesc =>
-      'Szukaj oznaczonych miejsc na kampusie i skanuj QR-y, kiedy jesteś blisko. Każdy skan odblokowuje więcej aplikacji.';
+      'Szukaj oznaczonych miejsc na kampusie i skanuj QR-y, kiedy jesteś blisko. Zeskanuj wszystkie punkty skarbowe i zamelduj się na jednym wydarzeniu, aby odebrać małą nagrodę.';
 
   @override
   String get onboardingWikiTitle => 'Wiedza o SGGW';
@@ -178,7 +178,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacyPolicyCollectedStorage =>
-      'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, wybory dotyczące powiadomień, dane z pamięci podręcznej oraz postęp skanowania.';
+      'Aplikacja przechowuje lokalnie na urządzeniu ustawienia, status ukończenia wprowadzenia, wybory dotyczące powiadomień, dane z pamięci podręcznej, postęp skanowania, zameldowania na wydarzeniach oraz identyfikator urządzenia do odbioru nagrody.';
 
   @override
   String get privacyPolicyCollectedAdmin =>
@@ -213,7 +213,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacyPolicySharingFirebase =>
-      'Dane przesłane przez narzędzia administracyjne oraz rejestrację tokenów powiadomień mogą być przetwarzane przez Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions i Firebase Storage w celu działania aplikacji.';
+      'Dane przesłane przez narzędzia administracyjne, rejestrację tokenów powiadomień oraz weryfikację nagrody mogą być przetwarzane przez Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions i Firebase Storage w celu działania aplikacji.';
 
   @override
   String get privacyPolicySharingLegal =>
@@ -408,7 +408,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tutorialDesc =>
-      'Zeskanuj QR przy pobliskim punkcie, żeby odblokować resztę aplikacji i zacząć zbieranie.';
+      'Zeskanuj pierwszy pobliski QR skarbu, aby odkryć punkty kampusu. Ukończ trasę i jedno zameldowanie na wydarzeniu, aby odebrać małą nagrodę.';
 
   @override
   String get appLocked => 'Zeskanuj pobliski punkt, żeby otworzyć tę zakładkę';
@@ -448,7 +448,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get treasureHuntCompleteEasterEgg =>
-      'Trasa po kampusie ukończona. Zapytaj ekipę o zieloną odznakę.';
+      'Trasa po kampusie ukończona. Pokaż QR nagrody osobie z Silver.NET.';
 
   @override
   String treasurePointNumber(int number) {
@@ -499,18 +499,68 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get skipTreasureHuntDialogBody =>
-      'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Zbieranie QR-ów zostanie opcjonalne, ale nagrody związane z grą pozostaną niedostępne.';
+      'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Skanowanie QR-ów skarbu zostanie wyłączone, więc nie weźmiesz udziału w grze ani nie odbierzesz nagród za grę.';
 
   @override
   String get skipTreasureHuntEnabledSnack =>
-      'Odblokowanie gry terenowej jest teraz opcjonalne.';
+      'Udział w grze terenowej jest wyłączony.';
 
   @override
-  String get skipTreasureHuntSettingTitle => 'Pomiń blokadę gry terenowej';
+  String get skipTreasureHuntSettingTitle => 'Używaj mapy bez gry terenowej';
 
   @override
   String get skipTreasureHuntSettingDesc =>
-      'Pokazuj punkty na mapie, wiedzę i harmonogram bez skanowania pierwszego punktu skarbu.';
+      'Pokazuj punkty kampusu bez skanowania QR-ów skarbu. To wyłącza udział w grze i nagrody.';
+
+  @override
+  String get treasureHuntSkippedScanUnavailable =>
+      'Skanowanie QR-ów skarbu jest wyłączone, gdy gra terenowa jest pominięta.';
+
+  @override
+  String get lockedTreasureScannedTitle => 'Ten punkt jest dalej na trasie';
+
+  @override
+  String get lockedTreasureScannedBody =>
+      'Ten QR należy do punktu skarbowego, do którego jeszcze nie dotarłeś. Najpierw idź do aktualnie wyróżnionego punktu, a potem wróć tutaj.';
+
+  @override
+  String get focusNextPoint => 'Pokaż następny punkt';
+
+  @override
+  String get claimReward => 'Odbierz nagrodę';
+
+  @override
+  String get rewardClaimTitle => 'Odbierz nagrodę';
+
+  @override
+  String get rewardClaimBody =>
+      'Pokaż ten kod QR osobie z Silver.NET. Zeskanuje go raz i oznaczy Twoją małą nagrodę jako odebraną.';
+
+  @override
+  String get rewardClaimReadyBody =>
+      'Możesz już odebrać małą nagrodę. Pokaż QR nagrody osobie z Silver.NET.';
+
+  @override
+  String get rewardClaimEventRequiredBody =>
+      'Już prawie gotowe. Zamelduj się na co najmniej jednym wydarzeniu skanerem QR w harmonogramie, aby odblokować QR nagrody.';
+
+  @override
+  String get rewardClaimEventRequiredAction => 'Zamelduj się na wydarzeniu';
+
+  @override
+  String get rewardClaimDeviceId => 'ID urządzenia';
+
+  @override
+  String get rewardClaimPayloadHash => 'Kod weryfikacji';
+
+  @override
+  String get rewardClaimTreasureScans => 'Skany skarbów';
+
+  @override
+  String get rewardClaimEventCheckIns => 'Zameldowania na wydarzeniach';
+
+  @override
+  String get rewardClaimCompletedAt => 'Ukończono';
 
   @override
   String get eventRemindersSettingTitle => 'Przypomnienia o wydarzeniach';

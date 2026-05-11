@@ -66,6 +66,11 @@ dependencies:
   timezone: ^0.11.0
   material_symbols_icons: ^4.2928.1
   url_launcher: ^6.3.2
+  firebase_remote_config: ^6.5.0
+  device_info_plus: ^12.4.0
+  flutter_secure_storage: ^10.1.0
+  crypto: ^3.0.7
+  android_id: ^0.5.1
 
 dev_dependencies:
   flutter_test:

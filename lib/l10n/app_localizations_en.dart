@@ -80,7 +80,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingTreasureHuntDesc =>
-      'Find marked spots around campus and scan their QR codes when you get close. Each scan unlocks more of the app.';
+      'Find marked spots around campus and scan their QR codes when you get close. Scan every treasure point and check in at one event to claim a small reward.';
 
   @override
   String get onboardingWikiTitle => 'SGGW Knowledge';
@@ -177,7 +177,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicyCollectedStorage =>
-      'The app stores settings, onboarding status, notification choices, cached content, and scan progress locally on your device.';
+      'The app stores settings, onboarding status, notification choices, cached content, scan progress, event check-ins, and a reward device identifier locally on your device.';
 
   @override
   String get privacyPolicyCollectedAdmin =>
@@ -212,7 +212,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicySharingFirebase =>
-      'Data submitted through administrator tools and notification token registration may be processed by Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions, and Firebase Storage as part of operating the app.';
+      'Data submitted through administrator tools, notification token registration, and reward verification may be processed by Firebase Authentication, Cloud Firestore, Firebase Cloud Messaging, Cloud Functions, and Firebase Storage as part of operating the app.';
 
   @override
   String get privacyPolicySharingLegal =>
@@ -406,7 +406,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialDesc =>
-      'Scan a nearby QR code to open the rest of the app and start collecting points.';
+      'Scan the first nearby treasure QR to reveal campus points. Complete the trail and one event check-in to claim a small reward.';
 
   @override
   String get appLocked => 'Scan one nearby point to open this tab';
@@ -446,7 +446,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get treasureHuntCompleteEasterEgg =>
-      'The campus trail is complete. Ask the team about the green badge.';
+      'The campus trail is complete. Show your reward QR to a Silver.NET member.';
 
   @override
   String treasurePointNumber(int number) {
@@ -497,18 +497,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skipTreasureHuntDialogBody =>
-      'You can still use the map, wiki and timetable. QR collecting stays optional, but hunt-only rewards will stay unavailable.';
+      'You can still use the map, wiki and timetable. Treasure QR scanning will be disabled, so you will not participate in the game or receive hunt rewards.';
 
   @override
   String get skipTreasureHuntEnabledSnack =>
-      'Treasure hunt unlock is now optional.';
+      'Treasure hunt participation is disabled.';
 
   @override
-  String get skipTreasureHuntSettingTitle => 'Skip treasure hunt gate';
+  String get skipTreasureHuntSettingTitle => 'Use map without treasure game';
 
   @override
   String get skipTreasureHuntSettingDesc =>
-      'Show map points, wiki and timetable without scanning the first treasure point.';
+      'Show campus points without scanning treasure QR codes. This disables game participation and rewards.';
+
+  @override
+  String get treasureHuntSkippedScanUnavailable =>
+      'Treasure QR scanning is disabled while the treasure game is skipped.';
+
+  @override
+  String get lockedTreasureScannedTitle => 'This stop is later in the trail';
+
+  @override
+  String get lockedTreasureScannedBody =>
+      'That QR belongs to a treasure point you have not reached yet. Follow the currently highlighted treasure point first, then come back to this one.';
+
+  @override
+  String get focusNextPoint => 'Focus next point';
+
+  @override
+  String get claimReward => 'Claim reward';
+
+  @override
+  String get rewardClaimTitle => 'Claim your reward';
+
+  @override
+  String get rewardClaimBody =>
+      'Show this QR code to a Silver.NET member. They will scan it once and mark your small reward as received.';
+
+  @override
+  String get rewardClaimReadyBody =>
+      'You can now claim a small reward. Show your reward QR to a Silver.NET member.';
+
+  @override
+  String get rewardClaimEventRequiredBody =>
+      'You are almost there. Check in at at least one event with the timetable QR scanner to unlock your reward QR.';
+
+  @override
+  String get rewardClaimEventRequiredAction => 'Check in at event';
+
+  @override
+  String get rewardClaimDeviceId => 'Device ID';
+
+  @override
+  String get rewardClaimPayloadHash => 'Verification code';
+
+  @override
+  String get rewardClaimTreasureScans => 'Treasure scans';
+
+  @override
+  String get rewardClaimEventCheckIns => 'Event check-ins';
+
+  @override
+  String get rewardClaimCompletedAt => 'Completed at';
 
   @override
   String get eventRemindersSettingTitle => 'Event reminders';
