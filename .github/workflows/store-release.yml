@@ -11,6 +11,16 @@ name: Delivery
   release:
     types:
       - published
+  workflow_dispatch:
+    inputs:
+      firebase_target:
+        description: Firebase deploy target
+        required: true
+        type: choice
+        default: beta
+        options:
+          - beta
+          - prod
 
 permissions:
   contents: read
@@ -25,7 +35,11 @@ jobs:
     outputs:
       is_tag: ${{ steps.resolve.outputs.is_tag }}
       is_release: ${{ steps.resolve.outputs.is_release }}
+      is_manual_firebase: ${{ steps.resolve.outputs.is_manual_firebase }}
       should_build_release_artifacts: ${{ steps.resolve.outputs.should_build_release_artifacts }}
+      should_build_web: ${{ steps.resolve.outputs.should_build_web }}
+      should_deploy_beta_hosting: ${{ steps.resolve.outputs.should_deploy_beta_hosting }}
+      should_deploy_live_firebase: ${{ steps.resolve.outputs.should_deploy_live_firebase }}
       release_tag: ${{ steps.resolve.outputs.release_tag }}
       build_number: ${{ steps.resolve.outputs.build_number }}
     steps:
@@ -36,22 +50,47 @@ jobs:
           REF: ${{ github.ref }}
           REF_NAME: ${{ github.ref_name }}
           RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || '' }}
+          MANUAL_FIREBASE_TARGET: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.firebase_target || '' }}
         run: |
           set -euo pipefail
 
           is_tag=false
           is_release=false
+          is_manual_firebase=false
           should_build_release_artifacts=false
+          should_build_web=false
+          should_deploy_beta_hosting=false
+          should_deploy_live_firebase=false
           release_tag=""
           build_number=""
 
-          if [ "$EVENT_NAME" = "release" ]; then
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            is_manual_firebase=true
+            should_build_web=true
+
+            case "$MANUAL_FIREBASE_TARGET" in
+              beta)
+                should_deploy_beta_hosting=true
+                ;;
+              prod)
+                should_deploy_live_firebase=true
+                ;;
+              *)
+                echo "Unsupported firebase_target: $MANUAL_FIREBASE_TARGET"
+                exit 1
+                ;;
+            esac
+          elif [ "$EVENT_NAME" = "release" ]; then
             is_release=true
             should_build_release_artifacts=true
+            should_build_web=true
+            should_deploy_live_firebase=true
             release_tag="$RELEASE_TAG"
           elif [[ "$REF" == refs/tags/* ]]; then
             is_tag=true
             should_build_release_artifacts=true
+            should_build_web=true
+            should_deploy_beta_hosting=true
             release_tag="$REF_NAME"
           fi
 
@@ -84,7 +123,11 @@ jobs:
 
           echo "is_tag=$is_tag" >> "$GITHUB_OUTPUT"
           echo "is_release=$is_release" >> "$GITHUB_OUTPUT"
+          echo "is_manual_firebase=$is_manual_firebase" >> "$GITHUB_OUTPUT"
           echo "should_build_release_artifacts=$should_build_release_artifacts" >> "$GITHUB_OUTPUT"
+          echo "should_build_web=$should_build_web" >> "$GITHUB_OUTPUT"
+          echo "should_deploy_beta_hosting=$should_deploy_beta_hosting" >> "$GITHUB_OUTPUT"
+          echo "should_deploy_live_firebase=$should_deploy_live_firebase" >> "$GITHUB_OUTPUT"
           echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
           echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
 
@@ -109,7 +152,7 @@ jobs:
     needs:
       - resolve
       - validate
-    if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_release_artifacts == 'true' }}
+    if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_web == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -206,7 +249,7 @@ jobs:
     needs:
       - resolve
       - build_web
-    if: ${{ always() && needs.resolve.outputs.is_tag == 'true' && needs.build_web.result == 'success' }}
+    if: ${{ always() && needs.resolve.outputs.should_deploy_beta_hosting == 'true' && needs.build_web.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -241,7 +284,7 @@ jobs:
     needs:
       - resolve
       - build_web
-    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.build_web.result == 'success' }}
+    if: ${{ always() && needs.resolve.outputs.should_deploy_live_firebase == 'true' && needs.build_web.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

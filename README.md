@@ -9,10 +9,16 @@ The repository deploys Firebase and store releases through one top-level GitHub 
 - Pull requests and branch pushes run [store-release.yml](.github/workflows/store-release.yml) in validation mode only.
 - Semver tags such as `v1.2.3` run [store-release.yml](.github/workflows/store-release.yml), which validates the repo, builds Android, web, and iOS artifacts in parallel, stores them as Actions artifacts, deploys web to the beta Hosting site, uploads Android to the configured Google Play testing track, and uploads iOS to TestFlight.
 - Published GitHub Releases from semver tags run [store-release.yml](.github/workflows/store-release.yml), which validates the repo, rebuilds Android, web, and iOS artifacts in parallel, attaches `.apk`, web `.zip`, and `.ipa` assets to the GitHub Release, deploys the live Hosting site together with Cloud Functions and Firestore and Storage rules, promotes Android to the configured production track, and submits the iOS build for App Store review.
+- Manual runs of [store-release.yml](.github/workflows/store-release.yml) from the GitHub Actions UI build only the web artifact and deploy Firebase. Choose `firebase_target=beta` to deploy Hosting to `beta-sggw-days`, or `firebase_target=prod` to deploy `hosting:live,functions,firestore:rules,storage:main`. Manual Firebase runs do not build or publish Android or iOS artifacts.
+- Manual runs of [android-store.yml](.github/workflows/android-store.yml) and [ios-store.yml](.github/workflows/ios-store.yml) from the GitHub Actions UI deploy Google Play and App Store/TestFlight selectively without touching Firebase. Use `Android Store Release` with `target=testing` or `production`, and `iOS Store Release` with `target=testflight` or `app_store`.
 
 Required repository secret:
 
 - `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Firebase Hosting, Cloud Functions, and Firestore and Storage rules in the `sggw-days` Firebase project. The automated workflow deploys the beta Hosting site for semver tag builds and the live Hosting site for published GitHub Releases.
+
+To run a manual Firebase deployment, open the `Delivery` workflow in GitHub Actions, choose the branch to deploy from, then set `firebase_target` to `beta` or `prod` before starting the run.
+
+To run manual app deployments, open either the `Android Store Release` or `iOS Store Release` workflow in GitHub Actions, choose the branch to deploy from, then select the store target you want for that platform.
 
 The Firebase Hosting configuration in [firebase.json](firebase.json) now uses explicit deploy targets: `hosting:beta` maps to `beta-sggw-days`, and `hosting:live` maps to `sggw-days`. This keeps workflow names and deploy commands aligned with the actual site roles.
 
@@ -107,7 +113,8 @@ Additional configuration required by the Google Play workflow:
 - `GOOGLE_PLAY_PRODUCTION_STATUS`: Release status used when promoting the testing release into production. The default is `completed`.
 - `GOOGLE_PLAY_BUILD_NUMBER_OFFSET`: Manual builds without a semver release version still fall back to a unique Android `versionCode` based on the GitHub Actions run number and this offset.
 - Store tags must be strict semver (`v1.2.3` or `1.2.3`). The workflows derive deterministic testing and production build numbers from that version.
-- Manual Android runs use `target` to choose `testing` or `production`, then can override defaults with `release_version`, `play_track`, `release_status`, `build_number`, and `commit_range` as needed.
+- Manual Android runs use [android-store.yml](.github/workflows/android-store.yml) with `target=testing` or `production`, and can optionally override `release_version`, `play_track`, `release_status`, `build_number`, `commit_range`, `release_body`, `deploy_to_store`, and `artifact_name`.
+- Google Play production promotions require `release_version`. If the testing build you are promoting used a custom `build_number`, pass the same `build_number` again on the manual production run.
 - Production Play release notes are taken from the GitHub Release body. Testing release notes are generated automatically from commit subjects since the previous tag. Both paths normalize and truncate the final `en-US` note to Google Play's 500-character limit before upload.
 
 Additional configuration required by the iOS store workflows:
@@ -117,7 +124,8 @@ Additional configuration required by the iOS store workflows:
 - `MATCH_PASSWORD` enables the preferred fastlane `match` signing path, using the private repo as encrypted signing storage on the `match-signing` branch by default.
 - When [ios-store.yml](.github/workflows/ios-store.yml) runs with `target=testflight`, it falls back to the existing direct-signing secrets if `MATCH_PASSWORD` is not present yet: `APPSTORE_CERTIFICATES_FILE_BASE64`, `APPSTORE_CERTIFICATES_PASSWORD`, and `IOS_APPSTORE_PROFILE_BASE64`.
 - When [ios-store.yml](.github/workflows/ios-store.yml) runs with `target=app_store`, it does not rebuild the app. It submits the exact build number that was already uploaded from the matching tag.
-- Manual iOS runs use `target` to choose `testflight` or `app_store`, and can override `release_version`, `build_number`, `commit_range`, `wait_for_processing`, or `automatic_release` when appropriate.
+- Manual iOS runs use [ios-store.yml](.github/workflows/ios-store.yml) with `target=testflight` or `app_store`, and can optionally override `release_version`, `release_tag`, `build_number`, `commit_range`, `wait_for_processing`, `automatic_release`, `release_body`, `deploy_to_store`, and `artifact_name`.
+- App Store submissions require `release_version` and submit an existing uploaded build. If the TestFlight build used a custom `build_number`, pass the same `build_number` again on the manual `app_store` run.
 
 Flutter-specific versioning note:
 
