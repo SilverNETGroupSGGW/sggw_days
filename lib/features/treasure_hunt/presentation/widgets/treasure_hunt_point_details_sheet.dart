@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
@@ -10,6 +11,7 @@ import 'package:sggw_days/l10n/app_localizations.dart';
 class TreasureHuntPointDetailsSheet extends StatelessWidget {
   final TreasurePoint point;
   final bool isFound;
+  final bool showTreasureIcon;
   final bool canScan;
   final String? distanceText;
   final double? distanceMeters;
@@ -26,6 +28,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
     super.key,
     required this.point,
     required this.isFound,
+    required this.showTreasureIcon,
     required this.canScan,
     required this.distanceText,
     required this.distanceMeters,
@@ -43,8 +46,12 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final typeColor = colorForPointType(point.type, theme.colorScheme);
-    final showDescription = point.type != PointType.treasurePoint || isFound;
+    final typeColor = colorForMapPoint(
+      point,
+      theme.colorScheme,
+      useTreasureColor: showTreasureIcon,
+    );
+    final pointIcon = iconForMapPoint(point, useTreasureIcon: showTreasureIcon);
 
     return FractionallySizedBox(
       heightFactor: 0.86,
@@ -86,10 +93,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: Icon(
-                          isFound ? Icons.check_circle : iconForPoint(point),
-                          color: typeColor,
-                        ),
+                        child: Icon(pointIcon, color: typeColor),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -119,7 +123,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                               runSpacing: 8,
                               children: [
                                 PointInfoChip(
-                                  icon: iconForPoint(point),
+                                  icon: pointIcon,
                                   label: labelForPointType(point.type, l10n),
                                   color: typeColor,
                                 ),
@@ -175,7 +179,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                                     theme.colorScheme.surfaceContainerHighest,
                               ),
                               child: Icon(
-                                iconForPoint(point),
+                                pointIcon,
                                 size: 48,
                                 color: typeColor,
                               ),
@@ -261,7 +265,7 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                             ),
                             accentColor: theme.colorScheme.primary,
                             title: event.title,
-                            subtitle: _formatEventWindow(event),
+                            subtitle: _formatEventWindow(context, event),
                             detail: event.location,
                             onTap: onOpenTimetable,
                           ),
@@ -275,40 +279,10 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                   margin: EdgeInsets.zero,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: showDescription
-                        ? Text(
-                            point.description,
-                            style: theme.textTheme.bodyLarge,
-                          )
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.lock_outline,
-                                color: theme.colorScheme.primary,
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      l10n.pointDescriptionLockedTitle,
-                                      style: theme.textTheme.titleSmall
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      l10n.pointDescriptionLockedBody,
-                                      style: theme.textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                    child: Text(
+                      point.description,
+                      style: theme.textTheme.bodyLarge,
+                    ),
                   ),
                 ),
               ],
@@ -346,11 +320,11 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
     );
   }
 
-  String _formatEventWindow(TimetableEvent event) {
-    final startHour = event.startTime.hour.toString().padLeft(2, '0');
-    final startMinute = event.startTime.minute.toString().padLeft(2, '0');
-    final endHour = event.endTime.hour.toString().padLeft(2, '0');
-    final endMinute = event.endTime.minute.toString().padLeft(2, '0');
-    return '$startHour:$startMinute - $endHour:$endMinute';
+  String _formatEventWindow(BuildContext context, TimetableEvent event) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final dateText = DateFormat.MMMd(locale).format(event.startTime);
+    final startText = DateFormat.Hm(locale).format(event.startTime);
+    final endText = DateFormat.Hm(locale).format(event.endTime);
+    return '$dateText, $startText - $endText';
   }
 }

@@ -440,13 +440,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pointLocked => 'Ten punkt nie jest jeszcze odblokowany';
 
   @override
-  String get pointDescriptionLockedTitle => 'Zeskanuj, żeby odkryć';
-
-  @override
-  String get pointDescriptionLockedBody =>
-      'Opis odblokuje się po zeskanowaniu kodu QR przy tym punkcie.';
-
-  @override
   String get treasureHuntCompleteEasterEgg =>
       'Trasa po kampusie ukończona. Pokaż QR nagrody osobie z Silver.NET.';
 
@@ -499,7 +492,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get skipTreasureHuntDialogBody =>
-      'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Skanowanie QR-ów skarbu zostanie wyłączone, więc nie weźmiesz udziału w grze ani nie odbierzesz nagród za grę.';
+      'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Skanowanie QR-ów skarbu i zameldowania do gry na wydarzeniach zostaną wyłączone, więc nie weźmiesz udziału w grze ani nie odbierzesz nagród za grę.';
 
   @override
   String get skipTreasureHuntEnabledSnack =>
@@ -510,11 +503,15 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get skipTreasureHuntSettingDesc =>
-      'Pokazuj punkty kampusu bez skanowania QR-ów skarbu. To wyłącza udział w grze i nagrody.';
+      'Pokazuj punkty kampusu bez skanowania QR-ów skarbu. To wyłącza udział w grze, zameldowania do gry na wydarzeniach i odbiór nagrody.';
 
   @override
   String get treasureHuntSkippedScanUnavailable =>
       'Skanowanie QR-ów skarbu jest wyłączone, gdy gra terenowa jest pominięta.';
+
+  @override
+  String get treasureHuntSkippedCheckInUnavailable =>
+      'Zameldowanie na wydarzeniu do gry jest wyłączone, gdy gra terenowa jest pominięta.';
 
   @override
   String get lockedTreasureScannedTitle => 'Ten punkt jest dalej na trasie';

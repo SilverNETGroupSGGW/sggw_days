@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
+import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
     as model;
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
@@ -26,6 +27,9 @@ class _TimetablePageState extends State<TimetablePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final skipTreasureHunt = context.select<SettingsCubit, bool>(
+      (cubit) => cubit.state.skipTreasureHunt,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -62,8 +66,20 @@ class _TimetablePageState extends State<TimetablePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openCheckInScanner(context),
-        icon: const Icon(Icons.qr_code_scanner),
+        onPressed: () {
+          if (skipTreasureHunt) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.treasureHuntSkippedCheckInUnavailable),
+              ),
+            );
+            return;
+          }
+          _openCheckInScanner(context);
+        },
+        icon: Icon(
+          skipTreasureHunt ? Icons.block_rounded : Icons.qr_code_scanner,
+        ),
         label: Text(l10n.checkIn),
       ),
       body: BlocConsumer<TimetableBloc, TimetableState>(
@@ -588,6 +604,13 @@ class _TimetablePageState extends State<TimetablePage> {
 
   void _openCheckInScanner(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
+    if (context.read<SettingsCubit>().state.skipTreasureHunt) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.treasureHuntSkippedCheckInUnavailable)),
+      );
+      return;
+    }
+
     final bloc = context.read<TimetableBloc>();
 
     final eventId = await Navigator.push<String>(

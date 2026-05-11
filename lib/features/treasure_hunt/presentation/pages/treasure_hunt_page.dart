@@ -105,6 +105,9 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final skipTreasureHunt = context.select<SettingsCubit, bool>(
+      (cubit) => cubit.state.skipTreasureHunt,
+    );
     final colorScheme = theme.colorScheme;
     final mapShadowColor = colorScheme.shadow.withValues(
       alpha: theme.brightness == Brightness.dark ? 0.32 : 0.18,
@@ -122,45 +125,45 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
       appBar: AppBar(
         title: Text(l10n.treasureHunt),
         actions: [
-          BlocBuilder<TreasureHuntBloc, TreasureHuntState>(
-            builder: (context, state) {
-              final treasurePoints = state.sortedTreasurePoints;
-              final total = treasurePoints.length;
-              final found = treasurePoints
-                  .where((p) => state.foundPointIds.contains(p.id))
-                  .length;
-              final progress = total == 0 ? 0.0 : found / total;
+          if (!skipTreasureHunt)
+            BlocBuilder<TreasureHuntBloc, TreasureHuntState>(
+              builder: (context, state) {
+                final treasurePoints = state.sortedTreasurePoints;
+                final total = treasurePoints.length;
+                final found = treasurePoints
+                    .where((p) => state.foundPointIds.contains(p.id))
+                    .length;
+                final progress = total == 0 ? 0.0 : found / total;
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: 60,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 8,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 60,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 8,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '$found/$total',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(width: 8),
+                      Text(
+                        '$found/$total',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+                    ],
+                  ),
+                );
+              },
+            ),
           IconButton(
             icon: const Icon(Icons.history),
             onPressed: () => _openScanHistoryPage(context),
@@ -211,7 +214,8 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                   if (!mounted ||
                       !context.mounted ||
                       !allPointsFound ||
-                      _completionCelebrated) {
+                      _completionCelebrated ||
+                      context.read<SettingsCubit>().state.skipTreasureHunt) {
                     return;
                   }
                   _completionCelebrated = true;
@@ -222,7 +226,9 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
             }
           }
           // Check if all points found
-          if (allPointsFound && !_completionCelebrated) {
+          if (allPointsFound &&
+              !_completionCelebrated &&
+              !context.read<SettingsCubit>().state.skipTreasureHunt) {
             _completionCelebrated = true;
             _showCelebration(context);
           }
@@ -276,8 +282,9 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                         points: visiblePoints,
                         foundPointIds: state.foundPointIds.toSet(),
                         trackedPointId: state.trackedPointId,
-                        nextTreasurePointId:
-                            state.nextUnscannedTreasurePoint?.id,
+                        nextTreasurePointId: skipTreasureHunt
+                            ? null
+                            : state.nextUnscannedTreasurePoint?.id,
                         markerAnimationDuration: markerAnimationDuration,
                         markerLabelBackgroundColor: markerLabelBackgroundColor,
                         markerDistanceBackgroundColor:
@@ -502,6 +509,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           context: context,
           cluster: cluster,
           foundPointIds: foundPointIds,
+          nextTreasurePointId: nextTreasurePointId,
           mapOutlineColor: mapOutlineColor,
           mapShadowColor: mapShadowColor,
         );
@@ -526,29 +534,35 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     required BuildContext context,
     required TreasurePointCluster cluster,
     required Set<String> foundPointIds,
+    required String? nextTreasurePointId,
     required Color mapOutlineColor,
     required Color mapShadowColor,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final firstUnfoundTreasure = cluster.points
+    final activeTreasurePoint = cluster.points
         .where(
           (point) =>
               point.type == PointType.treasurePoint &&
-              !foundPointIds.contains(point.id),
+              !foundPointIds.contains(point.id) &&
+              point.id == nextTreasurePointId,
         )
         .firstOrNull;
-    final hasUnfoundTreasure = firstUnfoundTreasure != null;
-    final clusterColor = hasUnfoundTreasure
-        ? colorScheme.primary
-        : colorScheme.secondary;
-    final representativePoint = hasUnfoundTreasure
-        ? firstUnfoundTreasure
+    final hasActiveTreasure = activeTreasurePoint != null;
+    final representativePoint = hasActiveTreasure
+        ? activeTreasurePoint
         : cluster.points.firstWhere(
             (point) => point.type == PointType.pointOfInterest,
             orElse: () => cluster.points.first,
           );
-    final representativeIcon = hasUnfoundTreasure
+    final clusterColor = hasActiveTreasure
+        ? colorScheme.primary
+        : colorForMapPoint(
+            representativePoint,
+            colorScheme,
+            useTreasureColor: false,
+          );
+    final representativeIcon = hasActiveTreasure
         ? iconForPointType(PointType.treasurePoint)
         : iconForMapPoint(representativePoint, useTreasureIcon: false);
 
@@ -562,8 +576,12 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
             '${cluster.points.length} ${AppLocalizations.of(context)!.points}',
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () =>
-              _showPointCluster(context, cluster.points, foundPointIds),
+          onTap: () => _showPointCluster(
+            context,
+            cluster.points,
+            foundPointIds,
+            nextTreasurePointId: nextTreasurePointId,
+          ),
           child: Center(
             child: Container(
               width: 42,
@@ -639,7 +657,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     final typeColor = colorForMapPoint(
       point,
       colorScheme,
-      useTreasureColor: isActiveTreasure || isFound,
+      useTreasureColor: isActiveTreasure,
     );
     final pointIcon = iconForMapPoint(point, useTreasureIcon: isActiveTreasure);
     final isTracked = trackedPointId == point.id;
@@ -725,10 +743,8 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
                     ],
                   ),
                   child: Icon(
-                    isFound ? Icons.check_circle : pointIcon,
-                    color: isFound
-                        ? typeColor.withValues(alpha: 0.82)
-                        : typeColor,
+                    pointIcon,
+                    color: typeColor,
                     size: isTracked || isSelected ? 24 : 21,
                   ),
                 ),
@@ -782,8 +798,9 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
   void _showPointCluster(
     BuildContext context,
     List<TreasurePoint> points,
-    Set<String> foundPointIds,
-  ) {
+    Set<String> foundPointIds, {
+    required String? nextTreasurePointId,
+  }) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
@@ -799,12 +816,20 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
           const SizedBox(height: 8),
           ...points.map((point) {
             final isFound = foundPointIds.contains(point.id);
-            final color = colorForPointType(point.type, theme.colorScheme);
+            final isActiveTreasure =
+                point.type == PointType.treasurePoint &&
+                !isFound &&
+                point.id == nextTreasurePointId;
+            final color = colorForMapPoint(
+              point,
+              theme.colorScheme,
+              useTreasureColor: isActiveTreasure,
+            );
             return Card(
               margin: const EdgeInsets.only(bottom: 8),
               child: ListTile(
                 leading: Icon(
-                  isFound ? Icons.check_circle : iconForPoint(point),
+                  iconForMapPoint(point, useTreasureIcon: isActiveTreasure),
                   color: color,
                 ),
                 title: Text(point.name),
@@ -857,7 +882,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
     final unfoundTreasure = treasurePoints
         .where((p) => !foundIds.contains(p.id) && unlocked.contains(p.id))
         .toList();
-    final nextTreasure = unfoundTreasure.isNotEmpty
+    final nextTreasure = !skipTreasureHunt && unfoundTreasure.isNotEmpty
         ? unfoundTreasure.first
         : null;
     final treasureRemaining = treasurePoints
@@ -875,11 +900,11 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
       useSafeArea: true,
       showDragHandle: true,
       builder: (context) => TreasureHuntChecklistSheet(
-        treasurePoints: treasurePoints,
+        treasurePoints: skipTreasureHunt ? const [] : treasurePoints,
         visiblePointsOfInterest: visiblePois,
         foundPointIds: foundIds,
-        nextTreasure: nextTreasure,
-        treasureRemaining: treasureRemaining,
+        nextTreasure: skipTreasureHunt ? null : nextTreasure,
+        treasureRemaining: skipTreasureHunt ? 0 : treasureRemaining,
         onPointSelected: trackAndClose,
       ),
     );
@@ -1194,6 +1219,7 @@ class _TreasureHuntPageState extends State<TreasureHuntPage> {
         return TreasureHuntPointDetailsSheet(
           point: point,
           isFound: isFound,
+          showTreasureIcon: canScan,
           canScan: canScan,
           distanceText: distanceText,
           distanceMeters: distanceMeters,

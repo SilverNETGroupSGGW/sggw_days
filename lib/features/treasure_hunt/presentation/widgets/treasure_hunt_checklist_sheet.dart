@@ -26,6 +26,7 @@ class TreasureHuntChecklistSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final showTreasureSection = treasurePoints.isNotEmpty;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.5,
@@ -55,68 +56,78 @@ class TreasureHuntChecklistSheet extends StatelessWidget {
                 MediaQuery.viewPaddingOf(context).bottom + 16,
               ),
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 12, bottom: 4),
-                  child: Text(
-                    l10n.typeTreasurePoint,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: colorForPointType(
-                        PointType.treasurePoint,
-                        theme.colorScheme,
-                      ),
-                    ),
-                  ),
-                ),
-                ...treasurePoints
-                    .where((point) => foundPointIds.contains(point.id))
-                    .map(
-                      (point) => ChecklistTile(
-                        icon: Icons.emoji_events,
+                if (showTreasureSection) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12, bottom: 4),
+                    child: Text(
+                      l10n.typeTreasurePoint,
+                      style: theme.textTheme.titleSmall?.copyWith(
                         color: colorForPointType(
                           PointType.treasurePoint,
                           theme.colorScheme,
                         ),
-                        title: point.name,
-                        isFound: true,
-                        onTap: () => onPointSelected(point),
                       ),
                     ),
-                if (nextTreasure != null)
-                  ChecklistTile(
-                    icon: Icons.emoji_events,
-                    color: colorForPointType(
-                      PointType.treasurePoint,
-                      theme.colorScheme,
-                    ),
-                    title: nextTreasure!.name,
-                    subtitle: l10n.treasurePointsRemaining(treasureRemaining),
-                    isFound: false,
-                    onTap: () => onPointSelected(nextTreasure!),
-                  )
-                else if (treasurePoints.every(
-                      (point) => foundPointIds.contains(point.id),
-                    ) &&
-                    treasurePoints.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          color: theme.colorScheme.primary,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          l10n.allTreasurePointsCollected,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
                   ),
+                  ...treasurePoints
+                      .where((point) => foundPointIds.contains(point.id))
+                      .map(
+                        (point) => ChecklistTile(
+                          icon: iconForMapPoint(point, useTreasureIcon: false),
+                          color: colorForMapPoint(
+                            point,
+                            theme.colorScheme,
+                            useTreasureColor: false,
+                          ),
+                          title: point.name,
+                          isFound: true,
+                          onTap: () => onPointSelected(point),
+                        ),
+                      ),
+                  if (nextTreasure != null)
+                    ChecklistTile(
+                      icon: iconForMapPoint(
+                        nextTreasure!,
+                        useTreasureIcon: true,
+                      ),
+                      color: colorForMapPoint(
+                        nextTreasure!,
+                        theme.colorScheme,
+                        useTreasureColor: true,
+                      ),
+                      title: nextTreasure!.name,
+                      subtitle: l10n.treasurePointsRemaining(treasureRemaining),
+                      isFound: false,
+                      onTap: () => onPointSelected(nextTreasure!),
+                    )
+                  else if (treasurePoints.every(
+                        (point) => foundPointIds.contains(point.id),
+                      ) &&
+                      treasurePoints.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: theme.colorScheme.primary,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            l10n.allTreasurePointsCollected,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
                 if (visiblePointsOfInterest.isNotEmpty) ...[
                   Padding(
-                    padding: const EdgeInsets.only(top: 16, bottom: 4),
+                    padding: EdgeInsets.only(
+                      top: showTreasureSection ? 16 : 12,
+                      bottom: 4,
+                    ),
                     child: Text(
                       l10n.typePointOfInterest,
                       style: theme.textTheme.titleSmall?.copyWith(
@@ -129,10 +140,11 @@ class TreasureHuntChecklistSheet extends StatelessWidget {
                   ),
                   ...visiblePointsOfInterest.map(
                     (point) => ChecklistTile(
-                      icon: Icons.place,
-                      color: colorForPointType(
-                        PointType.pointOfInterest,
+                      icon: iconForPoint(point),
+                      color: colorForMapPoint(
+                        point,
                         theme.colorScheme,
+                        useTreasureColor: false,
                       ),
                       title: point.name,
                       isFound: foundPointIds.contains(point.id),

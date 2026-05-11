@@ -438,13 +438,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pointLocked => 'This point is not yet unlocked';
 
   @override
-  String get pointDescriptionLockedTitle => 'Scan to reveal';
-
-  @override
-  String get pointDescriptionLockedBody =>
-      'This description unlocks after you scan the QR code at the point.';
-
-  @override
   String get treasureHuntCompleteEasterEgg =>
       'The campus trail is complete. Show your reward QR to a Silver.NET member.';
 
@@ -497,7 +490,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skipTreasureHuntDialogBody =>
-      'You can still use the map, wiki and timetable. Treasure QR scanning will be disabled, so you will not participate in the game or receive hunt rewards.';
+      'You can still use the map, wiki and timetable. Treasure QR scanning and event check-ins for the game will be disabled, so you will not participate in the game or receive hunt rewards.';
 
   @override
   String get skipTreasureHuntEnabledSnack =>
@@ -508,11 +501,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skipTreasureHuntSettingDesc =>
-      'Show campus points without scanning treasure QR codes. This disables game participation and rewards.';
+      'Show campus points without scanning treasure QR codes. This also disables event check-ins for the game and reward claims.';
 
   @override
   String get treasureHuntSkippedScanUnavailable =>
       'Treasure QR scanning is disabled while the treasure game is skipped.';
+
+  @override
+  String get treasureHuntSkippedCheckInUnavailable =>
+      'Event check-in is disabled while the treasure game is skipped.';
 
   @override
   String get lockedTreasureScannedTitle => 'This stop is later in the trail';

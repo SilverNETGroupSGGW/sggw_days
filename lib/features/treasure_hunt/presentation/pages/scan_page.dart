@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_state.dart';
@@ -45,9 +44,6 @@ class _ScanPageState extends State<ScanPage> {
 
           final isCollected =
               point != null && state.foundPointIds.contains(point.id);
-          final showDescription =
-              point != null &&
-              (isCollected || point.type != PointType.treasurePoint);
 
           if (point == null) {
             return Center(
@@ -98,35 +94,11 @@ class _ScanPageState extends State<ScanPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
-                  if (showDescription)
-                    Text(
-                      point.description,
-                      style: theme.textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
-                    )
-                  else
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.lock_outline,
-                              color: theme.colorScheme.primary,
-                            ),
-                            const SizedBox(width: 10),
-                            Flexible(
-                              child: Text(
-                                l10n.pointDescriptionLockedBody,
-                                style: theme.textTheme.bodyMedium,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  Text(
+                    point.description,
+                    style: theme.textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
                   if (isCollected) ...[
                     const SizedBox(height: 20),
                     Card(

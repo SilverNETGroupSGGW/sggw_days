@@ -878,18 +878,6 @@ abstract class AppLocalizations {
   /// **'Ten punkt nie jest jeszcze odblokowany'**
   String get pointLocked;
 
-  /// No description provided for @pointDescriptionLockedTitle.
-  ///
-  /// In pl, this message translates to:
-  /// **'Zeskanuj, żeby odkryć'**
-  String get pointDescriptionLockedTitle;
-
-  /// No description provided for @pointDescriptionLockedBody.
-  ///
-  /// In pl, this message translates to:
-  /// **'Opis odblokuje się po zeskanowaniu kodu QR przy tym punkcie.'**
-  String get pointDescriptionLockedBody;
-
   /// No description provided for @treasureHuntCompleteEasterEgg.
   ///
   /// In pl, this message translates to:
@@ -983,7 +971,7 @@ abstract class AppLocalizations {
   /// No description provided for @skipTreasureHuntDialogBody.
   ///
   /// In pl, this message translates to:
-  /// **'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Skanowanie QR-ów skarbu zostanie wyłączone, więc nie weźmiesz udziału w grze ani nie odbierzesz nagród za grę.'**
+  /// **'Nadal możesz korzystać z mapy, wiedzy i harmonogramu. Skanowanie QR-ów skarbu i zameldowania do gry na wydarzeniach zostaną wyłączone, więc nie weźmiesz udziału w grze ani nie odbierzesz nagród za grę.'**
   String get skipTreasureHuntDialogBody;
 
   /// No description provided for @skipTreasureHuntEnabledSnack.
@@ -1001,7 +989,7 @@ abstract class AppLocalizations {
   /// No description provided for @skipTreasureHuntSettingDesc.
   ///
   /// In pl, this message translates to:
-  /// **'Pokazuj punkty kampusu bez skanowania QR-ów skarbu. To wyłącza udział w grze i nagrody.'**
+  /// **'Pokazuj punkty kampusu bez skanowania QR-ów skarbu. To wyłącza udział w grze, zameldowania do gry na wydarzeniach i odbiór nagrody.'**
   String get skipTreasureHuntSettingDesc;
 
   /// No description provided for @treasureHuntSkippedScanUnavailable.
@@ -1009,6 +997,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Skanowanie QR-ów skarbu jest wyłączone, gdy gra terenowa jest pominięta.'**
   String get treasureHuntSkippedScanUnavailable;
+
+  /// No description provided for @treasureHuntSkippedCheckInUnavailable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zameldowanie na wydarzeniu do gry jest wyłączone, gdy gra terenowa jest pominięta.'**
+  String get treasureHuntSkippedCheckInUnavailable;
 
   /// No description provided for @lockedTreasureScannedTitle.
   ///
