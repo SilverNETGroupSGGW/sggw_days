@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/base:trixie
+FROM mcr.microsoft.com/devcontainers/base:trixie@sha256:e389149057371298eaeb72e736fc2c4dcb79974de222dd471d2e6d675d2f61c4
 
 ARG FLUTTER_CHANNEL=stable
 ARG FLUTTER_INSTALL_DIR=/develop
