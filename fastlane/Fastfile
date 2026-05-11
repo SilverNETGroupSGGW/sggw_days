@@ -32,6 +32,22 @@ def ipa_path
   Dir[File.expand_path('../build/ios/ipa/*.ipa', __dir__)].first
 end
 
+def app_store_release_note_locales
+  configured = optional_env('APPSTORE_RELEASE_NOTES_LOCALES')
+  if configured
+    locales = configured.split(',').map(&:strip).reject(&:empty?)
+    return locales unless locales.empty?
+  end
+
+  locales = []
+  locales << 'en-US' if File.exist?(File.expand_path('../lib/l10n/app_en.arb', __dir__))
+  locales << 'pl-PL' if File.exist?(File.expand_path('../lib/l10n/app_pl.arb', __dir__))
+
+  return locales unless locales.empty?
+
+  ['en-US']
+end
+
 def play_store_options
   options = {
     json_key_data: required_env('GOOGLE_PLAY_SERVICE_ACCOUNT_JSON'),
@@ -103,7 +119,9 @@ platform :ios do
     if release_notes.empty?
       deliver_options[:skip_metadata] = true
     else
-      deliver_options[:release_notes] = { 'default' => release_notes }
+      deliver_options[:release_notes] = app_store_release_note_locales.each_with_object({}) do |locale, notes_by_locale|
+        notes_by_locale[locale] = release_notes
+      end
     end
 
     deliver(deliver_options)

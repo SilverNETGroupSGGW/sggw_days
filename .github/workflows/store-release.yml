@@ -323,7 +323,7 @@ jobs:
     needs:
       - resolve
       - build_android
-    if: ${{ always() && needs.resolve.outputs.is_tag == 'true' && needs.build_android.result == 'success' }}
+    if: ${{ always() && needs.resolve.outputs.should_build_release_artifacts == 'true' && needs.build_android.result == 'success' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: testing
@@ -336,7 +336,7 @@ jobs:
     needs:
       - resolve
       - build_ios
-    if: ${{ always() && needs.resolve.outputs.is_tag == 'true' && needs.build_ios.result == 'success' }}
+    if: ${{ always() && needs.resolve.outputs.should_build_release_artifacts == 'true' && needs.build_ios.result == 'success' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: testflight
@@ -348,8 +348,8 @@ jobs:
   android_production:
     needs:
       - resolve
-      - build_android
-    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.build_android.result == 'success' }}
+      - android_testing
+    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.android_testing.result == 'success' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: production
@@ -361,8 +361,8 @@ jobs:
   ios_app_store:
     needs:
       - resolve
-      - build_ios
-    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.build_ios.result == 'success' }}
+      - ios_testflight
+    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.ios_testflight.result == 'success' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: app_store

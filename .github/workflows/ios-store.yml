@@ -679,6 +679,7 @@ jobs:
           APPSTORE_API_PRIVATE_KEY: ${{ secrets['APPSTORE_API_PRIVATE_KEY'] }}
           APPSTORE_AUTOMATIC_RELEASE: ${{ needs.resolve.outputs.automatic_release }}
           APPSTORE_RELEASE_NOTES: ${{ steps.release_notes.outputs.release_notes }}
+          APPSTORE_RELEASE_NOTES_LOCALES: ${{ vars['APPSTORE_RELEASE_NOTES_LOCALES'] }}
           APP_VERSION: ${{ needs.resolve.outputs.release_version }}
           BUILD_NUMBER: ${{ needs.resolve.outputs.build_number }}
           IOS_BUNDLE_IDENTIFIER: ${{ needs.resolve.outputs.bundle_identifier }}
