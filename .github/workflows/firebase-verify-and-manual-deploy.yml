@@ -1,16 +1,10 @@
 # This file was bootstrapped by the Firebase CLI and customized for repo deployments.
 
-name: Firebase Verify and Release Deploy
+name: Firebase Verify and Manual Deploy
 on:
   push:
     branches:
       - main
-    tags:
-      - "v*.*.*"
-      - "*.*.*"
-  release:
-    types:
-      - published
   workflow_dispatch:
     inputs:
       target:
@@ -20,22 +14,15 @@ on:
         type: choice
         options:
           - verify
-          - beta
           - production
 
 permissions:
   contents: read
 
 concurrency:
-  group: firebase-release-${{ github.event_name == 'release' &&
-    github.event.release.tag_name || github.event_name == 'workflow_dispatch' &&
+  group: firebase-release-${{ github.event_name == 'workflow_dispatch' &&
     inputs.target || github.ref }}
   cancel-in-progress: true
-
-env:
-  FIREBASE_PROJECT_ID: sggw-days
-  FIREBASE_BETA_SITE_ID: beta-sggw-days
-  FIREBASE_PRODUCTION_SITE_ID: sggw-days
 
 jobs:
   validate:
@@ -51,6 +38,8 @@ jobs:
 
       - name: Setup project tooling
         uses: ./.github/actions/setup-project
+        with:
+          node-version: "24"
 
       - name: Build web
         run: >-
@@ -62,59 +51,18 @@ jobs:
           APPLE_TEAM_ID: ${{ vars['APPLE_TEAM_ID'] }}
           IOS_BUNDLE_IDENTIFIER: ${{ vars['IOS_BUNDLE_IDENTIFIER'] }}
         run: dart run tool/prepare_web_deploy.dart
-
-      - name: Install Functions dependencies
-        run: npm ci --prefix functions
-
-  deploy_beta_hosting:
-    needs: validate
-    if: ${{ (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
-      (github.event_name == 'workflow_dispatch' && inputs.target == 'beta') }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup project tooling
-        uses: ./.github/actions/setup-project
-
-      - name: Build web
-        run: >-
-          flutter build web --wasm --release --no-tree-shake-icons --base-href
-          "/"
-
-      - name: Prepare web deploy files
-        env:
-          APPLE_TEAM_ID: ${{ vars['APPLE_TEAM_ID'] }}
-          IOS_BUNDLE_IDENTIFIER: ${{ vars['IOS_BUNDLE_IDENTIFIER'] }}
-        run: dart run tool/prepare_web_deploy.dart
-
-      - name: Prepare Firebase service account
-        run: |
-          printf '%s' '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS }}' > "$RUNNER_TEMP/firebase-service-account.json"
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_ENV"
-
-      - name: Install Firebase CLI
-        run: npm install --global firebase-tools
-
-      - name: Deploy Firebase Hosting to beta
-        run: firebase deploy --project "$FIREBASE_PROJECT_ID" --only
-          "hosting:$FIREBASE_BETA_SITE_ID" --non-interactive
-
-      - name: Clean up Firebase service account
-        if: always()
-        run: rm -f "$RUNNER_TEMP/firebase-service-account.json"
 
   deploy_production:
     needs: validate
-    if: ${{ (github.event_name == 'release' && !github.event.release.draft &&
-      !github.event.release.prerelease) || (github.event_name ==
-      'workflow_dispatch' && inputs.target == 'production') }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.target == 'production' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup project tooling
         uses: ./.github/actions/setup-project
+        with:
+          node-version: "24"
 
       - name: Build web
         run: >-
@@ -135,13 +83,10 @@ jobs:
       - name: Install Firebase CLI
         run: npm install --global firebase-tools
 
-      - name: Install Functions dependencies
-        run: npm ci --prefix functions
-
       - name: Deploy Firebase Hosting, Functions, and rules to production
         run: >-
-          firebase deploy --project "$FIREBASE_PROJECT_ID" --only
-          "hosting:$FIREBASE_PRODUCTION_SITE_ID,functions,firestore:rules,storage:main"
+          firebase deploy --project "sggw-days" --only
+          "hosting:sggw-days,functions,firestore:rules,storage:main"
           --non-interactive
 
       - name: Clean up Firebase service account

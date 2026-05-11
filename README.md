@@ -6,18 +6,17 @@ A new Flutter project.
 
 The repository deploys Firebase automatically with GitHub Actions:
 
-- Pull requests run [firebase-hosting-pull-request.yml](.github/workflows/firebase-hosting-pull-request.yml) to validate the project, build a debug Android APK artifact, build the web app, prepare the Hosting payload, and install Cloud Functions dependencies without deploying to Firebase.
-- Pushes to `main` run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml) in verification mode only: it validates the Flutter project, builds the web app, prepares the Hosting payload, and installs Cloud Functions dependencies without deploying to Firebase.
-- Semver tags such as `v1.2.3` also run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml), which builds the web app and deploys the `beta-sggw-days` Hosting site inside the `sggw-days` Firebase project.
-- Published GitHub Releases from semver tags run [firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml) to build the web app and deploy the live `sggw-days` Hosting site, Functions, plus Firestore and Storage rules in the `sggw-days` Firebase project.
-- Semver tags such as `v1.2.3` automatically run [store-release.yml](.github/workflows/store-release.yml), which validates the repo once and then fans out to the reusable [ios-store.yml](.github/workflows/ios-store.yml) and [android-store.yml](.github/workflows/android-store.yml) workflows in their testing modes.
-- Published GitHub Releases from semver tags automatically run [store-release.yml](.github/workflows/store-release.yml), which fans out to [ios-store.yml](.github/workflows/ios-store.yml) in `app_store` mode and [android-store.yml](.github/workflows/android-store.yml) in `production` mode. The iOS workflow submits the already-uploaded TestFlight build for review, and the Android workflow promotes the already-uploaded testing release to the configured production track.
+- Pull requests run [firebase-verify-pull-request.yml](.github/workflows/firebase-verify-pull-request.yml) to validate the project, build a debug Android APK artifact, build the web app, prepare the Hosting payload, and install Cloud Functions dependencies without deploying to Firebase.
+- Pushes to `main` run [firebase-verify-and-manual-deploy.yml](.github/workflows/firebase-verify-and-manual-deploy.yml) in verification mode only: it validates the Flutter project, builds the web app, prepares the Hosting payload, and installs cached Cloud Functions dependencies without deploying to Firebase.
+- Manual runs of [firebase-verify-and-manual-deploy.yml](.github/workflows/firebase-verify-and-manual-deploy.yml) support `verify` and `production`, so production Firebase deploys can still be triggered explicitly without going through the tag pipeline.
+- Semver tags such as `v1.2.3` automatically run [store-release.yml](.github/workflows/store-release.yml), which validates the repo once, builds Android, web, and iOS artifacts on separate jobs, stores them as Actions artifacts, uploads `.apk`, web `.zip`, and `.ipa` assets to the matching GitHub Release, deploys the live `sggw-days` Hosting site plus Functions and rules, and then reuses the prebuilt Android and iOS artifacts for Google Play testing and TestFlight uploads.
+- Published GitHub Releases from semver tags also run [store-release.yml](.github/workflows/store-release.yml), which rebuilds the Android, web, and iOS release artifacts, refreshes the GitHub Release assets, promotes the Android testing build to the configured production track, and submits the already-uploaded iOS build for App Store review.
 
 Required repository secret:
 
-- `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Hosting and update Firestore and Storage rules in the `sggw-days` Firebase project. The workflow deploys two Hosting sites from that project: `sggw-days` for production releases and `beta-sggw-days` for tag builds.
+- `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Hosting, Cloud Functions, and Firestore and Storage rules in the `sggw-days` Firebase project. The automated workflows currently deploy the live `sggw-days` Hosting site.
 
-The Firebase Hosting configuration in [firebase.json](firebase.json) now declares both sites explicitly, so the workflows can deploy `hosting:beta-sggw-days` on semver tags and `hosting:sggw-days` on published releases.
+The Firebase Hosting configuration in [firebase.json](firebase.json) still declares both sites explicitly, but the current automated workflows deploy only `hosting:sggw-days`. The extra `beta-sggw-days` site remains available in Firebase config if you want to reuse it manually later.
 
 The Firebase service account also needs permission to deploy Cloud Functions for the admin broadcast notification sender. Broadcast requests are created from the admin panel, then `functions/index.js` sends them to registered client tokens with the Firebase Admin SDK.
 

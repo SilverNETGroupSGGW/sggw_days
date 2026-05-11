@@ -2,22 +2,14 @@ name: "Setup Project Tooling"
 description: "Prepare optional Java or Node tooling, then install Flutter dependencies."
 
 inputs:
-  flutter-channel:
-    description: "Flutter release channel to install."
-    required: false
-    default: "stable"
-  flutter-cache:
-    description: "Whether to enable Flutter SDK caching."
+  install-flutter:
+    description: "Whether to install Flutter and run flutter pub get."
     required: false
     default: "true"
   java-version:
     description: "Java version to install for Android builds."
     required: false
     default: ""
-  java-distribution:
-    description: "Java distribution passed to actions/setup-java."
-    required: false
-    default: "temurin"
   node-version:
     description: "Node.js version to install for Firebase tooling."
     required: false
@@ -35,22 +27,11 @@ runs:
         restore-keys: |
           android-gradle-state-${{ runner.os }}-
 
-    - name: Cache Android SDK components
-      if: ${{ inputs.java-version != '' }}
-      uses: actions/cache@v5
-      with:
-        path: |
-          /usr/local/lib/android/sdk/cmake
-          ~/.android/cache
-        key: android-sdk-components-${{ runner.os }}-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'android/gradle/wrapper/gradle-wrapper.properties') }}
-        restore-keys: |
-          android-sdk-components-${{ runner.os }}-
-
     - name: Setup Java
       if: ${{ inputs.java-version != '' }}
       uses: actions/setup-java@v5
       with:
-        distribution: ${{ inputs.java-distribution }}
+        distribution: temurin
         java-version: ${{ inputs.java-version }}
         cache: gradle
 
@@ -58,15 +39,23 @@ runs:
       if: ${{ inputs.node-version != '' }}
       uses: actions/setup-node@v6
       with:
-        cache: npm
         node-version: ${{ inputs.node-version }}
+        cache: npm
+        cache-dependency-path: functions/package-lock.json
 
     - name: Setup Flutter
+      if: ${{ inputs.install-flutter != 'false' }}
       uses: subosito/flutter-action@v2
       with:
-        cache: ${{ inputs.flutter-cache }}
-        channel: ${{ inputs.flutter-channel }}
+        cache: true
+        channel: stable
 
     - name: Get Flutter dependencies
+      if: ${{ inputs.install-flutter != 'false' }}
       shell: bash
       run: flutter pub get
+
+    - name: Install npm dependencies
+      if: ${{ inputs.node-version != '' }}
+      shell: bash
+      run: npm ci --prefix functions

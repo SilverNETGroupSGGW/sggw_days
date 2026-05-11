@@ -1,19 +1,13 @@
 name: Setup Fastlane
 description: Install Ruby and fastlane for store automation jobs.
 
-inputs:
-  ruby-version:
-    description: Ruby version to install.
-    required: false
-    default: 4.0.3
-
 runs:
   using: composite
   steps:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ inputs.ruby-version }}
+        ruby-version: 4.0.3
 
     - name: Install fastlane
       shell: bash
