@@ -112,7 +112,7 @@ jobs:
     if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_release_artifacts == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup project tooling
         uses: ./.github/actions/setup-project
@@ -142,7 +142,7 @@ jobs:
           )
 
       - name: Upload web build artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: web-release
           path: ${{ runner.temp }}/web-release
@@ -175,25 +175,25 @@ jobs:
       contents: write
     steps:
       - name: Download Android artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: android-release
           path: release-assets/android
 
       - name: Download web artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: web-release
           path: release-assets/web
 
       - name: Download iOS artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: ios-release
           path: release-assets/ios
 
       - name: Attach release assets
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
         with:
           tag_name: ${{ needs.resolve.outputs.release_tag }}
           fail_on_unmatched_files: true
@@ -209,16 +209,16 @@ jobs:
     if: ${{ always() && needs.resolve.outputs.is_tag == 'true' && needs.build_web.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Download web build artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: web-release
           path: ${{ github.workspace }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: "24"
 
@@ -244,10 +244,10 @@ jobs:
     if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.build_web.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Download web build artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: web-release
           path: ${{ github.workspace }}
