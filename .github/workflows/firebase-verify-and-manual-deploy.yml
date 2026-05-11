@@ -21,7 +21,7 @@ permissions:
 
 concurrency:
   group: firebase-release-${{ github.event_name == 'workflow_dispatch' &&
-    inputs.target || github.ref }}
+    inputs.target || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -30,8 +30,7 @@ jobs:
 
   verify_builds:
     needs: validate
-    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'workflow_dispatch' && inputs.target == 'verify') }}
+    if: ${{ github.event_name == 'push' || inputs.target == 'verify' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

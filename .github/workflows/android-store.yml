@@ -89,8 +89,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: "android-store-${{ github.event_name == 'workflow_dispatch' &&
-    github.event.inputs.target || inputs.target || github.ref }}"
+  group: "android-store-${{ github.event.inputs.target || inputs.target || github.ref_name }}"
   cancel-in-progress: true
 
 env:

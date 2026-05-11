@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: store-release-${{ github.event.release.tag_name || github.ref }}
+  group: store-release-${{ github.event.release.tag_name || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -53,14 +53,14 @@ jobs:
           echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
 
   validate:
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    if: ${{ github.event_name == 'push' }}
     uses: ./.github/workflows/flutter-validate.yml
 
   build_android:
     needs:
       - resolve
       - validate
-    if: ${{ always() && (needs.validate.result == 'success' || needs.validate.result == 'skipped') }}
+    if: ${{ github.event_name == 'release' || needs.validate.result == 'success' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: testing
@@ -74,7 +74,7 @@ jobs:
     needs:
       - resolve
       - validate
-    if: ${{ always() && (needs.validate.result == 'success' || needs.validate.result == 'skipped') }}
+    if: ${{ github.event_name == 'release' || needs.validate.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -118,7 +118,7 @@ jobs:
     needs:
       - resolve
       - validate
-    if: ${{ always() && (needs.validate.result == 'success' || needs.validate.result == 'skipped') }}
+    if: ${{ github.event_name == 'release' || needs.validate.result == 'success' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: testflight
@@ -222,7 +222,7 @@ jobs:
 
   deploy_production:
     needs: build_web
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -261,7 +261,7 @@ jobs:
     needs:
       - resolve
       - build_android
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    if: ${{ github.event_name == 'push' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: testing
@@ -274,7 +274,7 @@ jobs:
     needs:
       - resolve
       - build_ios
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    if: ${{ github.event_name == 'push' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: testflight
