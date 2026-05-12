@@ -10,21 +10,46 @@ import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
 import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
+import 'package:sggw_days/features/admin/presentation/widgets/admin_search_field.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/invalid_entries_banner.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/qr_code_widget.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/treasure_point_selector.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
+import 'package:sggw_days/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class TimetableEventsTab extends StatelessWidget {
+class TimetableEventsTab extends StatefulWidget {
   const TimetableEventsTab({super.key});
 
   @override
+  State<TimetableEventsTab> createState() => _TimetableEventsTabState();
+}
+
+class _TimetableEventsTabState extends State<TimetableEventsTab>
+    with AutomaticKeepAliveClientMixin {
+  final TextEditingController _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
         final sortedEvents = List<TimetableEvent>.from(state.timetableEvents)
           ..sort(_compareTimetableEvents);
+        final visibleEvents = _filterEvents(sortedEvents);
+        final hasSearch = _query.trim().isNotEmpty;
 
         if (state.status == AdminStatus.loading &&
             state.timetableEvents.isEmpty) {
@@ -39,19 +64,33 @@ class TimetableEventsTab extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton.icon(
-                onPressed: () => _showAddEditDialog(context),
-                icon: const Icon(Icons.add),
-                label: const Text('Add Timetable Event'),
+              child: Column(
+                children: [
+                  AdminSearchField(
+                    controller: _searchController,
+                    onChanged: (value) => setState(() => _query = value),
+                  ),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showAddEditDialog(context),
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add Timetable Event'),
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
               child: sortedEvents.isEmpty
                   ? const Center(child: Text('No timetable events yet'))
+                  : visibleEvents.isEmpty && hasSearch
+                  ? Center(child: Text(l10n.noResultsFound))
                   : ListView.builder(
-                      itemCount: sortedEvents.length,
+                      itemCount: visibleEvents.length,
                       itemBuilder: (context, index) {
-                        final event = sortedEvents[index];
+                        final event = visibleEvents[index];
                         return Card(
                           margin: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -174,6 +213,26 @@ class TimetableEventsTab extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<TimetableEvent> _filterEvents(List<TimetableEvent> events) {
+    final normalizedQuery = _query.trim().toLowerCase();
+    if (normalizedQuery.isEmpty) {
+      return events;
+    }
+
+    return events.where((event) {
+      return event.title.toLowerCase().contains(normalizedQuery) ||
+          event.description.toLowerCase().contains(normalizedQuery) ||
+          event.location.toLowerCase().contains(normalizedQuery) ||
+          event.id.toLowerCase().contains(normalizedQuery) ||
+          event.tags.any(
+            (tag) => tag.toLowerCase().contains(normalizedQuery),
+          ) ||
+          event.treasurePointIds.any(
+            (pointId) => pointId.toLowerCase().contains(normalizedQuery),
+          );
+    }).toList();
   }
 
   int _compareTimetableEvents(TimetableEvent a, TimetableEvent b) {

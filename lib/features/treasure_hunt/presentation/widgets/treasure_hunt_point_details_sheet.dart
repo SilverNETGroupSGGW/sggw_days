@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
+import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/point_type_presentation.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/widgets/treasure_hunt_widgets.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
+import 'package:sggw_days/features/wiki/presentation/bloc/wiki_bloc.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
 class TreasureHuntPointDetailsSheet extends StatelessWidget {
@@ -15,11 +18,11 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
   final bool canScan;
   final String? distanceText;
   final double? distanceMeters;
-  final List<WikiArticle> relatedWikis;
-  final List<TimetableEvent> relatedEvents;
   final VoidCallback onTrack;
   final VoidCallback onOpenWiki;
+  final ValueChanged<WikiArticle> onOpenWikiArticle;
   final VoidCallback onOpenTimetable;
+  final ValueChanged<TimetableEvent> onOpenTimetableEvent;
   final VoidCallback? onSecondaryAction;
   final IconData secondaryActionIcon;
   final String secondaryActionLabel;
@@ -32,11 +35,11 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
     required this.canScan,
     required this.distanceText,
     required this.distanceMeters,
-    required this.relatedWikis,
-    required this.relatedEvents,
     required this.onTrack,
     required this.onOpenWiki,
+    required this.onOpenWikiArticle,
     required this.onOpenTimetable,
+    required this.onOpenTimetableEvent,
     required this.onSecondaryAction,
     required this.secondaryActionIcon,
     required this.secondaryActionLabel,
@@ -52,6 +55,18 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
       useTreasureColor: showTreasureIcon,
     );
     final pointIcon = iconForMapPoint(point, useTreasureIcon: showTreasureIcon);
+    final relatedWikis = context
+        .watch<WikiBloc>()
+        .state
+        .articles
+        .where((article) => article.treasurePointIds.contains(point.id))
+        .toList();
+    final relatedEvents = context
+        .watch<TimetableBloc>()
+        .state
+        .events
+        .where((event) => event.treasurePointIds.contains(point.id))
+        .toList();
 
     return FractionallySizedBox(
       heightFactor: 0.86,
@@ -227,23 +242,21 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                     onAction: onOpenWiki,
                   ),
                   const SizedBox(height: 8),
-                  ...relatedWikis
-                      .take(3)
-                      .map(
-                        (article) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: PointPreviewTile(
-                            icon: materialSymbolForName(
-                              article.iconName,
-                              fallback: Icons.article_outlined,
-                            ),
-                            accentColor: theme.colorScheme.secondary,
-                            title: article.title,
-                            subtitle: article.category,
-                            onTap: onOpenWiki,
-                          ),
+                  ...relatedWikis.map(
+                    (article) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: PointPreviewTile(
+                        icon: materialSymbolForName(
+                          article.iconName,
+                          fallback: Icons.article_outlined,
                         ),
+                        accentColor: theme.colorScheme.secondary,
+                        title: article.title,
+                        subtitle: article.category,
+                        onTap: () => onOpenWikiArticle(article),
                       ),
+                    ),
+                  ),
                 ],
                 if (relatedEvents.isNotEmpty) ...[
                   const SizedBox(height: 14),
@@ -253,24 +266,22 @@ class TreasureHuntPointDetailsSheet extends StatelessWidget {
                     onAction: onOpenTimetable,
                   ),
                   const SizedBox(height: 8),
-                  ...relatedEvents
-                      .take(3)
-                      .map(
-                        (event) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: PointPreviewTile(
-                            icon: materialSymbolForName(
-                              event.iconName,
-                              fallback: Icons.event_outlined,
-                            ),
-                            accentColor: theme.colorScheme.primary,
-                            title: event.title,
-                            subtitle: _formatEventWindow(context, event),
-                            detail: event.location,
-                            onTap: onOpenTimetable,
-                          ),
+                  ...relatedEvents.map(
+                    (event) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: PointPreviewTile(
+                        icon: materialSymbolForName(
+                          event.iconName,
+                          fallback: Icons.event_outlined,
                         ),
+                        accentColor: theme.colorScheme.primary,
+                        title: event.title,
+                        subtitle: _formatEventWindow(context, event),
+                        detail: event.location,
+                        onTap: () => onOpenTimetableEvent(event),
                       ),
+                    ),
+                  ),
                 ],
                 const SizedBox(height: 18),
                 Text(l10n.about, style: theme.textTheme.titleMedium),

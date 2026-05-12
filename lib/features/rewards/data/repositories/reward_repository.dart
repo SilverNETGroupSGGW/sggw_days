@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:sggw_days/core/config/scan_distance_config.dart';
 import 'package:sggw_days/core/device/device_identity_service.dart';
 import 'package:sggw_days/features/rewards/data/models/reward_claim_payload.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_state.dart';
@@ -7,24 +10,38 @@ import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt
 class RewardEligibility {
   final bool treasureComplete;
   final bool hasEventCheckIn;
+  final bool eventCheckInRequired;
   final int scannedTreasureCount;
   final int totalTreasureCount;
 
   const RewardEligibility({
     required this.treasureComplete,
     required this.hasEventCheckIn,
+    required this.eventCheckInRequired,
     required this.scannedTreasureCount,
     required this.totalTreasureCount,
   });
 
-  bool get canClaimReward => treasureComplete && hasEventCheckIn;
+  bool get isEventCheckInSatisfied => hasEventCheckIn || !eventCheckInRequired;
+
+  bool get needsEventCheckIn =>
+      treasureComplete && eventCheckInRequired && !hasEventCheckIn;
+
+  bool get canClaimReward => treasureComplete && isEventCheckInSatisfied;
 }
 
 class RewardRepository {
   final DeviceIdentityService _deviceIdentityService;
+  final ScanDistanceConfig _scanDistanceConfig;
+  final FirebaseFirestore? _firestore;
 
-  RewardRepository({required DeviceIdentityService deviceIdentityService})
-    : _deviceIdentityService = deviceIdentityService;
+  RewardRepository({
+    required DeviceIdentityService deviceIdentityService,
+    required ScanDistanceConfig scanDistanceConfig,
+    FirebaseFirestore? firestore,
+  }) : _deviceIdentityService = deviceIdentityService,
+       _scanDistanceConfig = scanDistanceConfig,
+       _firestore = firestore;
 
   RewardEligibility eligibility({
     required TreasureHuntState treasureHuntState,
@@ -40,43 +57,32 @@ class RewardRepository {
           treasurePoints.isNotEmpty &&
           scannedTreasureCount == treasurePoints.length,
       hasEventCheckIn: timetableState.checkedInIds.isNotEmpty,
+      eventCheckInRequired: _scanDistanceConfig.rewardRequiresEventCheckIn,
       scannedTreasureCount: scannedTreasureCount,
       totalTreasureCount: treasurePoints.length,
     );
   }
 
-  Future<RewardClaimPayload> buildClaimPayload({
-    required TreasureHuntState treasureHuntState,
-    required TimetableState timetableState,
-  }) async {
+  Future<RewardClaimPayload> buildClaimPayload() async {
     final deviceId = await _deviceIdentityService.deviceId();
-    final treasureIds = treasureHuntState.sortedTreasurePoints
-        .map((point) => point.id)
-        .toSet();
-    final treasureScans =
-        treasureHuntState.scanHistory.entries
-            .where((entry) => treasureIds.contains(entry.key))
-            .map(
-              (entry) =>
-                  RewardScanRecord(id: entry.key, scannedAt: entry.value),
-            )
-            .toList()
-          ..sort((a, b) => a.scannedAt.compareTo(b.scannedAt));
-    final eventCheckIns =
-        timetableState.checkedInHistory.entries
-            .map(
-              (entry) =>
-                  RewardScanRecord(id: entry.key, scannedAt: entry.value),
-            )
-            .toList()
-          ..sort((a, b) => a.scannedAt.compareTo(b.scannedAt));
+    return RewardClaimPayload(deviceId: deviceId);
+  }
 
-    return RewardClaimPayload(
-      deviceId: deviceId,
-      generatedAt: DateTime.now(),
-      treasureScans: treasureScans,
-      eventCheckIns: eventCheckIns,
-    );
+  Future<bool> isRewardReceived() async {
+    try {
+      final deviceId = await _deviceIdentityService.deviceId();
+      final snapshot = await (_firestore ?? FirebaseFirestore.instance)
+          .collection('reward_claim_status')
+          .doc(deviceId)
+          .get();
+      return snapshot.exists && snapshot.data()?['status'] == 'received';
+    } on FirebaseException catch (error) {
+      debugPrint('Reward status check failed: $error');
+      return false;
+    } catch (error) {
+      debugPrint('Reward status check failed: $error');
+      return false;
+    }
   }
 }
 

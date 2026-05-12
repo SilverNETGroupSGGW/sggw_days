@@ -3,18 +3,33 @@ import 'package:flutter/foundation.dart';
 
 class ScanDistanceConfig {
   static const parameterName = 'scan_minimal_distance_meters';
+  static const rewardRequiresEventCheckInParameterName =
+      'reward_requires_event_check_in';
   static const fallbackDistanceMeters = 50.0;
+  static const fallbackRewardRequiresEventCheckIn = true;
 
   final FirebaseRemoteConfig? _remoteConfig;
-  double _distanceMeters = fallbackDistanceMeters;
+  double _distanceMeters;
+  bool _rewardRequiresEventCheckIn;
 
-  ScanDistanceConfig({FirebaseRemoteConfig? remoteConfig})
-    : _remoteConfig = remoteConfig ?? FirebaseRemoteConfig.instance;
+  ScanDistanceConfig({
+    FirebaseRemoteConfig? remoteConfig,
+    double distanceMeters = fallbackDistanceMeters,
+    bool rewardRequiresEventCheckIn = fallbackRewardRequiresEventCheckIn,
+  }) : _remoteConfig = remoteConfig ?? FirebaseRemoteConfig.instance,
+       _distanceMeters = distanceMeters,
+       _rewardRequiresEventCheckIn = rewardRequiresEventCheckIn;
 
-  ScanDistanceConfig.fallback() : _remoteConfig = null;
+  ScanDistanceConfig.fallback({
+    double distanceMeters = fallbackDistanceMeters,
+    bool rewardRequiresEventCheckIn = fallbackRewardRequiresEventCheckIn,
+  }) : _remoteConfig = null,
+       _distanceMeters = distanceMeters,
+       _rewardRequiresEventCheckIn = rewardRequiresEventCheckIn;
 
   double get distanceMeters => _distanceMeters;
   bool get isDistanceCheckEnabled => _distanceMeters > 0;
+  bool get rewardRequiresEventCheckIn => _rewardRequiresEventCheckIn;
 
   Future<void> initialize() async {
     final remoteConfig = _remoteConfig;
@@ -23,6 +38,8 @@ class ScanDistanceConfig {
     try {
       await remoteConfig.setDefaults(const {
         parameterName: fallbackDistanceMeters,
+        rewardRequiresEventCheckInParameterName:
+            fallbackRewardRequiresEventCheckIn,
       });
       await remoteConfig.setConfigSettings(
         RemoteConfigSettings(
@@ -34,9 +51,13 @@ class ScanDistanceConfig {
       );
       await remoteConfig.fetchAndActivate();
       _distanceMeters = remoteConfig.getDouble(parameterName);
+      _rewardRequiresEventCheckIn = remoteConfig.getBool(
+        rewardRequiresEventCheckInParameterName,
+      );
     } catch (error) {
       debugPrint('Scan distance config fetch failed: $error');
       _distanceMeters = fallbackDistanceMeters;
+      _rewardRequiresEventCheckIn = fallbackRewardRequiresEventCheckIn;
     }
   }
 }

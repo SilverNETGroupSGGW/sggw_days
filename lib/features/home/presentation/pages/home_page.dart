@@ -3,29 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sggw_days/core/widgets/connectivity_banner.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
-import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
-import 'package:sggw_days/features/timetable/presentation/bloc/timetable_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
-import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_state.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<TreasureHuntBloc>().add(const LoadTreasurePoints());
-    context.read<TimetableBloc>().add(const LoadTimetableEvents());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +25,9 @@ class _HomePageState extends State<HomePage> {
                 skipTreasureHunt || huntState.foundPointIds.isNotEmpty;
 
             return Scaffold(
-              body: ConnectivityBanner(child: widget.navigationShell),
+              body: ConnectivityBanner(child: navigationShell),
               bottomNavigationBar: NavigationBar(
-                selectedIndex: widget.navigationShell.currentIndex,
+                selectedIndex: navigationShell.currentIndex,
                 onDestinationSelected: (index) {
                   if (!unlocked && index != 0 && index != 3) {
                     ScaffoldMessenger.of(
@@ -50,7 +35,7 @@ class _HomePageState extends State<HomePage> {
                     ).showSnackBar(SnackBar(content: Text(l10n.appLocked)));
                     return;
                   }
-                  widget.navigationShell.goBranch(index);
+                  navigationShell.goBranch(index);
                 },
                 destinations: [
                   NavigationDestination(

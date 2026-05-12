@@ -9,7 +9,6 @@ import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
 import 'package:sggw_days/features/rewards/data/models/reward_claim_payload.dart';
-import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 
 class RewardClaimsTab extends StatefulWidget {
   const RewardClaimsTab({super.key});
@@ -86,7 +85,7 @@ class _RewardClaimsTabState extends State<RewardClaimsTab> {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _isLoading = true);
     try {
-      await repository.markRewardReceived(payload);
+      await repository.markRewardReceived(payload.deviceId);
       final existing = await repository.fetchRewardClaim(payload.deviceId);
       if (!mounted) return;
       setState(() {
@@ -108,16 +107,10 @@ class _RewardClaimsTabState extends State<RewardClaimsTab> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AdminBloc, AdminState>(
-      builder: (context, state) {
+      builder: (context, _) {
         final payload = _payload;
-        final validation = payload == null
-            ? null
-            : _validatePayload(payload, state);
         final canMarkReceived =
-            payload != null &&
-            validation!.isValid &&
-            _existingClaim == null &&
-            !_isLoading;
+            payload != null && _existingClaim == null && !_isLoading;
 
         return ListView(
           padding: const EdgeInsets.all(16),
@@ -163,11 +156,10 @@ class _RewardClaimsTabState extends State<RewardClaimsTab> {
                 ),
               ),
             ],
-            if (payload != null && validation != null) ...[
+            if (payload != null) ...[
               const SizedBox(height: 16),
               _RewardSummaryCard(
                 payload: payload,
-                validation: validation,
                 existingClaim: _existingClaim,
               ),
               const SizedBox(height: 16),
@@ -186,55 +178,14 @@ class _RewardClaimsTabState extends State<RewardClaimsTab> {
       },
     );
   }
-
-  _RewardPayloadValidation _validatePayload(
-    RewardClaimPayload payload,
-    AdminState state,
-  ) {
-    final requiredTreasureIds = state.treasurePoints
-        .where((point) => point.type == PointType.treasurePoint)
-        .map((point) => point.id)
-        .toSet();
-    final payloadTreasureIds = payload.treasureScans
-        .map((record) => record.id)
-        .toSet();
-    final missingTreasureIds = requiredTreasureIds.difference(
-      payloadTreasureIds,
-    );
-    final validEventIds = state.timetableEvents
-        .map((event) => event.id)
-        .toSet();
-    final knownEventCheckIns = payload.eventCheckIns
-        .where((record) => validEventIds.contains(record.id))
-        .length;
-
-    return _RewardPayloadValidation(
-      missingTreasureIds: missingTreasureIds.toList()..sort(),
-      hasKnownEventCheckIn: knownEventCheckIns > 0,
-    );
-  }
-}
-
-class _RewardPayloadValidation {
-  final List<String> missingTreasureIds;
-  final bool hasKnownEventCheckIn;
-
-  const _RewardPayloadValidation({
-    required this.missingTreasureIds,
-    required this.hasKnownEventCheckIn,
-  });
-
-  bool get isValid => missingTreasureIds.isEmpty && hasKnownEventCheckIn;
 }
 
 class _RewardSummaryCard extends StatelessWidget {
   final RewardClaimPayload payload;
-  final _RewardPayloadValidation validation;
   final Map<String, dynamic>? existingClaim;
 
   const _RewardSummaryCard({
     required this.payload,
-    required this.validation,
     required this.existingClaim,
   });
 
@@ -271,23 +222,6 @@ class _RewardSummaryCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _AdminSummaryRow(label: 'Device ID', value: payload.deviceId),
-            _AdminSummaryRow(
-              label: 'Verification code',
-              value: payload.payloadHash,
-            ),
-            _AdminSummaryRow(
-              label: 'Treasure scans',
-              value: '${payload.treasureScans.length}',
-            ),
-            _AdminSummaryRow(
-              label: 'Event check-ins',
-              value: '${payload.eventCheckIns.length}',
-            ),
-            if (payload.completedAt != null)
-              _AdminSummaryRow(
-                label: 'Completed at',
-                value: DateFormat.yMMMd().add_Hm().format(payload.completedAt!),
-              ),
             if (existingClaim != null) ...[
               const Divider(height: 24),
               _AdminSummaryRow(
@@ -299,23 +233,6 @@ class _RewardSummaryCard extends StatelessWidget {
                 value:
                     '${existingClaim['receivedByEmail'] ?? existingClaim['receivedBy'] ?? 'Unknown'}',
               ),
-            ],
-            if (!validation.isValid) ...[
-              const Divider(height: 24),
-              Text(
-                'Not eligible yet',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: theme.colorScheme.error,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 6),
-              if (validation.missingTreasureIds.isNotEmpty)
-                Text(
-                  'Missing treasure points: ${validation.missingTreasureIds.join(', ')}',
-                ),
-              if (!validation.hasKnownEventCheckIn)
-                const Text('No known timetable event check-in found.'),
             ],
           ],
         ),

@@ -10,17 +10,43 @@ import 'package:sggw_days/features/admin/data/repositories/admin_repository.dart
 import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
+import 'package:sggw_days/features/admin/presentation/widgets/admin_search_field.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/invalid_entries_banner.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/treasure_point_selector.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
+import 'package:sggw_days/l10n/app_localizations.dart';
 
-class WikiArticlesTab extends StatelessWidget {
+class WikiArticlesTab extends StatefulWidget {
   const WikiArticlesTab({super.key});
 
   @override
+  State<WikiArticlesTab> createState() => _WikiArticlesTabState();
+}
+
+class _WikiArticlesTabState extends State<WikiArticlesTab>
+    with AutomaticKeepAliveClientMixin {
+  final TextEditingController _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
+        final visibleArticles = _filterArticles(state.wikiArticles);
+        final hasSearch = _query.trim().isNotEmpty;
+
         if (state.status == AdminStatus.loading && state.wikiArticles.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -33,19 +59,33 @@ class WikiArticlesTab extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton.icon(
-                onPressed: () => _showAddEditDialog(context),
-                icon: const Icon(Icons.add),
-                label: const Text('Add Wiki Article'),
+              child: Column(
+                children: [
+                  AdminSearchField(
+                    controller: _searchController,
+                    onChanged: (value) => setState(() => _query = value),
+                  ),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showAddEditDialog(context),
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add Wiki Article'),
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
               child: state.wikiArticles.isEmpty
                   ? const Center(child: Text('No wiki articles yet'))
+                  : visibleArticles.isEmpty && hasSearch
+                  ? Center(child: Text(l10n.noResultsFound))
                   : ListView.builder(
-                      itemCount: state.wikiArticles.length,
+                      itemCount: visibleArticles.length,
                       itemBuilder: (context, index) {
-                        final article = state.wikiArticles[index];
+                        final article = visibleArticles[index];
                         return Card(
                           margin: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -88,6 +128,25 @@ class WikiArticlesTab extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<WikiArticle> _filterArticles(List<WikiArticle> articles) {
+    final normalizedQuery = _query.trim().toLowerCase();
+    if (normalizedQuery.isEmpty) {
+      return articles;
+    }
+
+    return articles.where((article) {
+      return article.title.toLowerCase().contains(normalizedQuery) ||
+          article.category.toLowerCase().contains(normalizedQuery) ||
+          article.content.toLowerCase().contains(normalizedQuery) ||
+          article.tags.any(
+            (tag) => tag.toLowerCase().contains(normalizedQuery),
+          ) ||
+          article.treasurePointIds.any(
+            (pointId) => pointId.toLowerCase().contains(normalizedQuery),
+          );
+    }).toList();
   }
 
   void _showAddEditDialog(BuildContext context, {WikiArticle? article}) {

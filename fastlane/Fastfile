@@ -99,6 +99,7 @@ platform :ios do
 
   lane :submit_app_store_release do
     release_notes = optional_env('APPSTORE_RELEASE_NOTES').to_s.strip
+    UI.user_error!('APPSTORE_RELEASE_NOTES is required for App Store submissions.') if release_notes.empty?
 
     deliver_options = {
       api_key: app_store_api_key,
@@ -114,15 +115,10 @@ platform :ios do
       submission_information: {
         export_compliance_uses_encryption: false,
       },
-    }
-
-    if release_notes.empty?
-      deliver_options[:skip_metadata] = true
-    else
-      deliver_options[:release_notes] = app_store_release_note_locales.each_with_object({}) do |locale, notes_by_locale|
+      release_notes: app_store_release_note_locales.each_with_object({}) do |locale, notes_by_locale|
         notes_by_locale[locale] = release_notes
-      end
-    end
+      end,
+    }
 
     deliver(deliver_options)
   end

@@ -23,10 +23,13 @@ import 'package:sggw_days/features/rewards/data/repositories/reward_repository.d
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
+import 'package:sggw_days/features/timetable/presentation/bloc/timetable_event.dart';
 import 'package:sggw_days/features/treasure_hunt/data/repositories/treasure_hunt_repository.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_event.dart';
 import 'package:sggw_days/features/wiki/data/repositories/wiki_repository.dart';
 import 'package:sggw_days/features/wiki/presentation/bloc/wiki_bloc.dart';
+import 'package:sggw_days/features/wiki/presentation/bloc/wiki_event.dart';
 import 'package:sggw_days/firebase_options.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
@@ -164,6 +167,7 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(
           create: (context) => RewardRepository(
             deviceIdentityService: context.read<DeviceIdentityService>(),
+            scanDistanceConfig: context.read<ScanDistanceConfig>(),
           ),
         ),
         RepositoryProvider.value(value: _eventReminderService),
@@ -179,17 +183,18 @@ class _MyAppState extends State<MyApp> {
             create: (context) => TreasureHuntBloc(
               repository: context.read<TreasureHuntRepository>(),
               progressBox: widget.progressBox,
-            ),
+            )..add(const LoadTreasurePoints()),
           ),
           BlocProvider(
             create: (context) =>
-                WikiBloc(repository: context.read<WikiRepository>()),
+                WikiBloc(repository: context.read<WikiRepository>())
+                  ..add(const LoadWikiArticles()),
           ),
           BlocProvider(
             create: (context) => TimetableBloc(
               repository: context.read<TimetableRepository>(),
               eventReminderService: context.read<EventReminderService>(),
-            ),
+            )..add(const LoadTimetableEvents()),
           ),
           BlocProvider(
             create: (context) =>

@@ -23,10 +23,17 @@ name: Delivery
           - prod
 
 permissions:
+  actions: read
   contents: read
 
 concurrency:
-  group: delivery-${{ github.event_name }}-${{ github.event.release.tag_name || github.ref_name || github.run_id }}
+  group: >-
+    delivery-${{
+      github.event_name == 'release' && github.event.release.tag_name ||
+      startsWith(github.ref, 'refs/tags/') && github.ref_name ||
+      github.event_name == 'workflow_dispatch' && format('firebase-{0}', github.event.inputs.firebase_target) ||
+      format('{0}-{1}', github.event_name, github.ref_name || github.run_id)
+    }}
   cancel-in-progress: false
 
 jobs:
@@ -36,7 +43,7 @@ jobs:
       is_tag: ${{ steps.resolve.outputs.is_tag }}
       is_release: ${{ steps.resolve.outputs.is_release }}
       is_manual_firebase: ${{ steps.resolve.outputs.is_manual_firebase }}
-      should_build_release_artifacts: ${{ steps.resolve.outputs.should_build_release_artifacts }}
+      should_build_candidate_artifacts: ${{ steps.resolve.outputs.should_build_candidate_artifacts }}
       should_build_web: ${{ steps.resolve.outputs.should_build_web }}
       should_deploy_beta_hosting: ${{ steps.resolve.outputs.should_deploy_beta_hosting }}
       should_deploy_live_firebase: ${{ steps.resolve.outputs.should_deploy_live_firebase }}
@@ -57,7 +64,7 @@ jobs:
           is_tag=false
           is_release=false
           is_manual_firebase=false
-          should_build_release_artifacts=false
+          should_build_candidate_artifacts=false
           should_build_web=false
           should_deploy_beta_hosting=false
           should_deploy_live_firebase=false
@@ -82,19 +89,17 @@ jobs:
             esac
           elif [ "$EVENT_NAME" = "release" ]; then
             is_release=true
-            should_build_release_artifacts=true
-            should_build_web=true
             should_deploy_live_firebase=true
             release_tag="$RELEASE_TAG"
           elif [[ "$REF" == refs/tags/* ]]; then
             is_tag=true
-            should_build_release_artifacts=true
+            should_build_candidate_artifacts=true
             should_build_web=true
             should_deploy_beta_hosting=true
             release_tag="$REF_NAME"
           fi
 
-          if [ "$should_build_release_artifacts" = "true" ]; then
+          if [ "$is_release" = "true" ] || [ "$should_build_candidate_artifacts" = "true" ]; then
             release_tag="${release_tag#refs/tags/}"
 
             if [ -z "$release_tag" ]; then
@@ -124,7 +129,7 @@ jobs:
           echo "is_tag=$is_tag" >> "$GITHUB_OUTPUT"
           echo "is_release=$is_release" >> "$GITHUB_OUTPUT"
           echo "is_manual_firebase=$is_manual_firebase" >> "$GITHUB_OUTPUT"
-          echo "should_build_release_artifacts=$should_build_release_artifacts" >> "$GITHUB_OUTPUT"
+          echo "should_build_candidate_artifacts=$should_build_candidate_artifacts" >> "$GITHUB_OUTPUT"
           echo "should_build_web=$should_build_web" >> "$GITHUB_OUTPUT"
           echo "should_deploy_beta_hosting=$should_deploy_beta_hosting" >> "$GITHUB_OUTPUT"
           echo "should_deploy_live_firebase=$should_deploy_live_firebase" >> "$GITHUB_OUTPUT"
@@ -132,13 +137,16 @@ jobs:
           echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
 
   validate:
+    needs:
+      - resolve
+    if: ${{ needs.resolve.outputs.should_build_candidate_artifacts == 'true' || needs.resolve.outputs.should_build_web == 'true' }}
     uses: ./.github/workflows/flutter-validate.yml
 
   build_android:
     needs:
       - resolve
       - validate
-    if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_release_artifacts == 'true' }}
+    if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_candidate_artifacts == 'true' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: testing
@@ -196,7 +204,7 @@ jobs:
     needs:
       - resolve
       - validate
-    if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_release_artifacts == 'true' }}
+    if: ${{ always() && needs.resolve.result == 'success' && needs.validate.result == 'success' && needs.resolve.outputs.should_build_candidate_artifacts == 'true' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: testflight
@@ -206,34 +214,167 @@ jobs:
       deploy_to_store: false
     secrets: inherit
 
+  locate_release_candidate:
+    needs:
+      - resolve
+    if: ${{ needs.resolve.outputs.is_release == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      run_id: ${{ steps.locate.outputs.run_id }}
+      head_sha: ${{ steps.locate.outputs.head_sha }}
+    steps:
+      - name: Locate successful tag candidate run
+        id: locate
+        uses: actions/github-script@v8
+        env:
+          CURRENT_RUN_ID: ${{ github.run_id }}
+          RELEASE_TAG: ${{ needs.resolve.outputs.release_tag }}
+          WORKFLOW_PATH: .github/workflows/store-release.yml
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const currentRunId = Number(process.env.CURRENT_RUN_ID);
+            const tag = process.env.RELEASE_TAG.replace(/^refs\/tags\//, '');
+            const workflowPath = process.env.WORKFLOW_PATH;
+            const waitMs = 30_000;
+            const maxAttempts = 40;
+
+            async function resolveTagCommitSha() {
+              const ref = await github.rest.git.getRef({
+                owner,
+                repo,
+                ref: `tags/${tag}`,
+              });
+
+              if (ref.data.object.type === 'tag') {
+                const annotatedTag = await github.rest.git.getTag({
+                  owner,
+                  repo,
+                  tag_sha: ref.data.object.sha,
+                });
+                return annotatedTag.data.object.sha;
+              }
+
+              return ref.data.object.sha;
+            }
+
+            const tagSha = await resolveTagCommitSha();
+            core.info(`Waiting for successful push candidate run for tag ${tag} (${tagSha}).`);
+
+            for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+              const matches = [];
+
+              for (let page = 1; page <= 5; page += 1) {
+                const response = await github.rest.actions.listWorkflowRunsForRepo({
+                  owner,
+                  repo,
+                  branch: tag,
+                  event: 'push',
+                  per_page: 100,
+                  page,
+                });
+
+                matches.push(...response.data.workflow_runs.filter((run) =>
+                  run.path === workflowPath &&
+                  run.id !== currentRunId
+                ));
+
+                if (response.data.workflow_runs.length < 100) {
+                  break;
+                }
+              }
+
+              if (matches.length === 0) {
+                for (let page = 1; page <= 5; page += 1) {
+                  const response = await github.rest.actions.listWorkflowRunsForRepo({
+                    owner,
+                    repo,
+                    event: 'push',
+                    per_page: 100,
+                    page,
+                  });
+
+                  matches.push(...response.data.workflow_runs.filter((run) =>
+                    run.path === workflowPath &&
+                    run.id !== currentRunId &&
+                    (run.head_sha === tagSha || run.head_branch === tag)
+                  ));
+
+                  if (response.data.workflow_runs.length < 100) {
+                    break;
+                  }
+                }
+              }
+
+              matches.sort((left, right) => new Date(right.created_at) - new Date(left.created_at));
+              const candidate = matches[0];
+
+              if (!candidate) {
+                core.info(`No matching push run found yet (attempt ${attempt}/${maxAttempts}).`);
+              } else {
+                core.info(`Latest candidate run ${candidate.id} is ${candidate.status}/${candidate.conclusion ?? 'pending'}.`);
+
+                if (candidate.status !== 'completed') {
+                  core.info('Candidate run is still in progress. Waiting for completion.');
+                } else if (candidate.conclusion !== 'success') {
+                  throw new Error(`Tag candidate run ${candidate.id} for ${tag} finished with conclusion ${candidate.conclusion}.`);
+                } else {
+                  core.setOutput('run_id', String(candidate.id));
+                  core.setOutput('head_sha', candidate.head_sha);
+                  return;
+                }
+              }
+
+              if (attempt < maxAttempts) {
+                await new Promise((resolve) => setTimeout(resolve, waitMs));
+              }
+            }
+
+            throw new Error(`Timed out waiting for a successful push candidate run for tag ${tag}.`);
+
   release_assets:
     needs:
       - resolve
-      - build_android
-      - build_web
-      - build_ios
-    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.build_android.result == 'success' && needs.build_web.result == 'success' && needs.build_ios.result == 'success' }}
+      - locate_release_candidate
+      - android_production
+      - ios_app_store
+    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.locate_release_candidate.result == 'success' && needs.android_production.result == 'success' && needs.ios_app_store.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: write
     steps:
-      - name: Download Android artifact
+      - name: Download candidate Android artifact
         uses: actions/download-artifact@v8
         with:
+          github-token: ${{ github.token }}
           name: android-release
           path: release-assets/android
+          repository: ${{ github.repository }}
+          run-id: ${{ needs.locate_release_candidate.outputs.run_id }}
 
-      - name: Download web artifact
+      - name: Download candidate web artifact
         uses: actions/download-artifact@v8
         with:
+          github-token: ${{ github.token }}
           name: web-release
           path: release-assets/web
+          repository: ${{ github.repository }}
+          run-id: ${{ needs.locate_release_candidate.outputs.run_id }}
 
-      - name: Download iOS artifact
+      - name: Download candidate iOS artifact
         uses: actions/download-artifact@v8
         with:
+          github-token: ${{ github.token }}
           name: ios-release
           path: release-assets/ios
+          repository: ${{ github.repository }}
+          run-id: ${{ needs.locate_release_candidate.outputs.run_id }}
 
       - name: Attach release assets
         uses: softprops/action-gh-release@v3
@@ -284,16 +425,48 @@ jobs:
     needs:
       - resolve
       - build_web
-    if: ${{ always() && needs.resolve.outputs.should_deploy_live_firebase == 'true' && needs.build_web.result == 'success' }}
+      - locate_release_candidate
+      - android_production
+      - ios_app_store
+    if: >-
+      ${{
+        always() &&
+        needs.resolve.outputs.should_deploy_live_firebase == 'true' &&
+        (
+          (
+            needs.resolve.outputs.is_release == 'true' &&
+            needs.locate_release_candidate.result == 'success' &&
+            needs.android_production.result == 'success' &&
+            needs.ios_app_store.result == 'success'
+          ) || (
+            needs.resolve.outputs.is_manual_firebase == 'true' &&
+            needs.build_web.result == 'success'
+          )
+        )
+      }}
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
     steps:
       - uses: actions/checkout@v6
 
-      - name: Download web build artifact
+      - name: Download web build artifact from current run
+        if: ${{ needs.resolve.outputs.is_manual_firebase == 'true' }}
         uses: actions/download-artifact@v8
         with:
           name: web-release
           path: ${{ github.workspace }}
+
+      - name: Download web build artifact from candidate run
+        if: ${{ needs.resolve.outputs.is_release == 'true' }}
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          name: web-release
+          path: ${{ github.workspace }}
+          repository: ${{ github.repository }}
+          run-id: ${{ needs.locate_release_candidate.outputs.run_id }}
 
       - name: Setup deploy tooling
         uses: ./.github/actions/setup-project
@@ -323,7 +496,7 @@ jobs:
     needs:
       - resolve
       - build_android
-    if: ${{ always() && needs.resolve.outputs.should_build_release_artifacts == 'true' && needs.build_android.result == 'success' }}
+    if: ${{ always() && needs.resolve.outputs.is_tag == 'true' && needs.build_android.result == 'success' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: testing
@@ -336,7 +509,7 @@ jobs:
     needs:
       - resolve
       - build_ios
-    if: ${{ always() && needs.resolve.outputs.should_build_release_artifacts == 'true' && needs.build_ios.result == 'success' }}
+    if: ${{ always() && needs.resolve.outputs.is_tag == 'true' && needs.build_ios.result == 'success' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: testflight
@@ -348,8 +521,8 @@ jobs:
   android_production:
     needs:
       - resolve
-      - android_testing
-    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.android_testing.result == 'success' }}
+      - locate_release_candidate
+    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.locate_release_candidate.result == 'success' }}
     uses: ./.github/workflows/android-store.yml
     with:
       target: production
@@ -361,8 +534,8 @@ jobs:
   ios_app_store:
     needs:
       - resolve
-      - ios_testflight
-    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.ios_testflight.result == 'success' }}
+      - locate_release_candidate
+    if: ${{ always() && needs.resolve.outputs.is_release == 'true' && needs.locate_release_candidate.result == 'success' }}
     uses: ./.github/workflows/ios-store.yml
     with:
       target: app_store

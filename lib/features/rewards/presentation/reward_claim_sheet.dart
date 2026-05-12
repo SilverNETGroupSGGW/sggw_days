@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:sggw_days/core/widgets/qr_code_widget.dart';
 import 'package:sggw_days/features/rewards/data/models/reward_claim_payload.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
@@ -73,38 +72,12 @@ class RewardClaimSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 18),
-          Card(
-            margin: EdgeInsets.zero,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _SummaryRow(
-                    label: l10n.rewardClaimDeviceId,
-                    value: shortDeviceId,
-                  ),
-                  _SummaryRow(
-                    label: l10n.rewardClaimPayloadHash,
-                    value: payload.payloadHash,
-                  ),
-                  _SummaryRow(
-                    label: l10n.rewardClaimTreasureScans,
-                    value: '${payload.treasureScans.length}',
-                  ),
-                  _SummaryRow(
-                    label: l10n.rewardClaimEventCheckIns,
-                    value: '${payload.eventCheckIns.length}',
-                  ),
-                  if (payload.completedAt != null)
-                    _SummaryRow(
-                      label: l10n.rewardClaimCompletedAt,
-                      value: DateFormat.yMMMd().add_Hm().format(
-                        payload.completedAt!,
-                      ),
-                    ),
-                ],
-              ),
+          Text(
+            '${l10n.rewardClaimDeviceId}: $shortDeviceId',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 16),
@@ -112,44 +85,6 @@ class RewardClaimSheet extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.check_rounded),
             label: Text(l10n.ok),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SummaryRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _SummaryRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.end,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
           ),
         ],
       ),

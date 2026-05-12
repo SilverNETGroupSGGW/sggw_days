@@ -10,6 +10,7 @@ import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
 import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
+import 'package:sggw_days/features/admin/presentation/widgets/admin_search_field.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/invalid_entries_banner.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/location_picker_map.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/qr_code_widget.dart';
@@ -18,15 +19,37 @@ import 'package:sggw_days/features/treasure_hunt/presentation/point_type_present
 import 'package:sggw_days/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class TreasurePointsTab extends StatelessWidget {
+class TreasurePointsTab extends StatefulWidget {
   const TreasurePointsTab({super.key});
 
   @override
+  State<TreasurePointsTab> createState() => _TreasurePointsTabState();
+}
+
+class _TreasurePointsTabState extends State<TreasurePointsTab>
+    with AutomaticKeepAliveClientMixin {
+  final TextEditingController _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
+        final visiblePoints = _filterPoints(state.treasurePoints, l10n);
+        final hasSearch = _query.trim().isNotEmpty;
+
         if (state.status == AdminStatus.loading &&
             state.treasurePoints.isEmpty) {
           return const Center(child: CircularProgressIndicator());
@@ -40,21 +63,30 @@ class TreasurePointsTab extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => _showAddEditDialog(context),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add Point'),
-                    ),
+                  AdminSearchField(
+                    controller: _searchController,
+                    onChanged: (value) => setState(() => _query = value),
                   ),
-                  const SizedBox(width: 8),
-                  ElevatedButton.icon(
-                    onPressed: () =>
-                        _showReorderDialog(context, state.treasurePoints),
-                    icon: const Icon(Icons.reorder),
-                    label: Text(l10n.reorderPoints),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => _showAddEditDialog(context),
+                          icon: const Icon(Icons.add),
+                          label: const Text('Add Point'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: () =>
+                            _showReorderDialog(context, state.treasurePoints),
+                        icon: const Icon(Icons.reorder),
+                        label: Text(l10n.reorderPoints),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -62,10 +94,12 @@ class TreasurePointsTab extends StatelessWidget {
             Expanded(
               child: state.treasurePoints.isEmpty
                   ? Center(child: Text('No ${l10n.points.toLowerCase()} yet'))
+                  : visiblePoints.isEmpty && hasSearch
+                  ? Center(child: Text(l10n.noResultsFound))
                   : ListView.builder(
-                      itemCount: state.treasurePoints.length,
+                      itemCount: visiblePoints.length,
                       itemBuilder: (context, index) {
-                        final point = state.treasurePoints[index];
+                        final point = visiblePoints[index];
                         return Card(
                           margin: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -162,6 +196,26 @@ class TreasurePointsTab extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<TreasurePoint> _filterPoints(
+    List<TreasurePoint> points,
+    AppLocalizations l10n,
+  ) {
+    final normalizedQuery = _query.trim().toLowerCase();
+    if (normalizedQuery.isEmpty) {
+      return points;
+    }
+
+    return points.where((point) {
+      return point.name.toLowerCase().contains(normalizedQuery) ||
+          point.description.toLowerCase().contains(normalizedQuery) ||
+          point.qrCode.toLowerCase().contains(normalizedQuery) ||
+          labelForPointType(
+            point.type,
+            l10n,
+          ).toLowerCase().contains(normalizedQuery);
+    }).toList();
   }
 
   Future<void> _openCheckpointPoster(

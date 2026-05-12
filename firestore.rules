@@ -214,23 +214,12 @@ service cloud.firestore {
       return data.keys().hasAll([
         'deviceId',
         'status',
-        'payloadHash',
-        'payload',
-        'treasureScans',
-        'eventCheckIns',
-        'generatedAt',
         'receivedAt',
         'receivedBy',
       ]) &&
       data.keys().hasOnly([
         'deviceId',
         'status',
-        'payloadHash',
-        'payload',
-        'treasureScans',
-        'eventCheckIns',
-        'generatedAt',
-        'completedAt',
         'receivedAt',
         'receivedBy',
         'receivedByEmail',
@@ -240,17 +229,28 @@ service cloud.firestore {
       data.deviceId.size() >= 16 &&
       data.deviceId.size() <= 80 &&
       data.status == 'received' &&
-      data.payloadHash is string &&
-      data.payloadHash.size() >= 8 &&
-      data.payloadHash.size() <= 64 &&
-      data.payload is map &&
-      data.treasureScans is list &&
-      data.eventCheckIns is list &&
-      data.generatedAt is string &&
-      (data.completedAt == null || data.completedAt is string) &&
       data.receivedAt == request.time &&
       data.receivedBy == request.auth.uid &&
       (data.receivedByEmail == null || data.receivedByEmail is string);
+    }
+
+    function validRewardClaimStatus(data, deviceId) {
+      return data.keys().hasAll([
+        'deviceId',
+        'status',
+        'receivedAt',
+      ]) &&
+      data.keys().hasOnly([
+        'deviceId',
+        'status',
+        'receivedAt',
+      ]) &&
+      data.deviceId == deviceId &&
+      data.deviceId is string &&
+      data.deviceId.size() >= 16 &&
+      data.deviceId.size() <= 80 &&
+      data.status == 'received' &&
+      data.receivedAt == request.time;
     }
 
     match /admins/{adminId} {
@@ -294,6 +294,13 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow create: if isAdmin() && validRewardClaim(request.resource.data, deviceId);
       allow update: if isAdmin() && validRewardClaim(request.resource.data, deviceId);
+      allow delete: if false;
+    }
+
+    match /reward_claim_status/{deviceId} {
+      allow read: if true;
+      allow create: if isAdmin() && validRewardClaimStatus(request.resource.data, deviceId);
+      allow update: if isAdmin() && validRewardClaimStatus(request.resource.data, deviceId);
       allow delete: if false;
     }
 

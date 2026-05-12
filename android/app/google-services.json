@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "583939995714-dl65m4esedu8lq42eqi9n9g23hpf7ulv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.silvernet.sggw_days",
+            "certificate_hash": "8ba4646f703f9ee5b8e4109ba5faec8403ea4eee"
+          }
+        },
+        {
+          "client_id": "583939995714-n9cedjupf52qbj4iket8opgjd0b6dv7q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.silvernet.sggw_days",
+            "certificate_hash": "b088c83e289fa11f4f3012da12014c10c594df9d"
+          }
+        },
+        {
           "client_id": "583939995714-5i0saton2o44el8a9j53turn8bj04uqt.apps.googleusercontent.com",
           "client_type": 3
         }

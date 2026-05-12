@@ -20,7 +20,7 @@ class _ScanPageState extends State<ScanPage> {
   void initState() {
     super.initState();
     final bloc = context.read<TreasureHuntBloc>();
-    if (bloc.state.status != TreasureHuntStatus.success) {
+    if (bloc.state.status == TreasureHuntStatus.initial) {
       bloc.add(const LoadTreasurePoints());
     }
   }

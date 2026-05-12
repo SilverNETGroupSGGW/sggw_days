@@ -88,8 +88,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: "android-store-${{ inputs.target || github.ref_name }}"
-  cancel-in-progress: true
+  group: >-
+    android-store-${{ inputs.target }}-${{
+      inputs.release_version != '' && inputs.release_version ||
+      inputs.build_number != '' && inputs.build_number ||
+      github.ref_name || github.run_id
+    }}
+  cancel-in-progress: false
 
 env:
   GOOGLE_PLAY_DEFAULT_TESTING_TRACK: beta
@@ -435,8 +440,9 @@ jobs:
           set -euo pipefail
 
           raw_notes="${RELEASE_BODY:-}"
-          if [ -z "$raw_notes" ]; then
-            raw_notes="Release ${RELEASE_VERSION}"
+          if [ -z "$(printf '%s' "$raw_notes" | tr -d '[:space:]')" ]; then
+            echo "GitHub release description is required for Google Play production release notes."
+            exit 1
           fi
 
           metadata_path="$RUNNER_TEMP/fastlane/metadata/android"

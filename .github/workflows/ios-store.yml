@@ -102,8 +102,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: "ios-store-${{ inputs.target || github.ref_name }}"
-  cancel-in-progress: true
+  group: >-
+    ios-store-${{ inputs.target }}-${{
+      inputs.release_version != '' && inputs.release_version ||
+      inputs.build_number != '' && inputs.build_number ||
+      github.ref_name || github.run_id
+    }}
+  cancel-in-progress: false
 
 env:
   IOS_DEFAULT_BUNDLE_IDENTIFIER: "com.silver.sggw-days"
@@ -633,18 +638,9 @@ jobs:
           notes_path="$RUNNER_TEMP/appstore-release-notes.txt"
           raw_notes="${RELEASE_BODY:-}"
 
-          if [ -z "$raw_notes" ]; then
-            current_sha="$GITHUB_SHA"
-            if [ -n "$RELEASE_TAG" ] && git rev-parse "refs/tags/$RELEASE_TAG" >/dev/null 2>&1; then
-              current_sha=$(git rev-list -n 1 "refs/tags/$RELEASE_TAG")
-            fi
-
-            previous_tag=$(git describe --tags --abbrev=0 "${current_sha}^" 2>/dev/null || true)
-            if [ -n "$previous_tag" ]; then
-              raw_notes=$(git log --format='- %s' --no-merges "$previous_tag..$current_sha")
-            else
-              raw_notes=$(git log --format='- %s' --no-merges -n 5 "$current_sha")
-            fi
+          if [ -z "$(printf '%s' "$raw_notes" | tr -d '[:space:]')" ]; then
+            echo "GitHub release description is required for App Store release notes."
+            exit 1
           fi
 
           printf '%s' "$raw_notes" > "$notes_path"
@@ -679,7 +675,6 @@ jobs:
           APPSTORE_API_PRIVATE_KEY: ${{ secrets['APPSTORE_API_PRIVATE_KEY'] }}
           APPSTORE_AUTOMATIC_RELEASE: ${{ needs.resolve.outputs.automatic_release }}
           APPSTORE_RELEASE_NOTES: ${{ steps.release_notes.outputs.release_notes }}
-          APPSTORE_RELEASE_NOTES_LOCALES: ${{ vars['APPSTORE_RELEASE_NOTES_LOCALES'] }}
           APP_VERSION: ${{ needs.resolve.outputs.release_version }}
           BUILD_NUMBER: ${{ needs.resolve.outputs.build_number }}
           IOS_BUNDLE_IDENTIFIER: ${{ needs.resolve.outputs.bundle_identifier }}

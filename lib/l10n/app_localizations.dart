@@ -602,6 +602,12 @@ abstract class AppLocalizations {
   /// **'Szukaj...'**
   String get search;
 
+  /// No description provided for @noResultsFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak wyników'**
+  String get noResultsFound;
+
   /// No description provided for @allCategories.
   ///
   /// In pl, this message translates to:
@@ -811,6 +817,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Powiązane wydarzenia'**
   String get relatedEvents;
+
+  /// No description provided for @relatedPoints.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązane punkty'**
+  String get relatedPoints;
 
   /// No description provided for @tutorialTitle.
   ///
@@ -1057,6 +1069,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Zamelduj się na wydarzeniu'**
   String get rewardClaimEventRequiredAction;
+
+  /// No description provided for @rewardAlreadyReceivedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagroda została już odebrana'**
+  String get rewardAlreadyReceivedTitle;
+
+  /// No description provided for @rewardAlreadyReceivedBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dla tego urządzenia organizator oznaczył już nagrodę jako odebraną.'**
+  String get rewardAlreadyReceivedBody;
 
   /// No description provided for @rewardClaimDeviceId.
   ///

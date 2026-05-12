@@ -291,6 +291,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search => 'Search...';
 
   @override
+  String get noResultsFound => 'No results found';
+
+  @override
   String get allCategories => 'All';
 
   @override
@@ -400,6 +403,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get relatedEvents => 'Related Events';
+
+  @override
+  String get relatedPoints => 'Related Points';
 
   @override
   String get tutorialTitle => 'Start Exploring!';
@@ -541,6 +547,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rewardClaimEventRequiredAction => 'Check in at event';
+
+  @override
+  String get rewardAlreadyReceivedTitle => 'Reward already received';
+
+  @override
+  String get rewardAlreadyReceivedBody =>
+      'This device has already had its reward marked as received by an organiser.';
 
   @override
   String get rewardClaimDeviceId => 'Device ID';

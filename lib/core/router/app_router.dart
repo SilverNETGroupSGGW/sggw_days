@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sggw_days/core/router/error_page.dart';
@@ -6,12 +7,24 @@ import 'package:sggw_days/features/home/presentation/pages/home_page.dart';
 import 'package:sggw_days/features/settings/presentation/pages/privacy_policy_page.dart';
 import 'package:sggw_days/features/settings/presentation/pages/settings_page.dart';
 import 'package:sggw_days/features/timetable/presentation/pages/timetable_page.dart';
+import 'package:sggw_days/features/treasure_hunt/data/models/treasure_scan_code.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/pages/scan_page.dart';
 import 'package:sggw_days/features/treasure_hunt/presentation/pages/treasure_hunt_page.dart';
 import 'package:sggw_days/features/wiki/presentation/pages/wiki_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellNavigatorKey = GlobalKey<NavigatorState>();
+
+String? scanRouteRedirectLocation({
+  required bool isWeb,
+  required String pointId,
+}) {
+  if (isWeb || !isValidTreasurePointId(pointId)) {
+    return null;
+  }
+
+  return Uri(path: '/', queryParameters: {'scanPointId': pointId}).toString();
+}
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -24,6 +37,10 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/scan/:pointId',
+      redirect: (context, state) => scanRouteRedirectLocation(
+        isWeb: kIsWeb,
+        pointId: state.pathParameters['pointId']!,
+      ),
       builder: (context, state) =>
           ScanPage(pointId: state.pathParameters['pointId']!),
     ),
@@ -40,7 +57,10 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/',
-              builder: (context, state) => const TreasureHuntPage(),
+              builder: (context, state) => TreasureHuntPage(
+                initialPointId: state.uri.queryParameters['pointId'],
+                initialScanPointId: state.uri.queryParameters['scanPointId'],
+              ),
             ),
           ],
         ),
@@ -48,7 +68,9 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/wiki',
-              builder: (context, state) => const WikiPage(),
+              builder: (context, state) => WikiPage(
+                initialArticleId: state.uri.queryParameters['articleId'],
+              ),
             ),
           ],
         ),
@@ -56,7 +78,17 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/timetable',
-              builder: (context, state) => const TimetablePage(),
+              builder: (context, state) => TimetablePage(
+                initialEventId: state.uri.queryParameters['eventId'],
+              ),
+              routes: [
+                GoRoute(
+                  path: 'check-in',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) =>
+                      const TimetableCheckInScannerPage(),
+                ),
+              ],
             ),
           ],
         ),

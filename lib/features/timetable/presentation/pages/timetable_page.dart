@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sggw_days/core/icons/material_symbol_catalog.dart';
+import 'package:sggw_days/core/widgets/fullscreen_network_image.dart';
 import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
 import 'package:sggw_days/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
@@ -13,10 +15,16 @@ import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_bloc.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_event.dart';
 import 'package:sggw_days/features/timetable/presentation/bloc/timetable_state.dart';
+import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/bloc/treasure_hunt_bloc.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/point_type_presentation.dart';
+import 'package:sggw_days/features/treasure_hunt/presentation/widgets/treasure_hunt_widgets.dart';
 import 'package:sggw_days/l10n/app_localizations.dart';
 
 class TimetablePage extends StatefulWidget {
-  const TimetablePage({super.key});
+  const TimetablePage({super.key, this.initialEventId});
+
+  final String? initialEventId;
 
   @override
   State<TimetablePage> createState() => _TimetablePageState();
@@ -24,6 +32,22 @@ class TimetablePage extends StatefulWidget {
 
 class _TimetablePageState extends State<TimetablePage> {
   bool _showTimeline = false;
+  String? _pendingInitialEventId;
+  bool _isOpeningInitialEvent = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _pendingInitialEventId = widget.initialEventId;
+  }
+
+  @override
+  void didUpdateWidget(covariant TimetablePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialEventId != widget.initialEventId) {
+      _pendingInitialEventId = widget.initialEventId;
+    }
+  }
 
   void _toggleFavorite(BuildContext context, model.TimetableEvent event) {
     final bloc = context.read<TimetableBloc>();
@@ -131,6 +155,8 @@ class _TimetablePageState extends State<TimetablePage> {
           if (state.status == TimetableStatus.loading) {
             return const Center(child: CircularProgressIndicator());
           }
+
+          _maybeOpenInitialEventFromRoute(context, state);
 
           final content = state.filteredEvents.isEmpty
               ? _buildEmptyState(context, state)
@@ -285,6 +311,51 @@ class _TimetablePageState extends State<TimetablePage> {
         ],
       ),
     );
+  }
+
+  void _maybeOpenInitialEventFromRoute(
+    BuildContext context,
+    TimetableState state,
+  ) {
+    final eventId = _pendingInitialEventId;
+    if (eventId == null ||
+        _isOpeningInitialEvent ||
+        state.status != TimetableStatus.success) {
+      return;
+    }
+
+    final event = state.events
+        .where((candidate) => candidate.id == eventId)
+        .firstOrNull;
+    _pendingInitialEventId = null;
+    _isOpeningInitialEvent = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      GoRouter.of(context).replace('/timetable');
+
+      if (event == null) {
+        _isOpeningInitialEvent = false;
+        return;
+      }
+
+      unawaited(
+        _showEventDetails(context, event).whenComplete(() {
+          if (mounted) {
+            _isOpeningInitialEvent = false;
+          }
+        }),
+      );
+    });
+  }
+
+  String _pointLocation(String pointId) {
+    return Uri(path: '/', queryParameters: {'pointId': pointId}).toString();
+  }
+
+  String _checkInScannerLocation() {
+    return '/timetable/check-in';
   }
 
   List<DateTime> _eventDates(List<model.TimetableEvent> events) {
@@ -534,20 +605,40 @@ class _TimetablePageState extends State<TimetablePage> {
     }
   }
 
-  void _showEventDetails(BuildContext context, model.TimetableEvent event) {
+  Future<void> _showEventDetails(
+    BuildContext context,
+    model.TimetableEvent event,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     final isCheckedIn = context
         .read<TimetableBloc>()
         .state
         .checkedInIds
         .contains(event.id);
+    final relatedPoints = context
+        .read<TreasureHuntBloc>()
+        .state
+        .points
+        .where((point) => event.treasurePointIds.contains(point.id))
+        .toList();
 
-    showModalBottomSheet<void>(
+    return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
+
+        void closeThen(VoidCallback action) {
+          Navigator.pop(sheetContext);
+          unawaited(
+            Future<void>.delayed(Duration.zero, () {
+              if (!mounted) return;
+              action();
+            }),
+          );
+        }
+
         return SafeArea(
           child: SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(
@@ -581,6 +672,7 @@ class _TimetablePageState extends State<TimetablePage> {
                 _EventImageBanner(
                   imageUrl: event.imageUrl,
                   iconName: event.iconName,
+                  semanticLabel: event.title,
                 ),
                 const SizedBox(height: 16),
                 Wrap(
@@ -627,6 +719,37 @@ class _TimetablePageState extends State<TimetablePage> {
                   event.description,
                   style: theme.textTheme.bodyLarge?.copyWith(height: 1.45),
                 ),
+                if (relatedPoints.isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  SectionHeader(
+                    title: l10n.relatedPoints,
+                    actionLabel: l10n.treasureHunt,
+                    onAction: () =>
+                        closeThen(() => GoRouter.of(context).go('/')),
+                  ),
+                  const SizedBox(height: 8),
+                  ...relatedPoints.map(
+                    (point) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: PointPreviewTile(
+                        icon: iconForPoint(point),
+                        accentColor: colorForPointType(
+                          point.type,
+                          theme.colorScheme,
+                        ),
+                        title: point.name,
+                        subtitle: labelForPointType(point.type, l10n),
+                        detail: point.type == PointType.treasurePoint
+                            ? l10n.treasurePointNumber(point.order + 1)
+                            : null,
+                        onTap: () => closeThen(
+                          () =>
+                              GoRouter.of(context).go(_pointLocation(point.id)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -646,14 +769,7 @@ class _TimetablePageState extends State<TimetablePage> {
 
     final bloc = context.read<TimetableBloc>();
 
-    final eventId = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => _CheckInScannerPage(
-          validEventIds: bloc.state.events.map((event) => event.id).toSet(),
-        ),
-      ),
-    );
+    final eventId = await context.push<String>(_checkInScannerLocation());
 
     if (!context.mounted || eventId == null) return;
 
@@ -672,16 +788,16 @@ class _TimetablePageState extends State<TimetablePage> {
   }
 }
 
-class _CheckInScannerPage extends StatefulWidget {
-  final Set<String> validEventIds;
-
-  const _CheckInScannerPage({required this.validEventIds});
+class TimetableCheckInScannerPage extends StatefulWidget {
+  const TimetableCheckInScannerPage({super.key});
 
   @override
-  State<_CheckInScannerPage> createState() => _CheckInScannerPageState();
+  State<TimetableCheckInScannerPage> createState() =>
+      _TimetableCheckInScannerPageState();
 }
 
-class _CheckInScannerPageState extends State<_CheckInScannerPage> {
+class _TimetableCheckInScannerPageState
+    extends State<TimetableCheckInScannerPage> {
   late final MobileScannerController _controller;
   bool _isClosing = false;
 
@@ -691,6 +807,11 @@ class _CheckInScannerPageState extends State<_CheckInScannerPage> {
     _controller = MobileScannerController(
       detectionSpeed: DetectionSpeed.noDuplicates,
     );
+
+    final bloc = context.read<TimetableBloc>();
+    if (bloc.state.status == TimetableStatus.initial) {
+      bloc.add(const LoadTimetableEvents());
+    }
   }
 
   @override
@@ -704,7 +825,7 @@ class _CheckInScannerPageState extends State<_CheckInScannerPage> {
     _isClosing = true;
     await _controller.stop();
     if (!mounted) return;
-    Navigator.of(context).pop(code);
+    context.pop(code);
   }
 
   @override
@@ -713,50 +834,61 @@ class _CheckInScannerPageState extends State<_CheckInScannerPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.checkIn)),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          MobileScanner(
-            controller: _controller,
-            onDetect: (capture) {
-              if (_isClosing) return;
+      body: BlocBuilder<TimetableBloc, TimetableState>(
+        builder: (context, timetableState) {
+          final validEventIds = timetableState.events
+              .map((event) => event.id)
+              .toSet();
 
-              final barcode = capture.barcodes.firstOrNull;
-              final code = barcode?.rawValue;
-              if (code == null || !widget.validEventIds.contains(code)) {
-                return;
-              }
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              MobileScanner(
+                controller: _controller,
+                onDetect: (capture) {
+                  if (_isClosing) return;
 
-              unawaited(_completeScan(code));
-            },
-          ),
-          ValueListenableBuilder<MobileScannerState>(
-            valueListenable: _controller,
-            builder: (context, state, _) {
-              final isReady =
-                  state.isInitialized && state.isRunning && state.error == null;
-              if (isReady) {
-                return const SizedBox.shrink();
-              }
+                  final barcode = capture.barcodes.firstOrNull;
+                  final code = barcode?.rawValue;
+                  if (code == null || !validEventIds.contains(code)) {
+                    return;
+                  }
 
-              return Container(
-                color: Colors.black.withValues(alpha: 0.85),
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const CircularProgressIndicator(color: Colors.white),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.cameraLoading,
-                      style: const TextStyle(color: Colors.white),
+                  unawaited(_completeScan(code));
+                },
+              ),
+              ValueListenableBuilder<MobileScannerState>(
+                valueListenable: _controller,
+                builder: (context, state, _) {
+                  final isReady =
+                      state.isInitialized &&
+                      state.isRunning &&
+                      state.error == null &&
+                      timetableState.status != TimetableStatus.loading;
+                  if (isReady) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Container(
+                    color: Colors.black.withValues(alpha: 0.85),
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(color: Colors.white),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.cameraLoading,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+                  );
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -765,8 +897,13 @@ class _CheckInScannerPageState extends State<_CheckInScannerPage> {
 class _EventImageBanner extends StatelessWidget {
   final String? imageUrl;
   final String? iconName;
+  final String semanticLabel;
 
-  const _EventImageBanner({required this.imageUrl, required this.iconName});
+  const _EventImageBanner({
+    required this.imageUrl,
+    required this.iconName,
+    required this.semanticLabel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -792,21 +929,25 @@ class _EventImageBanner extends StatelessWidget {
       );
     }
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Image.network(
-          imageUrl!,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => DecoratedBox(
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-            ),
-            child: Icon(
-              materialSymbolForName(iconName, fallback: Symbols.event_note),
-              size: 48,
-              color: theme.colorScheme.onSurfaceVariant,
+    return FullscreenImageTrigger(
+      imageUrl: imageUrl!,
+      semanticLabel: semanticLabel,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Image.network(
+            imageUrl!,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+              ),
+              child: Icon(
+                materialSymbolForName(iconName, fallback: Symbols.event_note),
+                size: 48,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ),

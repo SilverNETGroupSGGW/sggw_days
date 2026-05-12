@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:sggw_days/features/admin/data/models/invalid_entry.dart';
-import 'package:sggw_days/features/rewards/data/models/reward_claim_payload.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 import 'package:sggw_days/features/treasure_hunt/data/models/treasure_point.dart';
 import 'package:sggw_days/features/wiki/data/models/wiki_article.dart';
@@ -163,15 +162,16 @@ class AdminRepository {
     return snapshot.data();
   }
 
-  Future<void> markRewardReceived(RewardClaimPayload payload) async {
+  Future<void> markRewardReceived(String deviceId) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) {
       throw Exception('Admin sign-in is required to verify rewards.');
     }
 
-    final claimRef = _firestore
-        .collection('reward_claims')
-        .doc(payload.deviceId);
+    final claimRef = _firestore.collection('reward_claims').doc(deviceId);
+    final claimStatusRef = _firestore
+        .collection('reward_claim_status')
+        .doc(deviceId);
     await _firestore.runTransaction((transaction) async {
       final existing = await transaction.get(claimRef);
       if (existing.exists) {
@@ -179,21 +179,17 @@ class AdminRepository {
       }
 
       transaction.set(claimRef, {
-        'deviceId': payload.deviceId,
+        'deviceId': deviceId,
         'status': 'received',
-        'payloadHash': payload.payloadHash,
-        'payload': payload.toJson(),
-        'treasureScans': payload.treasureScans
-            .map((record) => record.toJson())
-            .toList(),
-        'eventCheckIns': payload.eventCheckIns
-            .map((record) => record.toJson())
-            .toList(),
-        'generatedAt': payload.generatedAt.toIso8601String(),
-        'completedAt': payload.completedAt?.toIso8601String(),
         'receivedAt': FieldValue.serverTimestamp(),
         'receivedBy': currentUser.uid,
         'receivedByEmail': currentUser.email,
+      });
+
+      transaction.set(claimStatusRef, {
+        'deviceId': deviceId,
+        'status': 'received',
+        'receivedAt': FieldValue.serverTimestamp(),
       });
     });
   }
