@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="{{HTML_LANG}}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{TITLE}}</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: {{CANVAS_WIDTH}}px;
+        height: {{CANVAS_HEIGHT}}px;
+        margin: 0;
+        overflow: hidden;
+        background: #0d1510;
+      }
+
+      body {
+        font-family: Inter, "SF Pro Display", "Segoe UI", Roboto, Arial, sans-serif;
+        color: #f7f9ee;
+      }
+
+      .canvas {
+        position: relative;
+        width: {{CANVAS_WIDTH}}px;
+        height: {{CANVAS_HEIGHT}}px;
+        overflow: hidden;
+        isolation: isolate;
+        background:
+          linear-gradient(145deg, {{BACKGROUND_FROM}} 0%, {{BACKGROUND_MID}} 48%, {{BACKGROUND_TO}} 100%);
+      }
+
+      .canvas::before {
+        content: "";
+        position: absolute;
+        inset: -12% -18% auto -18%;
+        height: 58%;
+        transform: rotate(-8deg);
+        transform-origin: center;
+        background:
+          linear-gradient(90deg, rgba(200, 240, 180, 0.92), rgba(47, 128, 237, 0.2) 58%, rgba(255, 255, 255, 0.08));
+        clip-path: polygon(0 0, 100% 14%, 94% 100%, 0 78%);
+        opacity: 0.72;
+        z-index: 0;
+      }
+
+      .canvas::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(115deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 100%),
+          linear-gradient(25deg, rgba(200, 240, 180, 0.1) 0 1px, transparent 1px 100%);
+        background-size: {{PATTERN_SIZE}}px {{PATTERN_SIZE}}px;
+        opacity: 0.35;
+        z-index: 1;
+      }
+
+      .copy {
+        position: absolute;
+        top: {{COPY_TOP}}px;
+        left: {{COPY_LEFT}}px;
+        width: {{COPY_WIDTH}}px;
+        z-index: 4;
+      }
+
+      .brand-line {
+        display: inline-flex;
+        align-items: center;
+        gap: {{BADGE_GAP}}px;
+        margin-bottom: {{BADGE_MARGIN}}px;
+        color: {{BADGE_TEXT}};
+        font-size: {{KICKER_SIZE}}px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .brand-mark {
+        width: {{BADGE_DOT}}px;
+        height: {{BADGE_DOT}}px;
+        border-radius: 999px;
+        background: {{ACCENT}};
+        box-shadow: 0 0 0 {{BADGE_RING}}px rgba(200, 240, 180, 0.22);
+      }
+
+      h1 {
+        margin: 0;
+        color: {{HEADLINE_COLOR}};
+        font-size: {{HEADLINE_SIZE}}px;
+        line-height: 1.02;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-wrap: balance;
+      }
+
+      .subheading {
+        margin: {{SUBHEADING_MARGIN}}px 0 0;
+        max-width: {{SUBHEADING_WIDTH}}px;
+        color: {{BODY_COLOR}};
+        font-size: {{BODY_SIZE}}px;
+        line-height: 1.28;
+        font-weight: 650;
+      }
+
+      .proof-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: {{PILL_GAP}}px;
+        margin-top: {{PILL_MARGIN}}px;
+      }
+
+      .proof-row span {
+        display: inline-flex;
+        align-items: center;
+        min-height: {{PILL_HEIGHT}}px;
+        padding: 0 {{PILL_PADDING_X}}px;
+        border-radius: 999px;
+        background: rgba(247, 249, 238, 0.14);
+        border: 1px solid rgba(247, 249, 238, 0.18);
+        color: {{PILL_TEXT}};
+        font-size: {{PILL_SIZE}}px;
+        font-weight: 800;
+        backdrop-filter: blur(16px);
+      }
+
+      .device {
+        position: absolute;
+        left: {{DEVICE_LEFT}}px;
+        top: {{DEVICE_TOP}}px;
+        width: {{DEVICE_WIDTH}}px;
+        height: {{DEVICE_HEIGHT}}px;
+        padding: {{BEZEL}}px;
+        border-radius: {{DEVICE_RADIUS}}px;
+        background:
+          linear-gradient(145deg, #f9fbef 0%, #dfe7d6 44%, #899487 100%);
+        box-shadow:
+          0 {{SHADOW_Y}}px {{SHADOW_BLUR}}px rgba(0, 0, 0, 0.42),
+          0 0 0 {{FRAME_RING}}px rgba(255, 255, 255, 0.2) inset,
+          0 0 0 {{FRAME_OUTLINE}}px rgba(8, 17, 12, 0.42);
+        transform: {{DEVICE_TRANSFORM}};
+        z-index: 3;
+      }
+
+      .device.android {
+        background:
+          linear-gradient(145deg, #121913 0%, #273227 46%, #64715f 100%);
+      }
+
+      .device.tablet {
+        background:
+          linear-gradient(145deg, #f8faf0 0%, #d7dfd0 54%, #6b7668 100%);
+      }
+
+      .screen {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: {{SCREEN_RADIUS}}px;
+        background: #0d120f;
+      }
+
+      .screen img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        object-position: {{OBJECT_POSITION}};
+      }
+
+      .device::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: {{CAMERA_TOP}}px;
+        width: {{CAMERA_WIDTH}}px;
+        height: {{CAMERA_HEIGHT}}px;
+        transform: translateX(-50%);
+        border-radius: 999px;
+        background: rgba(8, 12, 9, 0.9);
+        z-index: 6;
+        opacity: {{CAMERA_OPACITY}};
+      }
+
+      .device.tablet::before {
+        width: {{TABLET_CAMERA_SIZE}}px;
+        height: {{TABLET_CAMERA_SIZE}}px;
+      }
+
+      .device::after {
+        content: "";
+        position: absolute;
+        right: -{{SIDE_BUTTON_OFFSET}}px;
+        top: 21%;
+        width: {{SIDE_BUTTON_WIDTH}}px;
+        height: {{SIDE_BUTTON_HEIGHT}}px;
+        border-radius: 999px;
+        background: rgba(250, 252, 242, 0.42);
+        opacity: 0.7;
+      }
+
+      .shadow-plate {
+        position: absolute;
+        left: {{PLATE_LEFT}}px;
+        top: {{PLATE_TOP}}px;
+        width: {{PLATE_WIDTH}}px;
+        height: {{PLATE_HEIGHT}}px;
+        border-radius: {{PLATE_RADIUS}}px;
+        transform: {{PLATE_TRANSFORM}};
+        background: rgba(3, 8, 5, 0.2);
+        filter: blur({{PLATE_BLUR}}px);
+        z-index: 2;
+      }
+
+      .route-line {
+        position: absolute;
+        left: {{ROUTE_LEFT}}px;
+        top: {{ROUTE_TOP}}px;
+        width: {{ROUTE_WIDTH}}px;
+        height: {{ROUTE_HEIGHT}}px;
+        border: {{ROUTE_STROKE}}px solid rgba(200, 240, 180, 0.58);
+        border-color: transparent transparent rgba(200, 240, 180, 0.58) rgba(47, 128, 237, 0.36);
+        border-radius: 48%;
+        transform: rotate({{ROUTE_ROTATION}}deg);
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="canvas {{LAYOUT_CLASS}}">
+      <section class="copy">
+        <div class="brand-line"><span class="brand-mark"></span>{{KICKER}}</div>
+        <h1>{{HEADING}}</h1>
+        <p class="subheading">{{SUBHEADING}}</p>
+        <div class="proof-row">
+          <span>{{PILL_ONE}}</span>
+          <span>{{PILL_TWO}}</span>
+        </div>
+      </section>
+
+      <div class="route-line"></div>
+      <div class="shadow-plate"></div>
+      <section class="device {{DEVICE_CLASS}}" aria-label="{{SCREENSHOT_ALT}}">
+        <div class="screen">
+          <img src="{{SCREENSHOT_SRC}}" alt="{{SCREENSHOT_ALT}}" />
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
