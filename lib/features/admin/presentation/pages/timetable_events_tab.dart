@@ -10,6 +10,7 @@ import 'package:sggw_days/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_event.dart';
 import 'package:sggw_days/features/admin/presentation/bloc/admin_state.dart';
 import 'package:sggw_days/features/admin/presentation/poster_generator_uri.dart';
+import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/admin_search_field.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/invalid_entries_banner.dart';
 import 'package:sggw_days/features/admin/presentation/widgets/qr_code_widget.dart';
@@ -185,17 +186,40 @@ class _TimetableEventsTabState extends State<TimetableEventsTab>
                                           ),
                                           const SizedBox(height: 12),
                                           Center(
-                                            child: FilledButton.icon(
-                                              onPressed: () => _openEventPoster(
-                                                context,
-                                                event,
-                                              ),
-                                              icon: const Icon(
-                                                Icons.local_printshop_outlined,
-                                              ),
-                                              label: const Text(
-                                                'Event check-in poster',
-                                              ),
+                                            child: Wrap(
+                                              spacing: 12,
+                                              runSpacing: 12,
+                                              alignment: WrapAlignment.center,
+                                              children: [
+                                                FilledButton.icon(
+                                                  onPressed: () =>
+                                                      _openEventPoster(
+                                                        context,
+                                                        event,
+                                                      ),
+                                                  icon: const Icon(
+                                                    Icons
+                                                        .local_printshop_outlined,
+                                                  ),
+                                                  label: const Text(
+                                                    'Event check-in poster',
+                                                  ),
+                                                ),
+                                                OutlinedButton.icon(
+                                                  onPressed: () =>
+                                                      _previewEventNotification(
+                                                        context,
+                                                        event,
+                                                      ),
+                                                  icon: const Icon(
+                                                    Icons
+                                                        .notifications_active_outlined,
+                                                  ),
+                                                  label: Text(
+                                                    l10n.adminPreviewEventNotification,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -650,6 +674,52 @@ class _TimetableEventsTabState extends State<TimetableEventsTab>
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Poster generator link copied.')),
     );
+  }
+
+  Future<void> _previewEventNotification(
+    BuildContext context,
+    TimetableEvent event,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final reminderService = context.read<EventReminderService>();
+    if (!reminderService.supportsLocalReminders) {
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.adminPreviewEventNotificationUnsupported)),
+      );
+      return;
+    }
+
+    try {
+      final shown = await reminderService.showEventPreview(event);
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            shown
+                ? l10n.adminPreviewEventNotificationShown
+                : l10n.adminPreviewEventNotificationPermissionRequired,
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${l10n.adminPreviewEventNotificationFailed}: $error'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
   }
 
   void _showDeleteDialog(BuildContext context, TimetableEvent event) {

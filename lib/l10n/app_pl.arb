@@ -228,6 +228,11 @@
     }
   },
   "notificationPermissionDenied": "Nie przyznano uprawnienia do powiadomień.",
+  "adminPreviewEventNotification": "Podejrzyj powiadomienie",
+  "adminPreviewEventNotificationUnsupported": "Podgląd lokalnego powiadomienia nie jest dostępny na tej platformie.",
+  "adminPreviewEventNotificationShown": "Podgląd powiadomienia został wysłany na to urządzenie.",
+  "adminPreviewEventNotificationPermissionRequired": "Do podglądu na tym urządzeniu potrzebne jest uprawnienie do powiadomień.",
+  "adminPreviewEventNotificationFailed": "Nie udało się wyświetlić podglądu powiadomienia",
   "permissionDeniedTitle": "Potrzebujemy jeszcze jednej rzeczy",
   "permissionDeniedCameraBody": "Kamera pozwala skanować QR-y podczas gry po kampusie.",
   "permissionDeniedLocationBody": "Lokalizacja potwierdza, że jesteś wystarczająco blisko punktu.",

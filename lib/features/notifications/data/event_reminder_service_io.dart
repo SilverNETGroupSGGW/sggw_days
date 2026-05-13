@@ -23,6 +23,8 @@ class EventReminderService {
   final FlutterLocalNotificationsPlugin _notifications;
   StreamSubscription<RemoteMessage>? _foregroundMessageSubscription;
   bool _initialized = false;
+  Future<void>? _initializationFuture;
+  Future<void> _notificationOperationQueue = Future<void>.value();
 
   EventReminderService({
     required Box<dynamic> settingsBox,
@@ -39,6 +41,25 @@ class EventReminderService {
   Duration get reminderLeadTime => _leadTime;
 
   Future<void> initialize() async {
+    if (_initialized) return;
+    final initializationFuture = _initializationFuture;
+    if (initializationFuture != null) {
+      await initializationFuture;
+      return;
+    }
+
+    final future = _initializeInternal();
+    _initializationFuture = future;
+    try {
+      await future;
+    } finally {
+      if (identical(_initializationFuture, future)) {
+        _initializationFuture = null;
+      }
+    }
+  }
+
+  Future<void> _initializeInternal() async {
     if (_initialized) return;
 
     timezone_data.initializeTimeZones();
@@ -163,66 +184,77 @@ class EventReminderService {
   }
 
   Future<void> disableReminders() async {
-    await initialize();
-    await _notifications.cancelAll();
     await _settingsBox.put(_enabledKey, false);
+    await _enqueueNotificationOperation(() async {
+      await initialize();
+      await _cancelEventReminderNotifications(includePreviews: true);
+    });
   }
 
   Future<void> scheduleFavoriteEventReminders(
     List<TimetableEvent> events,
     Iterable<String> favoriteIds,
   ) async {
-    if (!remindersEnabled) return;
-    await initialize();
+    await _enqueueNotificationOperation(() async {
+      if (!remindersEnabled) return;
+      await initialize();
 
-    final favoriteIdSet = favoriteIds.toSet();
-    final now = DateTime.now();
-    final favoriteEvents = events
-        .where((event) => favoriteIdSet.contains(event.id))
-        .toList();
-    final favoriteNotificationIds = favoriteEvents
-        .map((event) => _notificationIdForKey(event.id))
-        .toSet();
+      final favoriteIdSet = favoriteIds.toSet();
+      final now = DateTime.now();
+      final favoriteEvents = events
+          .where((event) => favoriteIdSet.contains(event.id))
+          .toList();
+      final favoriteNotificationIds = favoriteEvents
+          .map((event) => _notificationIdForKey(event.id))
+          .toSet();
 
-    final pending = await _notifications.pendingNotificationRequests();
-    for (final notification in pending) {
-      if (notification.payload?.startsWith('event:') ?? false) {
-        if (!favoriteNotificationIds.contains(notification.id)) {
+      final pending = await _notifications.pendingNotificationRequests();
+      for (final notification in pending) {
+        if ((notification.payload?.startsWith('event:') ?? false) &&
+            !favoriteNotificationIds.contains(notification.id)) {
           await _notifications.cancel(id: notification.id);
         }
       }
-    }
 
-    for (final event in favoriteEvents) {
-      final scheduledAt = event.startTime.subtract(_leadTime);
-      if (!scheduledAt.isAfter(now)) {
-        await _notifications.cancel(id: _notificationIdForKey(event.id));
-        continue;
+      for (final event in favoriteEvents) {
+        final scheduledAt = event.startTime.subtract(_leadTime);
+        if (!scheduledAt.isAfter(now)) {
+          await _notifications.cancel(id: _notificationIdForKey(event.id));
+          continue;
+        }
+
+        await _notifications.zonedSchedule(
+          id: _notificationIdForKey(event.id),
+          title: event.title,
+          body: _eventNotificationBody(event),
+          scheduledDate: timezone.TZDateTime.from(scheduledAt, timezone.local),
+          notificationDetails: _eventNotificationDetails,
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          payload: 'event:${event.id}',
+        );
+      }
+    });
+  }
+
+  Future<bool> showEventPreview(TimetableEvent event) async {
+    if (!supportsLocalReminders) return false;
+
+    return _enqueueNotificationOperation(() async {
+      await initialize();
+      final granted = await _requestPermissions();
+      if (!granted) {
+        return false;
       }
 
-      await _notifications.zonedSchedule(
-        id: _notificationIdForKey(event.id),
+      await _notifications.show(
+        id: _notificationIdForKey(_eventPreviewKey(event)),
         title: event.title,
-        body: '${_formatStartTime(event.startTime)} • ${event.location}',
-        scheduledDate: timezone.TZDateTime.from(scheduledAt, timezone.local),
-        notificationDetails: const NotificationDetails(
-          android: AndroidNotificationDetails(
-            _channelId,
-            _channelName,
-            channelDescription: _channelDescription,
-            importance: Importance.high,
-            priority: Priority.high,
-            category: AndroidNotificationCategory.event,
-          ),
-          iOS: DarwinNotificationDetails(),
-          macOS: DarwinNotificationDetails(),
-          linux: LinuxNotificationDetails(),
-          windows: WindowsNotificationDetails(),
-        ),
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        payload: 'event:${event.id}',
+        body: _eventNotificationBody(event),
+        notificationDetails: _eventNotificationDetails,
+        payload: 'event_preview:${event.id}',
       );
-    }
+      return true;
+    });
   }
 
   Duration? reminderDelayFor(TimetableEvent event, {DateTime? now}) {
@@ -257,6 +289,50 @@ class EventReminderService {
     return macosGranted ?? true;
   }
 
+  NotificationDetails get _eventNotificationDetails =>
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          _channelId,
+          _channelName,
+          channelDescription: _channelDescription,
+          importance: Importance.high,
+          priority: Priority.high,
+          category: AndroidNotificationCategory.event,
+        ),
+        iOS: DarwinNotificationDetails(),
+        macOS: DarwinNotificationDetails(),
+        linux: LinuxNotificationDetails(),
+        windows: WindowsNotificationDetails(),
+      );
+
+  Future<void> _cancelEventReminderNotifications({
+    bool includePreviews = false,
+  }) async {
+    final pending = await _notifications.pendingNotificationRequests();
+    for (final notification in pending) {
+      final payload = notification.payload;
+      final isEventReminder = payload?.startsWith('event:') ?? false;
+      final isPreview = payload?.startsWith('event_preview:') ?? false;
+      if (isEventReminder || (includePreviews && isPreview)) {
+        await _notifications.cancel(id: notification.id);
+      }
+    }
+  }
+
+  Future<T> _enqueueNotificationOperation<T>(Future<T> Function() operation) {
+    final completer = Completer<T>();
+    _notificationOperationQueue = _notificationOperationQueue
+        .catchError((_) {})
+        .then((_) async {
+          try {
+            completer.complete(await operation());
+          } catch (error, stackTrace) {
+            completer.completeError(error, stackTrace);
+          }
+        });
+    return completer.future;
+  }
+
   int _notificationIdForKey(String key) {
     var hash = 0;
     for (final codeUnit in key.codeUnits) {
@@ -274,5 +350,16 @@ class EventReminderService {
     final hour = startTime.hour.toString().padLeft(2, '0');
     final minute = startTime.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
+  }
+
+  String _eventNotificationBody(TimetableEvent event) {
+    return '${_formatStartTime(event.startTime)} • ${event.location}';
+  }
+
+  String _eventPreviewKey(TimetableEvent event) {
+    if (event.id.isNotEmpty) {
+      return 'preview:${event.id}';
+    }
+    return 'preview:${event.title}:${event.startTime.toIso8601String()}';
   }
 }

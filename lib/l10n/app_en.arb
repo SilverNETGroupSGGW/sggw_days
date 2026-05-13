@@ -225,6 +225,11 @@
     }
   },
   "notificationPermissionDenied": "Notification permission was not granted.",
+  "adminPreviewEventNotification": "Preview notification",
+  "adminPreviewEventNotificationUnsupported": "Local notification preview is unavailable on this platform.",
+  "adminPreviewEventNotificationShown": "Notification preview sent to this device.",
+  "adminPreviewEventNotificationPermissionRequired": "Notification permission is required to preview on this device.",
+  "adminPreviewEventNotificationFailed": "Failed to preview notification",
   "permissionDeniedTitle": "We need one more thing",
   "permissionDeniedCameraBody": "Camera access lets you scan QR codes during the campus hunt.",
   "permissionDeniedLocationBody": "Location access confirms you are close enough to collect a point.",

@@ -34,6 +34,8 @@ class EventReminderService {
     Iterable<String> favoriteIds,
   ) async {}
 
+  Future<bool> showEventPreview(TimetableEvent event) async => false;
+
   Duration? reminderDelayFor(TimetableEvent event, {DateTime? now}) {
     final scheduledAt = event.startTime.subtract(reminderLeadTime);
     final reference = now ?? DateTime.now();

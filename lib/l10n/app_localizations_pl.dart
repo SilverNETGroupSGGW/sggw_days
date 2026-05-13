@@ -622,6 +622,25 @@ class AppLocalizationsPl extends AppLocalizations {
       'Nie przyznano uprawnienia do powiadomień.';
 
   @override
+  String get adminPreviewEventNotification => 'Podejrzyj powiadomienie';
+
+  @override
+  String get adminPreviewEventNotificationUnsupported =>
+      'Podgląd lokalnego powiadomienia nie jest dostępny na tej platformie.';
+
+  @override
+  String get adminPreviewEventNotificationShown =>
+      'Podgląd powiadomienia został wysłany na to urządzenie.';
+
+  @override
+  String get adminPreviewEventNotificationPermissionRequired =>
+      'Do podglądu na tym urządzeniu potrzebne jest uprawnienie do powiadomień.';
+
+  @override
+  String get adminPreviewEventNotificationFailed =>
+      'Nie udało się wyświetlić podglądu powiadomienia';
+
+  @override
   String get permissionDeniedTitle => 'Potrzebujemy jeszcze jednej rzeczy';
 
   @override

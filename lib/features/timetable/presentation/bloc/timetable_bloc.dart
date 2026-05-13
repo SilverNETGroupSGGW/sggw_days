@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
@@ -13,6 +14,10 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   final TimetableRepository _repository;
   final EventReminderService? _eventReminderService;
   StreamSubscription<List<model.TimetableEvent>>? _eventsSubscription;
+  Future<Box<List<String>>>? _favoritesBoxFuture;
+  Future<Box<List<String>>>? _checkInBoxFuture;
+  Future<Box<dynamic>>? _checkInHistoryBoxFuture;
+  Future<void> _reminderSyncQueue = Future<void>.value();
 
   TimetableBloc({
     required TimetableRepository repository,
@@ -72,17 +77,17 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     })
   >
   _loadLocalSelections() async {
-    final favBox = await Hive.openBox<List<String>>('favorites');
+    final favBox = await _favoritesBox();
     final favoriteIds =
         favBox.get('timetable_favorites', defaultValue: <String>[]) ??
         <String>[];
 
-    final checkInBox = await Hive.openBox<List<String>>('check_ins');
+    final checkInBox = await _checkInBox();
     final checkedInIds =
         checkInBox.get('event_check_ins', defaultValue: <String>[]) ??
         <String>[];
 
-    final historyBox = await Hive.openBox('event_check_in_history');
+    final historyBox = await _checkInHistoryBox();
     final checkedInHistory = <String, DateTime>{};
     for (final key in historyBox.keys) {
       final value = historyBox.get(key);
@@ -146,7 +151,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
       updatedFavorites.add(event.eventId);
     }
 
-    final favBox = await Hive.openBox<List<String>>('favorites');
+    final favBox = await _favoritesBox();
     await favBox.put('timetable_favorites', updatedFavorites);
 
     final filtered = _filterEvents(
@@ -160,7 +165,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     emit(
       state.copyWith(favoriteIds: updatedFavorites, filteredEvents: filtered),
     );
-    await _syncEventReminders(state.events, updatedFavorites);
+    unawaited(_queueReminderSync());
   }
 
   void _onToggleShowFavorites(
@@ -183,16 +188,35 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     );
   }
 
-  Future<void> _syncEventReminders(
-    List<model.TimetableEvent> events,
-    List<String> favoriteIds,
-  ) async {
+  Future<Box<List<String>>> _favoritesBox() {
+    return _favoritesBoxFuture ??= Hive.openBox<List<String>>('favorites');
+  }
+
+  Future<Box<List<String>>> _checkInBox() {
+    return _checkInBoxFuture ??= Hive.openBox<List<String>>('check_ins');
+  }
+
+  Future<Box<dynamic>> _checkInHistoryBox() {
+    return _checkInHistoryBoxFuture ??= Hive.openBox('event_check_in_history');
+  }
+
+  Future<void> _queueReminderSync() async {
+    final reminderService = _eventReminderService;
+    if (reminderService == null) return;
+
     try {
-      await _eventReminderService?.scheduleFavoriteEventReminders(
-        events,
-        favoriteIds,
-      );
-    } catch (_) {}
+      await (_reminderSyncQueue = _reminderSyncQueue.catchError((_) {}).then((
+        _,
+      ) async {
+        final currentState = state;
+        await reminderService.scheduleFavoriteEventReminders(
+          currentState.events,
+          currentState.favoriteIds,
+        );
+      }));
+    } catch (error) {
+      debugPrint('Failed to sync event reminders: $error');
+    }
   }
 
   void _onTimetableEventsUpdated(
@@ -218,7 +242,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
         errorMessage: null,
       ),
     );
-    unawaited(_syncEventReminders(sortedEvents, state.favoriteIds));
+    unawaited(_queueReminderSync());
   }
 
   DateTime? _firstEventDate(List<model.TimetableEvent> events) {
@@ -301,9 +325,9 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
       final checkedInAt = DateTime.now();
       updatedHistory[event.eventId] = checkedInAt;
 
-      final checkInBox = await Hive.openBox<List<String>>('check_ins');
+      final checkInBox = await _checkInBox();
       await checkInBox.put('event_check_ins', updatedCheckIns);
-      final historyBox = await Hive.openBox('event_check_in_history');
+      final historyBox = await _checkInHistoryBox();
       await historyBox.put(event.eventId, checkedInAt.toIso8601String());
 
       emit(

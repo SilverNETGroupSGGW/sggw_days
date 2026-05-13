@@ -1178,6 +1178,36 @@ abstract class AppLocalizations {
   /// **'Nie przyznano uprawnienia do powiadomień.'**
   String get notificationPermissionDenied;
 
+  /// No description provided for @adminPreviewEventNotification.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podejrzyj powiadomienie'**
+  String get adminPreviewEventNotification;
+
+  /// No description provided for @adminPreviewEventNotificationUnsupported.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podgląd lokalnego powiadomienia nie jest dostępny na tej platformie.'**
+  String get adminPreviewEventNotificationUnsupported;
+
+  /// No description provided for @adminPreviewEventNotificationShown.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podgląd powiadomienia został wysłany na to urządzenie.'**
+  String get adminPreviewEventNotificationShown;
+
+  /// No description provided for @adminPreviewEventNotificationPermissionRequired.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do podglądu na tym urządzeniu potrzebne jest uprawnienie do powiadomień.'**
+  String get adminPreviewEventNotificationPermissionRequired;
+
+  /// No description provided for @adminPreviewEventNotificationFailed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wyświetlić podglądu powiadomienia'**
+  String get adminPreviewEventNotificationFailed;
+
   /// No description provided for @permissionDeniedTitle.
   ///
   /// In pl, this message translates to:

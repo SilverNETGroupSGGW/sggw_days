@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:sggw_days/features/notifications/data/event_reminder_service.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart'
     as model;
 import 'package:sggw_days/features/timetable/data/repositories/timetable_repository.dart';
@@ -19,6 +20,45 @@ class _StreamingTimetableRepository extends TimetableRepository {
 
   @override
   Stream<List<model.TimetableEvent>> watchEvents() => controller.stream;
+}
+
+class _ReminderSyncCall {
+  const _ReminderSyncCall({required this.events, required this.favoriteIds});
+
+  final List<model.TimetableEvent> events;
+  final List<String> favoriteIds;
+}
+
+class _RecordingEventReminderService extends EventReminderService {
+  _RecordingEventReminderService({required super.settingsBox});
+
+  final StreamController<_ReminderSyncCall> _syncController =
+      StreamController<_ReminderSyncCall>.broadcast();
+
+  Stream<_ReminderSyncCall> get syncs => _syncController.stream;
+
+  @override
+  bool get remindersEnabled => true;
+
+  @override
+  Future<void> initialize() async {}
+
+  @override
+  Future<void> scheduleFavoriteEventReminders(
+    List<model.TimetableEvent> events,
+    Iterable<String> favoriteIds,
+  ) async {
+    _syncController.add(
+      _ReminderSyncCall(
+        events: List<model.TimetableEvent>.from(events),
+        favoriteIds: List<String>.from(favoriteIds),
+      ),
+    );
+  }
+
+  Future<void> closeRecorder() async {
+    await _syncController.close();
+  }
 }
 
 void main() {
@@ -41,9 +81,13 @@ void main() {
     if (Hive.isBoxOpen('event_check_in_history')) {
       await Hive.box('event_check_in_history').close();
     }
+    if (Hive.isBoxOpen('settings')) {
+      await Hive.box('settings').close();
+    }
     await Hive.deleteBoxFromDisk('favorites');
     await Hive.deleteBoxFromDisk('check_ins');
     await Hive.deleteBoxFromDisk('event_check_in_history');
+    await Hive.deleteBoxFromDisk('settings');
   });
 
   tearDownAll(() async {
@@ -255,6 +299,165 @@ void main() {
     await loaded;
 
     await bloc.close();
+    await repository.controller.close();
+  });
+
+  test('syncs reminders when an event is favorited', () async {
+    final repository = _StreamingTimetableRepository();
+    final settingsBox = await Hive.openBox('settings');
+    final reminderService = _RecordingEventReminderService(
+      settingsBox: settingsBox,
+    );
+    final bloc = TimetableBloc(
+      repository: repository,
+      eventReminderService: reminderService,
+    );
+    final event = _event(
+      id: 'event-1',
+      title: 'Open Lab',
+      startTime: DateTime(2026, 5, 20, 11),
+      tags: const ['science'],
+    );
+
+    final loaded = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TimetableState>().having(
+          (state) => state.events.single.id,
+          'event id',
+          'event-1',
+        ),
+      ),
+    );
+
+    bloc.add(const LoadTimetableEvents());
+    repository.controller.add([event]);
+    await loaded;
+
+    final reminderSync = reminderService.syncs.firstWhere(
+      (call) => call.favoriteIds.contains('event-1'),
+    );
+    bloc.add(const ToggleFavorite('event-1'));
+
+    final syncCall = await reminderSync;
+    expect(syncCall.favoriteIds, ['event-1']);
+    expect(syncCall.events.map((item) => item.id), ['event-1']);
+
+    await bloc.close();
+    await reminderService.closeRecorder();
+    await repository.controller.close();
+  });
+
+  test('resyncs reminders when a favorited event time changes', () async {
+    final favoritesBox = await Hive.openBox<List<String>>('favorites');
+    await favoritesBox.put('timetable_favorites', const ['event-1']);
+    final repository = _StreamingTimetableRepository();
+    final settingsBox = await Hive.openBox('settings');
+    final reminderService = _RecordingEventReminderService(
+      settingsBox: settingsBox,
+    );
+    final bloc = TimetableBloc(
+      repository: repository,
+      eventReminderService: reminderService,
+    );
+    final originalEvent = _event(
+      id: 'event-1',
+      title: 'Open Lab',
+      startTime: DateTime(2026, 5, 20, 11),
+      tags: const ['science'],
+    );
+    final updatedEvent = _event(
+      id: 'event-1',
+      title: 'Open Lab',
+      startTime: DateTime(2026, 5, 20, 12, 30),
+      tags: const ['science'],
+    );
+
+    final loaded = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TimetableState>().having(
+          (state) => state.favoriteIds,
+          'favorite ids',
+          const ['event-1'],
+        ),
+      ),
+    );
+
+    bloc.add(const LoadTimetableEvents());
+    repository.controller.add([originalEvent]);
+    await loaded;
+
+    final reminderSync = reminderService.syncs.firstWhere((call) {
+      final syncedEvent = call.events.firstWhere(
+        (item) => item.id == 'event-1',
+        orElse: () => _event(
+          id: 'missing',
+          title: 'Missing',
+          startTime: DateTime(2026, 1, 1),
+          tags: const [],
+        ),
+      );
+      return call.favoriteIds.contains('event-1') &&
+          syncedEvent.startTime == updatedEvent.startTime;
+    });
+
+    repository.controller.add([updatedEvent]);
+
+    final syncCall = await reminderSync;
+    expect(syncCall.favoriteIds, ['event-1']);
+    expect(syncCall.events.single.startTime, updatedEvent.startTime);
+
+    await bloc.close();
+    await reminderService.closeRecorder();
+    await repository.controller.close();
+  });
+
+  test('syncs reminder removal when an event is unfavorited', () async {
+    final favoritesBox = await Hive.openBox<List<String>>('favorites');
+    await favoritesBox.put('timetable_favorites', const ['event-1']);
+    final repository = _StreamingTimetableRepository();
+    final settingsBox = await Hive.openBox('settings');
+    final reminderService = _RecordingEventReminderService(
+      settingsBox: settingsBox,
+    );
+    final bloc = TimetableBloc(
+      repository: repository,
+      eventReminderService: reminderService,
+    );
+    final event = _event(
+      id: 'event-1',
+      title: 'Open Lab',
+      startTime: DateTime(2026, 5, 20, 11),
+      tags: const ['science'],
+    );
+
+    final loaded = expectLater(
+      bloc.stream,
+      emitsThrough(
+        isA<TimetableState>().having(
+          (state) => state.favoriteIds,
+          'favorite ids',
+          const ['event-1'],
+        ),
+      ),
+    );
+
+    bloc.add(const LoadTimetableEvents());
+    repository.controller.add([event]);
+    await loaded;
+
+    final reminderSync = reminderService.syncs.firstWhere(
+      (call) => call.favoriteIds.isEmpty,
+    );
+    bloc.add(const ToggleFavorite('event-1'));
+
+    final syncCall = await reminderSync;
+    expect(syncCall.favoriteIds, isEmpty);
+    expect(syncCall.events.map((item) => item.id), ['event-1']);
+
+    await bloc.close();
+    await reminderService.closeRecorder();
     await repository.controller.close();
   });
 }

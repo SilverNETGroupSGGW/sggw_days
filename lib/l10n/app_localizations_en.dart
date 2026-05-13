@@ -618,6 +618,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Notification permission was not granted.';
 
   @override
+  String get adminPreviewEventNotification => 'Preview notification';
+
+  @override
+  String get adminPreviewEventNotificationUnsupported =>
+      'Local notification preview is unavailable on this platform.';
+
+  @override
+  String get adminPreviewEventNotificationShown =>
+      'Notification preview sent to this device.';
+
+  @override
+  String get adminPreviewEventNotificationPermissionRequired =>
+      'Notification permission is required to preview on this device.';
+
+  @override
+  String get adminPreviewEventNotificationFailed =>
+      'Failed to preview notification';
+
+  @override
   String get permissionDeniedTitle => 'We need one more thing';
 
   @override
