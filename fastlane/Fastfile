@@ -32,16 +32,30 @@ def ipa_path
   Dir[File.expand_path('../build/ios/ipa/*.ipa', __dir__)].first
 end
 
+def normalize_app_store_locale(locale)
+  value = locale.to_s.strip
+  return nil if value.empty?
+
+  case value.downcase
+  when 'en', 'en-us'
+    'en-US'
+  when 'pl', 'pl-pl'
+    'pl'
+  else
+    value
+  end
+end
+
 def app_store_release_note_locales
   configured = optional_env('APPSTORE_RELEASE_NOTES_LOCALES')
   if configured
-    locales = configured.split(',').map(&:strip).reject(&:empty?)
+    locales = configured.split(',').map { |locale| normalize_app_store_locale(locale) }.compact.uniq
     return locales unless locales.empty?
   end
 
   locales = []
   locales << 'en-US' if File.exist?(File.expand_path('../lib/l10n/app_en.arb', __dir__))
-  locales << 'pl-PL' if File.exist?(File.expand_path('../lib/l10n/app_pl.arb', __dir__))
+  locales << 'pl' if File.exist?(File.expand_path('../lib/l10n/app_pl.arb', __dir__))
 
   return locales unless locales.empty?
 
