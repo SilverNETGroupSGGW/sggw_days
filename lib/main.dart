@@ -102,6 +102,9 @@ class _MyAppState extends State<MyApp> {
   late bool _onboardingCompleted;
   late final EventReminderService _eventReminderService;
   late final NotificationRepository _notificationRepository;
+  StreamSubscription<String>? _eventNotificationSubscription;
+  String? _pendingNotificationEventId;
+  bool _isNotificationNavigationScheduled = false;
 
   @override
   void initState() {
@@ -110,6 +113,8 @@ class _MyAppState extends State<MyApp> {
     _eventReminderService = EventReminderService(
       settingsBox: widget.settingsBox,
     );
+    _eventNotificationSubscription = _eventReminderService.selectedEventIds
+        .listen(_handleEventNotificationSelection);
     unawaited(_eventReminderService.initialize());
     _notificationRepository = NotificationRepository(
       settingsBox: widget.settingsBox,
@@ -120,6 +125,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    unawaited(_eventNotificationSubscription?.cancel());
     unawaited(_eventReminderService.dispose());
     unawaited(_notificationRepository.dispose());
     super.dispose();
@@ -128,6 +134,41 @@ class _MyAppState extends State<MyApp> {
   void _completeOnboarding() {
     setState(() {
       _onboardingCompleted = true;
+    });
+    _schedulePendingNotificationNavigation();
+  }
+
+  void _handleEventNotificationSelection(String eventId) {
+    _pendingNotificationEventId = eventId;
+    _schedulePendingNotificationNavigation();
+  }
+
+  void _schedulePendingNotificationNavigation() {
+    if (_isNotificationNavigationScheduled ||
+        !_onboardingCompleted ||
+        _pendingNotificationEventId == null) {
+      return;
+    }
+
+    _isNotificationNavigationScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isNotificationNavigationScheduled = false;
+      if (!mounted || !_onboardingCompleted) {
+        return;
+      }
+
+      final eventId = _pendingNotificationEventId;
+      if (eventId == null) {
+        return;
+      }
+
+      _pendingNotificationEventId = null;
+      appRouter.go(
+        Uri(
+          path: '/timetable',
+          queryParameters: {'eventId': eventId},
+        ).toString(),
+      );
     });
   }
 
@@ -152,6 +193,8 @@ class _MyAppState extends State<MyApp> {
         ),
       );
     }
+
+    _schedulePendingNotificationNavigation();
 
     return MultiRepositoryProvider(
       providers: [

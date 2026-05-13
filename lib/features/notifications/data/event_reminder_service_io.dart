@@ -13,6 +13,8 @@ class EventReminderService {
   static const _channelId = 'event_reminders';
   static const _channelName = 'Event reminders';
   static const _channelDescription = 'Reminders before favourited events start';
+  static const _eventPayloadPrefix = 'event:';
+  static const _eventPreviewPayloadPrefix = 'event_preview:';
   static const broadcastChannelId = 'event_broadcasts';
   static const _broadcastChannelName = 'Event broadcasts';
   static const _broadcastChannelDescription =
@@ -22,6 +24,8 @@ class EventReminderService {
   final Box<dynamic> _settingsBox;
   final FlutterLocalNotificationsPlugin _notifications;
   StreamSubscription<RemoteMessage>? _foregroundMessageSubscription;
+  final StreamController<String> _selectedEventIdsController =
+      StreamController<String>.broadcast();
   bool _initialized = false;
   Future<void>? _initializationFuture;
   Future<void> _notificationOperationQueue = Future<void>.value();
@@ -37,6 +41,8 @@ class EventReminderService {
 
   bool get remindersEnabled =>
       _settingsBox.get(_enabledKey, defaultValue: false) as bool? ?? false;
+
+  Stream<String> get selectedEventIds => _selectedEventIdsController.stream;
 
   Duration get reminderLeadTime => _leadTime;
 
@@ -85,16 +91,19 @@ class EventReminderService {
           guid: '4D5068C5-4C8D-4DB9-9C08-B6130EC90E42',
         ),
       ),
+      onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
     );
 
     await _createAndroidChannels();
     await _configureForegroundPushHandling();
+    await _deliverLaunchNotificationSelection();
 
     _initialized = true;
   }
 
   Future<void> dispose() async {
     await _foregroundMessageSubscription?.cancel();
+    await _selectedEventIdsController.close();
   }
 
   Future<void> _createAndroidChannels() async {
@@ -230,7 +239,7 @@ class EventReminderService {
           scheduledDate: timezone.TZDateTime.from(scheduledAt, timezone.local),
           notificationDetails: _eventNotificationDetails,
           androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-          payload: 'event:${event.id}',
+          payload: '$_eventPayloadPrefix${event.id}',
         );
       }
     });
@@ -251,7 +260,7 @@ class EventReminderService {
         title: event.title,
         body: _eventNotificationBody(event),
         notificationDetails: _eventNotificationDetails,
-        payload: 'event_preview:${event.id}',
+        payload: '$_eventPreviewPayloadPrefix${event.id}',
       );
       return true;
     });
@@ -319,6 +328,29 @@ class EventReminderService {
     }
   }
 
+  Future<void> _deliverLaunchNotificationSelection() async {
+    final launchDetails = await _notifications
+        .getNotificationAppLaunchDetails();
+    if (!(launchDetails?.didNotificationLaunchApp ?? false)) {
+      return;
+    }
+
+    _emitSelectedEventId(launchDetails?.notificationResponse?.payload);
+  }
+
+  void _onDidReceiveNotificationResponse(NotificationResponse response) {
+    _emitSelectedEventId(response.payload);
+  }
+
+  void _emitSelectedEventId(String? payload) {
+    final eventId = eventIdFromPayload(payload);
+    if (eventId == null || _selectedEventIdsController.isClosed) {
+      return;
+    }
+
+    _selectedEventIdsController.add(eventId);
+  }
+
   Future<T> _enqueueNotificationOperation<T>(Future<T> Function() operation) {
     final completer = Completer<T>();
     _notificationOperationQueue = _notificationOperationQueue
@@ -354,6 +386,24 @@ class EventReminderService {
 
   String _eventNotificationBody(TimetableEvent event) {
     return '${_formatStartTime(event.startTime)} • ${event.location}';
+  }
+
+  @visibleForTesting
+  static String? eventIdFromPayload(String? payload) {
+    if (payload == null || payload.isEmpty) {
+      return null;
+    }
+
+    for (final prefix in [_eventPayloadPrefix, _eventPreviewPayloadPrefix]) {
+      if (!payload.startsWith(prefix)) {
+        continue;
+      }
+
+      final eventId = payload.substring(prefix.length);
+      return eventId.isEmpty ? null : eventId;
+    }
+
+    return null;
   }
 
   String _eventPreviewKey(TimetableEvent event) {

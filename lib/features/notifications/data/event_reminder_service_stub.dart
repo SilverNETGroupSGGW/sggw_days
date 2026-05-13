@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:hive_ce/hive.dart';
 import 'package:sggw_days/features/timetable/data/models/timetable_event.dart';
 
@@ -13,6 +15,8 @@ class EventReminderService {
 
   bool get remindersEnabled =>
       _settingsBox.get(_enabledKey, defaultValue: false) as bool? ?? false;
+
+  Stream<String> get selectedEventIds => Stream<String>.empty();
 
   Duration get reminderLeadTime => const Duration(minutes: 15);
 
