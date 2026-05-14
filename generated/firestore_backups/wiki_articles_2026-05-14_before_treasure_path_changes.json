@@ -1,0 +1,985 @@
+{
+  "documents": [
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-bezpieczenstwo-i-zdrowie-na-kampusie",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "iconName": {
+          "stringValue": "health_and_safety"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-bezpieczenstwo-i-zdrowie-bhp-pip-pis"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        },
+        "title": {
+          "stringValue": "Bezpieczeństwo i Zdrowie na Kampusie"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "content": {
+          "stringValue": "Stoisko bezpieczeństwa to wspólna inicjatywa **Państwowej Inspekcji Pracy, Państwowej Inspekcji Sanitarnej, Związku Dilerów Samochodowych i Działu BHP SGGW**. Wiedza zdobyta tu może pewnego dnia uratować komuś życie.\n\n**Piątek:**\n\n- Promocja kultury bezpieczeństwa w pracy i domu\n- Dystrybucja poradników i broszur\n- Porady dotyczące higieny i zdrowia\n\n**Sobota:**\n\n- **Akcja „Karta ratownicza w pojeździe\"** — dowiedz się, czym jest i dlaczego warto ją mieć\n- **Nauka resuscytacji krążeniowo-oddechowej (RKO)** — fantomy, instrukcja krok po kroku\n- Kolorowanki, krzyżówki i quizy o bezpieczeństwie dla dzieci"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-10T22:44:28.289773Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-biblioteka-g-owna-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Biblioteka Główna SGGW"
+        },
+        "content": {
+          "stringValue": "Biblioteka to nie tylko miejsce, gdzie przechowuje się książki — to przestrzeń spotkań, debat i odkryć. Biblioteka Główna SGGW wyjeżdża na piknik z wózkiem pełnym książek i mnóstwem atrakcji!\n\n### Na stoisku:\n\n**Dla dorosłych:**\n\n- **Quiz literacki** — kto napisał, jak się nazywa bohater, skąd pochodzi cytat?\n- **Akademicka Liga Debat Oksfordzkich** — Koło Naukowe Debat Oksfordzkich SGGW organizuje turniej debat w przestrzeni Biblioteki Głównej (oba dni!)\n\n**Dla dzieci:**\n\n- **Quiz SGGW** — rozpoznaj zwierzę lub roślinę po fragmencie zdjęcia\n- **Quiz książkowy** — dopasuj tytuł do autora, autora do bohatera\n- **Kolorowanki** z motywami roślin i zwierząt SGGW\n- **Planszówka „Poznaj bibliotekę\"**\n- **Warsztaty tworzenia zakładek do książek** — suszone kwiaty, wstążki, stare gazety, kolorowy papier. Twoja zakładka, Twój styl."
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "iconName": {
+          "stringValue": "local_library"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-biblioteka-g-owna-sggw"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-10T22:11:30.266171Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-biuro-projektow-krajowych-sggw",
+      "fields": {
+        "iconName": {
+          "stringValue": "account_balance"
+        },
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-biuro-projektow-krajowych-sggw"
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "content": {
+          "stringValue": "Biuro Projektów Krajowych SGGW koordynuje i wspiera realizację projektów badawczych finansowanych ze źródeł krajowych — w tym z NCN, NCBiR i funduszy strukturalnych. Dzięki tej jednostce naukowcy SGGW mogą skupić się na badaniach, mając zapewnione wsparcie administracyjne i finansowe.\n\nOdwiedź stoisko i dowiedz się, jak nauka z kampusu SGGW trafia do rolnictwa, przemysłu i polityki publicznej."
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-biuro-projektow-krajowych-sggw.png"
+        },
+        "title": {
+          "stringValue": "Biuro Projektów Krajowych SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:58.821138Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-biuro-wspo-pracy-miedzynarodowej-sggw",
+      "fields": {
+        "iconName": {
+          "stringValue": "travel_explore"
+        },
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-biuro-wspo-pracy-miedzynarodowej"
+              },
+              {
+                "stringValue": "point-budynek-8-biura-sggw"
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "content": {
+          "stringValue": "Biuro Współpracy Międzynarodowej SGGW wspiera działania uczelni związane z kontaktami zagranicznymi i organizacją międzynarodowych wyjazdów. Podczas Dni SGGW jednostka pokazuje praktyczny wymiar współpracy międzynarodowej i konsultacji związanych z zagranicznymi delegacjami.\n\n### Na stoisku:\n\n- **Wyrusz w Świat** — indywidualne konsultacje dla pracowników SGGW związane z organizacją zagranicznych delegacji."
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "title": {
+          "stringValue": "Biuro Współpracy Międzynarodowej SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:58.869371Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-erasmus-student-network-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Erasmus Student Network SGGW"
+        },
+        "content": {
+          "stringValue": "Erasmus Student Network to największa studencka organizacja o charakterze non-profit w Europie. Już od 20 lat sekcja działająca na SGGW organizuje wydarzenia dla studentów przyjezdnych: wycieczki po Polsce, wyjścia do muzeów oraz luźne integracje.\n\nTo również dobre miejsce, by dowiedzieć się więcej o planowaniu własnej wymiany zagranicznej i poznać ludzi z wielu krajów."
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-erasmus-student-network-sggw.jpg"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "iconName": {
+          "stringValue": "public"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-erasmus-student-network-sggw"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Koła i organizacje"
+        }
+      },
+      "createTime": "2026-05-14T14:22:20.871588Z",
+      "updateTime": "2026-05-14T14:22:20.871588Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-kolo-naukowe-zwierzat-doswiadczalnych-i-laboratoryjnych",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "iconName": {
+          "stringValue": "science"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-kolo-naukowe-zwierzat-doswiadczalnych-i-laboratoryjnych"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Koła i organizacje"
+        },
+        "title": {
+          "stringValue": "Koło Naukowe Zwierząt Doświadczalnych i Laboratoryjnych"
+        },
+        "content": {
+          "stringValue": "Koło Naukowe Zwierząt Doświadczalnych i Laboratoryjnych zajmuje się tematyką badań z udziałem zwierząt. Projekty realizowane w ramach działalności Koła dotyczą diagnostyki molekularnej i genetyki populacyjnej, w których wykorzystywane są techniki laboratoryjne („wet lab”), bioinformatyczne („dry lab”) oraz badania środowiskowe. Członkowie Koła występują na krajowych i międzynarodowych konferencjach, w tym ELLS, prezentując wyniki swoich przedsięwzięć naukowych.\n\n### Na stoisku\n\n- zobaczysz zwierzęta modelowe i dowiesz się o nich więcej,\n- ułożysz nietypową układankę,\n- sprawdzisz swoją wiedzę o środowisku życia różnych gatunków ptaków,\n- poznasz możliwości wyposażenia klatek dla gryzoni,\n- zobaczysz przyrządy zootechniczne i laboratoryjne,\n- zakręcisz kołem fortuny i powalczysz o małą pamiątkę.\n\n### Warsztaty izolacji DNA\n\nWarsztaty odbędą się w piątek 15.05 i sobotę 16.05 przy stoisku warsztatowym Samorządu. Zaplanowano dwie tury każdego dnia: o 11:00 i 14:00. Każda potrwa 1 godzinę."
+        },
+        "imageUrl": {
+          "nullValue": null
+        }
+      },
+      "createTime": "2026-05-14T14:22:21.322214Z",
+      "updateTime": "2026-05-14T14:22:21.322214Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-muzeum-sggw",
+      "fields": {
+        "content": {
+          "stringValue": "Szkoła Główna Gospodarstwa Wiejskiego w Warszawie ma ponad **200-letnią historię**, sięgającą założenia Instytutu Agronomicznego na Marymoncie. Muzeum SGGW przechowuje i prezentuje tę niesamowitą historię — od pierwszych wykładów o rolnictwie, przez czasy wojenne, po współczesne osiągnięcia naukowców.\n\n### Wystawa „SGGW – korzenie przyszłości\"\n\n**Rotunda w Auli Kryształowej**\n\nWyjątkowa ekspozycja opowiadająca historię uczelni przez pryzmat ludzi, idei i przełomowych momentów. Poznaj absolwentów, którzy zmienili polskie rolnictwo, środowisko i naukę — i zainspiruj się do pisania kolejnych rozdziałów tej historii."
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "title": {
+          "stringValue": "Muzeum SGGW"
+        },
+        "iconName": {
+          "stringValue": "museum"
+        },
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-muzeum-sggw"
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-10T22:11:30.266171Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-obiekty-sportowe-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Obiekty Sportowe SGGW"
+        },
+        "content": {
+          "stringValue": "Sport, relaks i energia w najlepszym wydaniu — Obiekty Sportowe SGGW to jedno z najlepiej wyposażonych centrów aktywności na warszawskich uczelniach. Pływalnia SGGW została uroczyście otwarta **8 lutego 2002 roku** — ponad 24 lata obecności na kampusie i wciąż w doskonałej formie!\n\n### Co oferujemy?\n\n- Nowoczesny **basen** (25 m, tory pływackie)\n- **Siłownia** i **sauna sucha**\n- **3 sale sportowe** (koszykówka, siatkówka, badminton i inne)\n- **Arena piłkarska** ze sztuczną nawierzchnią\n- **Korty tenisowe** na Wolicy — idealne na treningi i rekreację\n\nOdwiedź stoisko i dowiedz się, jak zostać użytkownikiem Obiektów Sportowych SGGW — oferta dla studentów, pracowników i osób z zewnątrz."
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-obiekty-sportowe-sggw.jpg"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-obiekty-sportowe-sggw"
+              }
+            ]
+          }
+        },
+        "iconName": {
+          "stringValue": "sports"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-10T22:11:30.266171Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-stowarzyszenie-milosnikow-zubrow",
+      "fields": {
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-stowarzyszenie-milosnikow-zubrow"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Koła i organizacje"
+        },
+        "iconName": {
+          "stringValue": "forest"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "title": {
+          "stringValue": "Stowarzyszenie Miłośników Żubrów"
+        },
+        "content": {
+          "stringValue": "Stowarzyszenie Miłośników Żubrów od lat organizuje między innymi transporty żubrów z Polski. 8 maja 2026 roku dziewięć polskich żubrów dotarło do półwolnej hodowli w Portugalii o nazwie Vale Feitoso. Takie transporty są ważnym elementem ochrony żubra w Europie.\n\n### Na stoisku\n\n- dowiesz się, jakie działania Stowarzyszenie prowadzi na rzecz ochrony przyrody i przetrwania gatunku żubr,\n- poznasz historię transportów żubrów z Polski do zagranicznych ośrodków w Europie,\n- sprawdzisz swoją wiedzę w quizowym pytaniu o liczbę żubrów, które w ciągu ostatnich 80 lat wyjechały z Polski do zagranicznych ośrodków w Europie."
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-stowarzyszenie-milosnikow-zubrow.jpg"
+        }
+      },
+      "createTime": "2026-05-14T14:22:21.084372Z",
+      "updateTime": "2026-05-14T14:22:21.084372Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-studium-praktycznej-nauki-jezykow-obcych-sggw-spnjo",
+      "fields": {
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-studium-jezykow-obcych-spnjo"
+              }
+            ]
+          }
+        },
+        "iconName": {
+          "stringValue": "translate"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "content": {
+          "stringValue": "Języki to mosty — między ludźmi, kulturami i karierami. Studium Praktycznej Nauki Języków Obcych SGGW (SPNJO) to centrum językowe uczelni, prowadzące kursy dla studentów i pracowników we wszystkich głównych językach europejskich i nie tylko.\n\n### Na stoisku:\n\n- Językowe i kulturowe quizy oraz zgadywanki — sprawdź, co wiesz o innych kulturach\n- Rysowanki i układanki z motywem językowym\n- **Quiz muzyczny** — rozpoznaj kraj po muzyce!\n- **Konkurs Kahoot** — szybkie quizy na telefonie, z nagrodami\n- **Dyktando** — klasyczna zabawa w nowoczesnej wersji\n\n_The SPNJO Languages Centre stall is also welcoming international guests — all activities available in English!_"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "title": {
+          "stringValue": "Studium Praktycznej Nauki Języków Obcych SGGW (SPNJO)"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-10T22:11:30.266171Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-szko-a-doktorska-sggw-i-rada-doktorantow",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "iconName": {
+          "stringValue": "school"
+        },
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-szko-a-doktorska-sggw"
+              }
+            ]
+          }
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-szkola-doktorska-sggw-i-rada-doktorantow.jpg"
+        },
+        "content": {
+          "stringValue": "Szkoła Doktorska SGGW to nowa forma kształcenia doktorantów wprowadzona ustawą z 2018 r. W przeciwieństwie do studiów nie ma tu kierunków - kształcenie odbywa się w dziedzinach i dyscyplinach naukowych. Program opiera się na pięciu modułach, dzięki czemu rozwój naukowy jest interdyscyplinarny i uporządkowany.\n\nKażdy doktorant bez stopnia doktora otrzymuje stypendium przez 4 lata, prowadzi zajęcia dla studentów i przygotowuje się do roli naukowca-dydaktyka. Rekrutacja odbywa się raz w roku, w języku polskim lub angielskim, dlatego warto wcześniej poznać zasady naboru i rozpocząć poszukiwania potencjalnego promotora.\n\n### Na stoisku odkryjesz:\n\n- **Mapa świata umiędzynarodowienia** - skąd przyjeżdżają doktoranci do SGGW i gdzie wyjeżdżają polscy naukowcy\n- **Research Cards** - krótkie portrety doktorantów: kim są, co badają i co ich do nauki pociąga\n- **Quiz dziedzinowy** w kategoriach nauk rolniczych, weterynaryjnych, ścisłych, przyrodniczych, inżynieryjno-technicznych i społecznych\n- **Strefa „pogadajMY\"** - rozmowy o rekrutacji, stypendiach, trudnościach doktoratu i codzienności młodych badaczy\n\nJeśli rozważasz doktorat albo po prostu chcesz zobaczyć, jak wygląda życie badacza od środka, to jest dobre miejsce na pierwszą rozmowę."
+        },
+        "title": {
+          "stringValue": "Szkoła Doktorska SGGW i Rada Doktorantów"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:58.965062Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-uniwersytet-otwarty-sggw",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-uniwersytet-otwarty-sggw"
+              }
+            ]
+          }
+        },
+        "iconName": {
+          "stringValue": "menu_book"
+        },
+        "content": {
+          "stringValue": "Edukacja przez całe życie — takie jest motto Uniwersytetu Otwartego SGGW. To jednostka, która oferuje kursy i szkolenia dla osób w każdym wieku: od kursów maturalnych, przez językowe i specjalistyczne, po warsztaty dla seniorów i szkolenia dla firm. Prowadzone są przez doświadczoną kadrę akademicką i praktyków.\n\n### Na stoisku — przyroda Warszawy na wyciągnięcie ręki:\n\n- **„Spojrzeć na świat\" oczami owada** — specjalne okulary i modele owadów\n- **Dzikie zwierzęta Warszawy** — ciekawostki o lisach, jeżach i ptakach żyjących w zielonych zakątkach miasta; nauka rozpoznawania śladów ich bytowania\n- **Modele jaj bociana, sikorki i kosa**\n- **Doświadczanie przyrody zmysłami** — leśne zapachy, dźwięki i faktury do dotykania\n- **Kąpiel leśna (Shinrin-yoku)** — czym jest, jak wpływa na zdrowie i jak zacząć?\n- Gry, konkursy i quizy o lokalnej florze i faunie\n\nAktualna oferta kursów: **kursy.sggw.edu.pl**"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "title": {
+          "stringValue": "Uniwersytet Otwarty SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-10T22:11:30.266171Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydawnictwo-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Wydawnictwo SGGW"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-wydawnictwo-sggw.jpg"
+        },
+        "content": {
+          "stringValue": "Wydawnictwo SGGW od dziesięcioleci wspiera kształcenie akademickie, wydając podręczniki, skrypty, monografie naukowe i publikacje popularnonaukowe z dziedzin agro, bio i life science. To oficyna, która pamięta historię uczelni i dokumentuje jej naukowe dokonania.\n\nNa stoisku możesz:\n\n- Kupić podręczniki akademickie, skrypty i przewodniki do ćwiczeń\n- Poznać najnowszą publikację jubileuszową: **„Od Instytutu Agronomicznego w Marymoncie do Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie\"** — kompleksowa historia SGGW\n- Wziąć udział w **konkursie językowym** — sprawdź swoją wiedzę o poprawności językowej i wygraj książkę z oferty Wydawnictwa!"
+        },
+        "iconName": {
+          "stringValue": "import_contacts"
+        },
+        "category": {
+          "stringValue": "Jednostki SGGW"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydawnictwo-sggw"
+              },
+              {
+                "stringValue": "point-budynek-2-wydawnictwo-sggw"
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:58.919326Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-biologii-i-biotechnologii-oraz-instytut-biologii-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Wydział Biologii i Biotechnologii oraz Instytut Biologii SGGW"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-wydzial-biologii-i-biotechnologii-oraz-instytut-biologii-sggw.jpg"
+        },
+        "content": {
+          "stringValue": "Wydział Biologii i Biotechnologii oraz Instytut Biologii SGGW pokazują życie na wielu poziomach: od roślin i ekosystemów po komórki, mikroorganizmy i technologie biomedyczne. To miejsce dla osób, które chcą rozumieć naturę, badać ją w laboratorium i przekładać wiedzę biologiczną na praktyczne rozwiązania.\n\n### Kształcimy na kierunkach:\n\n**Biotechnologia** - studia I stopnia stacjonarne trwają 3,5 roku i kończą się tytułem inżyniera. Rekrutacja opiera się na biologii oraz chemii, matematyce lub fizyce. Studia II stopnia trwają 1,5 roku i prowadzą do tytułu magistra inżyniera.\n\n**Biotechnology** - kierunek prowadzony w języku angielskim dla kandydatów ze znajomością angielskiego co najmniej na poziomie B2. Program kończy się tytułem Bachelor of Engineering.\n\n**Biologia** - studia I stopnia trwają 3 lata i kończą się tytułem licencjata, a studia II stopnia trwają 2 lata i prowadzą do tytułu magistra.\n\n**Technologia biomedyczna** - kierunek inżynierski łączący biologię, chemię i technologie stosowane w medycynie; studia I stopnia trwają 3,5 roku, a II stopnia 1,5 roku.\n\n### Na stoisku:\n\n- **Wystawa roślin owadożernych** - rosiczki, muchołówki i inne gatunki, które odwróciły biologiczne role\n- **Botaniczne Koło Fortuny** - quiz wiedzy o budowie i zwyczajach roślin z nagrodami\n- **Rośliny od środka** - mikroskopowe obserwacje anatomii liści, łodyg i korzeni\n- **Warsztaty rozpoznawania roślin** - naucz się czytać naturę wokół siebie\n- **Bransoletki z liści i kwiatów** - artystyczna pamiątka do zabrania do domu"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-biologii-i-biotechnologii"
+              },
+              {
+                "stringValue": "point-budynek-37-wbib-rolnictwo"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "iconName": {
+          "stringValue": "biotech"
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.595152Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-budownictwa-i-inzynierii-srodowiska-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Wydział Budownictwa i Inżynierii Środowiska oraz Instytut Inżynierii Środowiska SGGW"
+        },
+        "content": {
+          "stringValue": "W roku 2026 Wydział Budownictwa i Inżynierii Środowiska Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie obchodzi jubileusz 80 lat działalności dydaktycznej i naukowej. W tym czasie Wydział rozwijał się od tradycyjnej melioracji wodnej do nowoczesnej, interdyscyplinarnej inżynierii środowiska, budownictwa i architektury.\n\n### Kierunki\n\n- Architektura\n- Architektura Krajobrazu\n- Budownictwo\n- Inżynieria Bezpieczeństwa\n- Inżynieria i Gospodarka Wodna\n- Inżynieria Środowiska\n- Ochrona Środowiska\n\n### Atrakcje stoiska\n\n**Woda pod kontrolą – kolumna filtracyjna**\nObserwuj, jak brudna woda staje się czysta w działającym modelu urządzenia filtracyjnego z przezroczystą komorą i systemem sterowania.\n\n**Świat w kolorach ciepła – kamera termowizyjna**\nKamera termowizyjna pokaże to, czego gołe oko nie widzi: rozkład temperatury i straty ciepła.\n\n**Zbiornik retencyjny w miniaturze**\nMakieta z krążącą wodą pokazuje podstawy nowoczesnej gospodarki wodnej.\n\n**Warsztaty meteorologiczne – stwórz własną chmurę**\nPokaz zjawisk pogodowych w praktyce.\n\n**Drony nad bagnami Biebrzy**\nPrezentacja badań terenowych prowadzonych w trudno dostępnych obszarach bagiennych.\n\n**Megaklocki**\nStrefa wspólnego budowania dla młodszych uczestników.\n\n**Wystawa prac studentów Architektury Krajobrazu**\nProjekty pokazujące połączenie inżynierii, krajobrazu i projektowania.\n\n### Gra symulacyjna „Osiedle z klimatem”\n\nPracownicy Katedry Architektury Krajobrazu we współpracy z urzędem m.st. Warszawa opracowali w ramach projektu CoAdapt — „Communities for Climate Changes Action” grę symulacyjną „Osiedle z klimatem”. Celem gry jest zwiększenie świadomości i zaangażowania lokalnych społeczności w zakresie zmian klimatycznych oraz działań służących adaptacji przestrzeni miejskich do zmieniających się warunków klimatycznych.\n\nGracze poznają rozwiązania związane z retencjonowaniem wód deszczowych, obniżaniem temperatur, wykorzystaniem odnawialnych źródeł energii oraz ograniczaniem emisji gazów cieplarnianych. Gra została opracowana w wersji planszowej i komputerowej. Więcej informacji: https://coadapt.pl/"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-budownictwa-i-inzynierii-srodowiska"
+              },
+              {
+                "stringValue": "point-budynek-33-wbis"
+              }
+            ]
+          }
+        },
+        "iconName": {
+          "stringValue": "water_drop"
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-14T14:22:20.637602Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-ekonomiczny-instytut-ekonomii-i-finansow-oraz-instytut-zarzadzania-sggw",
+      "fields": {
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-ekonomiczny"
+              },
+              {
+                "stringValue": "point-budynek-7-wydzial-ekonomiczny"
+              },
+              {
+                "stringValue": "point-budynek-6-sala-d22"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "iconName": {
+          "stringValue": "trending_up"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "title": {
+          "stringValue": "Wydział Ekonomiczny, Instytut Ekonomii i Finansów oraz Instytut Zarządzania SGGW"
+        },
+        "content": {
+          "stringValue": "Ekonomia to język, którym mówi współczesny świat. Wydział Ekonomiczny SGGW kształci specjalistów w zakresie ekonomii, zarządzania, finansów, logistyki i turystyki — łącząc solidną teorię z praktycznym spojrzeniem na rynek i przedsiębiorczość.\n\n### Akademia Przedsiębiorczości\n\nTegoroczne Dni SGGW to jednocześnie finał **Akademii Przedsiębiorczości WE SGGW** — projektu edukacyjnego dla uczniów szkół ponadpodstawowych. Program obejmuje m.in. **konkurs z zakresu przedsiębiorczości** i uroczyste zakończenie z wręczeniem nagród.\n\n### Na stoisku Wydziału:\n\nPrezentacja kierunków studiów: **Ekonomia, Logistyka, Zarządzanie, Finanse i rachunkowość, Turystyka i rekreacja**.\n\n**Koło Naukowe Ekonomistów** przygotowało całą strefę gier:\n\n- **Gra giełdowa** — zainwestuj wirtualne środki i sprawdź, czy czujesz rynek\n- **Koło fortuny** z pytaniami ekonomicznymi\n- **Ekonomiczna gra terenowa** — połącz ekonomię z eksploracją kampusu\n- **Szybki quiz** — kto szybszy i mądrzejszy?\n\n**ZUS III Oddział w Warszawie** prowadzi stoisko eksperckie:\n\n- e-administracja i Platforma Usług Elektronicznych PUE ZUS — możliwość założenia profilu na miejscu\n- Porady ekspertów ds. ubezpieczeń, świadczeń (w tym 800+)\n- Olimpiada wiedzy o ubezpieczeniach społecznych"
+        },
+        "imageUrl": {
+          "nullValue": null
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.348203Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-hodowli-bioinzynierii-i-ochrony-zwierzat-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Wydział Hodowli, Bioinżynierii i Ochrony Zwierząt SGGW"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "content": {
+          "stringValue": "Zwierzęta to nie tylko towarzysze — to fascynujące istoty, których biologia, zachowanie i relacja z człowiekiem stanowi osobną naukę. Wydział Hodowli, Bioinżynierii i Ochrony Zwierząt SGGW bada zwierzęta hodowlane, laboratoryjne, egzotyczne i dzikie — od genetyki po zachowanie.\n\n### DZIKA STREFA ATRAKCJI:\n\n- **Ptaki drapieżne w akcji** — oko w oko z prawdziwym sokołem lub jastrzębiem!\n- **Kury ozdobne, kaczki, gołębie** — ptasie piękności z całego świata\n- **Mini ZOO** — kozy, owce, a nawet kuce czekają na zdjęcia i pogłaskanie\n- **Woltyżerka na żywo** — taniec, akrobatyka i konie w jednym niesamowitym pokazie!\n- **Pszczoły i ryby** — mikroświaty pod lupą: jak pracuje ul i jak oddycha ryba\n- **Szynszyle, żubry i zwierzęta laboratoryjne** — fascynujące gatunki i nieoczekiwane spotkania\n\n### Koła Naukowe w akcji:\n\n- **Koło Naukowe Zoologów i Koło Atlas** — terraria z owadami, płazami, gadami i pająkami\n- **Koło Aves** — ptaki to ich pasja!\n- **Koło Nanobiotechnologii** — z probówki wyczarują wszystko, będzie ogień (dosłownie)!\n- **Koło Zwierząt Laboratoryjnych** — genetyka w pigułce\n\n### Dodatkowe lokalizacje:\n\n- Budynek 23, ul. Ciszewskiego 8 (9:00–15:00): zwierzęta egzotyczne (piątek i sobota), pokaz kotów rasowych i wystawa świnek morskich (sobota)\n- Budynek 34, ul. Nowoursynowska 159: „Konferencja dla dzieci\" w ramach projektu **„Pod parasolem żubra\"**(sobota 9:00–13:00)"
+        },
+        "iconName": {
+          "stringValue": "cruelty_free"
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-hodowli-bioinzynierii-i-ochrony-zwierzat"
+              },
+              {
+                "stringValue": "point-budynek-23-ciszewskiego-8"
+              },
+              {
+                "stringValue": "point-budynek-34-wzim-lesny-technologii-drewna"
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.300214Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-inzynierii-produkcji-i-instytut-inzynierii-mechanicznej-sggw",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-inzynierii-produkcji"
+              },
+              {
+                "stringValue": "point-budynek-21-wip"
+              }
+            ]
+          }
+        },
+        "iconName": {
+          "stringValue": "precision_manufacturing"
+        },
+        "content": {
+          "stringValue": "Inżynieria produkcji to nauka o tym, jak coś wytwarzać mądrze — efektywnie, ekologicznie i innowacyjnie. Wydział łączy mechanikę, automatykę, energetykę odnawialną i agroinżynierię, kształcąc inżynierów gotowych na wyzwania przemysłu 4.0.\n\n### Na stoisku:\n\n**Automatyka i Robotyka** — robot napędzany sztuczną inteligencją uczy się na Twoich oczach rozpoznawać i segregować przedmioty. Pokaż mu kilka przykładów i obserwuj, jak się uczy!\n\n**Pojazdy i Maszyny Rolnicze** — prezentacja pojazdów, ciągników i specjalistycznych maszyn stosowanych we współczesnym rolnictwie.\n\n**Walizka Fotowoltaiczna** — wybierz jedno z 15 doświadczeń dotyczących wytwarzania i wykorzystania energii słonecznej. Eksperyment plenerowy dla każdego!\n\n**Biogazownia w Mikroskali** — jak z odpadów organicznych produkować biogaz? Zalety i ograniczenia biopaliw gazowych w praktyce.\n\nWydział prowadzi kierunki: **Inżynieria Mechaniczna i Agrotronika, Zarządzanie i Inżynieria Produkcji** — dla tych, którzy chcą łączyć technikę z biznesem i rolnictwem."
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-wydzia-inzynierii-produkcji-i-instytut-inzynierii-mechanicznej-sggw.jpg"
+        },
+        "title": {
+          "stringValue": "Wydział Inżynierii Produkcji i Instytut Inżynierii Mechanicznej SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-14T14:22:20.415943Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-lesny-i-instytut-nauk-lesnych-sggw",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "iconName": {
+          "stringValue": "forest"
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-lesny"
+              },
+              {
+                "stringValue": "point-budynek-34-wzim-lesny-technologii-drewna"
+              },
+              {
+                "stringValue": "point-stary-kampus-sggw-rakowiecka"
+              }
+            ]
+          }
+        },
+        "content": {
+          "stringValue": "Las to nie tylko drzewa. To złożony ekosystem, kultura, historia i zielone płuca naszej planety. Wydział Leśny SGGW to jeden z najstarszych i najbardziej renomowanych wydziałów leśnych w Polsce, kształcący leśników, ekologów i badaczy, którzy rozumieją las od korzenia do wierzchołka korony.\n\n### Stoisko „Życie lasu\" — stałe ekspozycje:\n\n| Temat | Opis |\n| ---------------------------------- | --------------------------------------------- |\n| „Gdzie las ma swój początek\" | Jak powstaje las — nasiona, szkółki, sadzenie |\n| „Od nasiona do drzewa\" | Cykl życia drzewa krok po kroku |\n| „Życie zaczyna się w leśnym runie\" | Fascynujący świat podłoża i ściółki |\n| „Las w pełni sił\" | Dojrzały las jako ekosystem |\n| „Urok starodrzewu\" | Rekordziści polskich lasów |\n| „Las w kulturze i sztuce\" | Las w poezji, malarstwie i tradycji |\n| „Niezwykłe owady\" | Entomologia leśna dla każdego |\n\n### Pokazy (2–3 razy dziennie, 15–30 min):\n\n- Operator forwardera — maszyna do zrywki drewna w akcji\n- Rozpoznawanie owadów leśnych\n- Tworzenie leśnych świeczek\n\n### Dla dzieci i młodzieży:\n\n- Rebusy, puzzle, labirynty, koło fortuny z nagrodami\n- Nauka czytania map leśnych i pomiarów drzew\n- Destylacja **olejków eterycznych z igieł sosny i jodły**\n- Rozpoznawanie głosów ptaków\n- Preparaty mikroskopowe struktury drewna\n- **Leśne perfumy** — skomponuj swój własny zapach lasu!\n\n**Nagrody:** sadzonki drzew dla zwycięzców konkursów."
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "title": {
+          "stringValue": "Wydział Leśny i Instytut Nauk Leśnych SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.105164Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-medycyny-weterynaryjnej-i-instytut-medycyny-weterynaryjnej-sggw",
+      "fields": {
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-medycyny-weterynaryjnej"
+              },
+              {
+                "stringValue": "point-budynek-24-wmw"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "iconName": {
+          "stringValue": "pets"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "title": {
+          "stringValue": "Wydział Medycyny Weterynaryjnej i Instytut Medycyny Weterynaryjnej SGGW"
+        },
+        "content": {
+          "stringValue": "Weterynarze to lekarze, którzy nigdy nie mogą zapytać pacjenta, gdzie boli. To właśnie ta wyjątkowość czyni medycynę weterynaryjną jedną z najtrudniejszych i najbardziej fascynujących dziedzin medycyny. Wydział Medycyny Weterynaryjnej SGGW kształci specjalistów zdolnych diagnozować i leczyć zwierzęta wszystkich gatunków — od kota domowego po egzotyczne gady.\n\n### Na stoisku:\n\n- **Szpital dla pluszaków** — operacje, szycie, opatrunki. Twój ulubiony miś może wyjść zdrowy!\n- **Fantom psa** — naucz się podstaw resuscytacji krążeniowo-oddechowej na prawdziwym fantomic.\n- **Makroświat i Mikroświat** — preparaty anatomiczne, modele narządów oraz preparaty histologiczne i cytologiczne pod mikroskopem.\n- **Test właściciela zwierząt** — jakie błędy popełniamy w opiece nad psem czy kotem? Sprawdź się!\n- **Quiz anatomiczny i zagadki weterynaryjne** — różne poziomy trudności, każdy znajdzie coś dla siebie.\n- **Kolorowanki i zabawy dla najmłodszych** — weterynaria dla każdego wieku.\n\nWydział prowadzi studia na kierunku **Weterynaria** — jednych z najbardziej obleganych i wymagających studiów przyrodniczych w Polsce. Absolwenci pracują w klinikach weterynaryjnych, inspekcji weterynaryjnej, przemyśle spożywczym, laboratoriach badawczych i organizacjach ochrony zwierząt."
+        },
+        "imageUrl": {
+          "nullValue": null
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.059861Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-ogrodniczy-i-instytut-nauk-ogrodniczych-sggw",
+      "fields": {
+        "iconName": {
+          "stringValue": "local_florist"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-ogrodniczy"
+              },
+              {
+                "stringValue": "point-budynek-35-ogrodniczy"
+              },
+              {
+                "stringValue": "point-dab-jozef-przy-budynku-8"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "title": {
+          "stringValue": "Wydział Ogrodniczy i Instytut Nauk Ogrodniczych SGGW"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "content": {
+          "stringValue": "Odwiedź stoisko Wydziału Ogrodniczego na Dniach SGGW 2026! Przez dwa dni, 15 i 16 maja w godzinach 10:00-16:00, czekają prezentacje kierunków studiów, wystawy roślin, kiermasz „Kolory i Smaki Natury\" oraz warsztaty przygotowane przez studentów, doktorantów i katedry wydziału.\n\n### Kiermasz „Kolory i Smaki Natury\"\n\nNa stoisku znajdziesz rośliny, rozsadę, zioła i produkty z konopi. Wystawa roślin zaaranżowanych pokaże rośliny ozdobne, truskawki w hydroponice, owoce, warzywa, zioła i druk botaniczny.\n\n### Stanowiska i warsztaty:\n\n- **Rośliny zaaranżowane** - wystawa przygotowana przez Samorząd Studentów WO, Doktorantów, Katedrę Sadownictwa i Ekonomiki Ogrodnictwa, Katedrę Roślin Warzywnych i Leczniczych, Samodzielny Zakład Roślin Ozdobnych oraz Koło Naukowe Ogrodników\n- **Cuda Wianki!** - warsztaty florystyczne wianków kwiatowych prowadzone przez Koło Naukowe Ogrodników\n- **Magiczny kubełek** - konkurs z nagrodami, w którym rozpoznajesz owoce tylko za pomocą rąk\n- **Kącik porad „Co gryzie moją roślinkę?\"** - praktyczne rozmowy o problemach z roślinami domowymi\n\nW sobotę o 12:00 odbędzie się pokaz arborystyczny, a spokojniejszą propozycją będzie spacer dendrologiczny po kampusie. W budynku 35 trwa też jubileuszowa wystawa 110 lat ogrodnictwa w SGGW.\n\n### Dąb Józef\n\nJedną z ogrodniczych ciekawostek jest **Dąb Józef**, nazwany na cześć dra Józefa Rokoszy - dendrologa, nauczyciela i wychowawcy wielu pokoleń studentów architektury krajobrazu i ogrodnictwa. Drzewo rośnie przy budynku 8, dawnej siedzibie Wydziału, a na pniu znajduje się inskrypcja z nazwą pomnika przyrody: dąb szypułkowy, *Quercus robur*."
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T21:20:42.963241Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-rolnictwa-i-ekologii-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Wydział Rolnictwa i Ekologii SGGW"
+        },
+        "content": {
+          "stringValue": "Nauka w praktyce, natura w centrum uwagi — to motto, które najlepiej opisuje ten wydział. Wydział Rolnictwa i Ekologii SGGW to miejsce, gdzie tradycja rolnictwa spotyka się z nowoczesnymi badaniami i głęboką troską o środowisko. Badacze zajmują się tu oceną jakości roślin uprawnych, wpływem warunków klimatycznych na plonowanie, gleboznawstwem oraz poszukiwaniem innowacyjnych rozwiązań dla rolnictwa przyszłości.\n\n### Co znajdziesz na stoisku?\n\nStoisko podzielone jest na kilka **stref tematycznych**:\n\n- **Strefa A – Muzeum Ziemniaka i firma Europlant** – interaktywna wystawa „Bulwa, która zmienia świat\": historia ziemniaka, wartości odżywcze, typy kulinarne, rola w kulturze i sztuce oraz ziemniak w technologiach przyszłości (skrobia przemysłowa!). Dla najmłodszych — pieczenie i degustacja.\n- **Strefa B – Laboratorium gleby, wody i nawozów** – obserwuj infiltrację wody przez różne gleby, poznaj nawozy i naucz się, jak czytać mapę plonu.\n- **Strefa C – Nasiona** – rozpoznaj nasiono po kształcie i przypisz je do produktu: owies → płatki, rzepak → olej.\n- **Strefa D – Decyzje agronoma** – Zbuduj własny płodozmian, zagraj w „Doktora roślin\" i skomponuj własną mieszankę poplonową — do zabrania do domu!\n- **Strefa E – Wycieczka terenowa** – wyprawa na Kolekcję Roślin Uprawnych z pokazem robota Robotti oraz drona opryskującego firmy Farmdrone.\n\nKatedra Gleboznawstwa przygotowała **Paszport Gleboznawcy** — wykonaj zadania, zbierz naklejki i zdobądź certyfikat! Katedra Biometrii pokaże **druk 3D** i **programowanie dronów w Pythonie**.\n\nNa stoisku obecne będą też firmy partnerskie: **Europlant, Farmdrone, Pasieka Orda** (miody!), **MODR** i inne."
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-rolnictwa-i-ekologii"
+              },
+              {
+                "stringValue": "point-budynek-37-wbib-rolnictwo"
+              },
+              {
+                "stringValue": "point-kolekcja-roslin-uprawnych"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "iconName": {
+          "stringValue": "agriculture"
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.015154Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-socjologii-i-pedagogiki-sggw",
+      "fields": {
+        "content": {
+          "stringValue": "Najciekawszym obiektem badań naukowych od zawsze był człowiek — jako jednostka i jako część społeczeństwa. Wydział Socjologii i Pedagogiki SGGW łączy dwie dyscypliny, które pytają o to, kim jesteśmy, jak żyjemy razem i jak możemy żyć lepiej. Studia tu to nie tylko teoria — to przestrzeń dla myślących, aktywnych i społecznie zaangażowanych ludzi.\n\nNa stoisku czekają:\n\n- **Gry i zagadki o człowieku i społeczeństwie** — zastanów się, skąd biorą się Twoje poglądy!\n- **Kącik wesołego i zdrowego Malucha** — zabawy edukacyjne dla najmłodszych\n- **Akademia Argonautów** — antropologia daleka i bliska: poznaj fascynujące kultury i style życia z różnych zakątków świata\n- **Spotkania konwersatoryjne** — porozmawiaj ze studentami i naukowcami o tym, co Cię ciekawi\n\nWydział prowadzi dwa kierunki: **Socjologia** i **Pedagogika**. Absolwenci pracują w organizacjach pozarządowych, szkołach, mediach, administracji publicznej, HR-ze i badaniach społecznych. W 2026 roku Wydział współorganizuje prestiżowy **Kongres ESA** (European Sociological Association)."
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-wydzia-socjologii-i-pedagogiki-sggw.jpg"
+        },
+        "title": {
+          "stringValue": "Wydział Socjologii i Pedagogiki SGGW"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "iconName": {
+          "stringValue": "groups"
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-socjologii-i-pedagogiki"
+              },
+              {
+                "stringValue": "point-budynek-4-wsip"
+              }
+            ]
+          }
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.545704Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-technologii-drewna-i-instytut-nauk-drzewnych-i-meblarstwa-sggw",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "iconName": {
+          "stringValue": "carpenter"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-technologii-drewna"
+              },
+              {
+                "stringValue": "point-budynek-34-wzim-lesny-technologii-drewna"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "title": {
+          "stringValue": "Wydział Technologii Drewna i Instytut Nauk Drzewnych i Meblarstwa SGGW"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-wydzial-technologii-drewna-i-instytut-nauk-drzewnych-i-meblarstwa-sggw.png"
+        },
+        "content": {
+          "stringValue": "Wydział Technologii Drewna SGGW w Warszawie to najstarszy w Europie wydział akademicki zajmujący się kompleksowo technologią drewna i drzewnictwem. Od blisko 80 lat rozwija rozwiązania dla przemysłu drzewnego, meblarskiego i projektowego, łącząc tradycję z innowacją.\n\nDrewno jest tu czymś więcej niż materiałem: to podstawa nowoczesnego, zrównoważonego projektowania i technologii. Podczas Dni SGGW można poznać kierunki **Technologia Drewna**, **Meblarstwo** oraz **Materiały Naturalne i Wzornictwo** - od przetwórstwa drewna i materiałoznawstwa po projektowanie mebli oraz odpowiedzialny design inspirowany naturą.\n\n### Na stoisku:\n\n**Prezentacja obrabiarki CNC** - Koło Obrabiarek CNC pokaże, jak komputer wycina w drewnie dokładne wzory.\n\n**Pokazy składania stołków z firmą Festool** - Koło Naukowe Stolarzy zaprasza do wspólnego majsterkowania.\n\n**„Zachować warszawską stolarnię\"** - historyczne, ręczne narzędzia do obróbki drewna i strefa pokazowa dawnego rzemiosła.\n\n**Wyroby z drewna i żywicy epoksydowej** - autorska biżuteria, deski do krojenia, dekoracje i przedmioty użytkowe Koła Naukowego Meblarzy.\n\n**Koło Chemiczne Technologów Drewna** przygotowało ciecz nienewtonowską dla dzieci oraz chemiczne ogrody - kolorowe słupki mineralnych kryształów rosnące na oczach zwiedzających.\n\nNa stoisku będzie można zobaczyć także płyty drewnopochodne z ekologicznymi dodatkami oraz porozmawiać o tym, jak natura, kreatywność i inżynieria mogą tworzyć przyszłość projektowania."
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.249724Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-technologii-zywnosci-i-instytut-nauk-o-zywnosci-sggw",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-technologii-zywnosci"
+              },
+              {
+                "stringValue": "point-budynek-32-wtz-wzc"
+              }
+            ]
+          }
+        },
+        "iconName": {
+          "stringValue": "science"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-wydzial-technologii-zywnosci-i-instytut-nauk-o-zywnosci-sggw.jpg"
+        },
+        "content": {
+          "stringValue": "Wydział Technologii Żywności SGGW w Warszawie świętuje w tym roku swoje 65-lecie. To ważny jubileusz jednej z wiodących jednostek naukowych w Polsce w zakresie technologii żywności, gdzie fermentacja, analiza jakości, mikrobiologia i bezpieczeństwo produktów spożywczych spotykają się z praktyką codziennego jedzenia.\n\nWydział zaprasza na studia w języku polskim lub angielskim na czterech kierunkach i pokazuje, że technologia żywności to zarówno laboratorium, jak i realny wpływ na to, co trafia na nasze talerze.\n\n### Strefy tematyczne:\n\n**Technologia Mleka** - mapa serów, rozpoznawanie nazw i krajów pochodzenia oraz mikrokosmos produktów mleczarskich pod mikroskopem.\n\n**Technologia Mięsa** - „Pokaz z jajem\", układanka elementów tusz zwierząt rzeźnych i zadanie „Czy rozumiesz etykietę?\".\n\n**Technologia Owoców, Warzyw i Zbóż** - zboże czy pseudozboże, pieczywo z różnych stron świata, owocowo-zbożowe rebusy i krzyżówki.\n\n**Ocena Jakości Żywności** - testy rozpoznawania smaków i zapachów z użyciem naturalnych produktów oraz przypraw.\n\n**Katedra Chemii - Sekretne Laboratorium Ursyna** - bezpieczne doświadczenia z żywnością na żywo, a w sobotę także fakty i mity o tłuszczach oraz świat kawy: gatunki, sposoby parzenia i sprzęt.\n\n**Katedra Biotechnologii i Mikrobiologii Żywności** - drobnoustroje w produkcji żywności, polskie i światowe produkty fermentowane, mikrobiom pod lupą, rebusy, puzzle i wykreślanki mikrobiologiczne."
+        },
+        "title": {
+          "stringValue": "Wydział Technologii Żywności i Instytut Nauk o Żywności SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.396319Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-zastosowan-informatyki-i-matematyki-i-instytut-informatyki-technicznej-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Wydział Zastosowań Informatyki i Matematyki i Instytut Informatyki Technicznej SGGW"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "content": {
+          "stringValue": "WZiM i Instytut Informatyki Technicznej SGGW ruszają z misją: dobra zabawa i wielkie technologie. Na stoisku odkryjesz, jak informatyka, matematyka i sztuczna inteligencja pomagają tworzyć nowoczesne rozwiązania zmieniające codzienny świat - od gier komputerowych po inteligentne systemy uczące się.\n\n### Na stoisku:\n\n**Game Zone** - autorskie projekty studentów i gry przygotowane przez koło naukowe Init. Możesz zagrać, przetestować i zapytać twórców, jak powstały ich prototypy.\n\n**Ty vs. AI: Turniej Szachów** - zmierz się z szachowym botem rozwijanym przez koło WZIM.AI i zobacz, jak reinforcement learning przekłada się na decyzje maszyny.\n\n**Gra Terenowa Dni SGGW** - to właśnie ta aplikacja. Zbieraj kody QR, odkrywaj punkty kampusu i porozmawiaj z osobami, które ją tworzyły.\n\nNa miejscu poznasz również inicjatywy Silver.Net i zobaczysz, że technologia to nie tylko kod, ale także współpraca, kreatywność i społeczność ludzi z pasją do nowych rozwiązań."
+        },
+        "iconName": {
+          "stringValue": "computer"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-zastosowan-informatyki-i-matematyki"
+              },
+              {
+                "stringValue": "point-budynek-34-wzim-lesny-technologii-drewna"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.639486Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/wiki_articles/wiki-wydzia-zywienia-cz-owieka-i-instytut-nauk-o-zywieniu-cz-owieka-sggw",
+      "fields": {
+        "title": {
+          "stringValue": "Wydział Żywienia Człowieka i Instytut Nauk o Żywieniu Człowieka SGGW"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "content": {
+          "stringValue": "Instytut Nauk o Żywieniu Człowieka SGGW to jeden z najważniejszych ośrodków badawczych dietetyki i żywienia w Polsce. Historia sięga 1977 roku, kiedy fundament instytutu kładł prof. Stanisław Berger - wybitny uczony, pionier nauk o żywieniu człowieka i założyciel Wydziału Nauk o Żywieniu Człowieka.\n\nProfesor Berger pozostawił trwały ślad w rozwoju polskiej nauki, łącząc najwyższe standardy badawcze z troską o zdrowie człowieka i jakość żywienia społeczeństwa. Jednym z jego praktycznych pomysłów były zasady **7U**: urozmaicenie, umiarkowanie, uregulowanie, umiejętność przyrządzania potraw, uprawianie sportu, unikanie nadmiaru oraz uśmiech.\n\n### Badania i pomiary:\n\n- **Skład ciała metodą bioimpedancji** - ile masz tkanki tłuszczowej, wody i beztłuszczowej masy?\n- **Siła uścisku dynamometrem** - szybki pomiar sprawności mięśni\n- **Pokaz pierwszej pomocy** - resuscytacja na manekinach LittleAnn i tamowanie krwotoków\n\n### Mini warsztaty:\n\n- **Żywność funkcjonalna, wygodna, minimalnie przetworzona i suplementy** - co, komu i kiedy?\n- **Żywność a zmysły** - skrzynia sensoryczna i sticki zapachowe\n- **Żywność ekologiczna** - jak ją rozpoznać, dlaczego warto i co oznaczają certyfikaty\n- **Co o opakowaniach każdy wiedzieć powinien** - symbole, materiały i możliwość recyklingu\n- **Substancje bioaktywne w owocach i warzywach** - połącz barwę z prozdrowotną mocą\n\n### Ciekawostki z materiałów Instytutu:\n\n**Dieta planetarna** to elastyczny sposób odżywiania oparty głównie na produktach roślinnych, który służy zarówno zdrowiu, jak i planecie. Połowę talerza powinny zajmować warzywa i owoce, a drugą połowę produkty pełnoziarniste oraz źródła białka, zwłaszcza roślinnego.\n\n**Śniadanie** pomaga lepiej się skupić, zapamiętywać informacje i utrzymać stabilny poziom cukru we krwi. Dobrym przykładem są kanapki z pieczywa pełnoziarnistego z jajkiem, hummusem albo twarogiem oraz owsianka z jogurtem, orzechami i owocami.\n\n**Nawodnienie** wspiera regulację temperatury ciała, transport składników odżywczych i pracę nerek. Nawet niewielkie odwodnienie może obniżać koncentrację i wydolność fizyczną."
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-zywienia-cz-owieka"
+              },
+              {
+                "stringValue": "point-budynek-32-wtz-wzc"
+              }
+            ]
+          }
+        },
+        "category": {
+          "stringValue": "Wydziały"
+        },
+        "iconName": {
+          "stringValue": "nutrition"
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.565617Z",
+      "updateTime": "2026-05-12T19:11:59.446221Z"
+    }
+  ]
+}

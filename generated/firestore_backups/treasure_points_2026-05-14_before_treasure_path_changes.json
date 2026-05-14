@@ -1,0 +1,1670 @@
+{
+  "documents": [
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/4DMeKvqhJA6voUYleOCp",
+      "fields": {
+        "order": {
+          "integerValue": "23"
+        },
+        "iconName": {
+          "stringValue": "mountain_flag"
+        },
+        "longitude": {
+          "doubleValue": 21.049356
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/4DMeKvqhJA6voUYleOCp"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "description": {
+          "stringValue": "Już prawie Ci się udało! Po zeskanowaniu tego punktu będziesz mógł odebrać upominek od osób na stoisku po okazaniu dowodu w apce"
+        },
+        "latitude": {
+          "doubleValue": 52.16439
+        },
+        "name": {
+          "stringValue": "Koniec Gry Terenowej"
+        }
+      },
+      "createTime": "2026-05-13T16:56:17.531937Z",
+      "updateTime": "2026-05-14T21:46:19.818165Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/6puTo7es6xLFYjn84sZY",
+      "fields": {
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.04895
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/6puTo7es6xLFYjn84sZY"
+        },
+        "iconName": {
+          "stringValue": "diamond"
+        },
+        "order": {
+          "integerValue": "1"
+        },
+        "description": {
+          "stringValue": "Nowoczesna, przeszklona sala widowiskowo-konferencyjna, służąca jako główne miejsce uroczystości akademickich, koncertów i wydarzeń kulturalnych uczelni."
+        },
+        "latitude": {
+          "doubleValue": 52.163394
+        },
+        "name": {
+          "stringValue": "Aula Kryształowa"
+        }
+      },
+      "createTime": "2026-05-11T13:26:44.533934Z",
+      "updateTime": "2026-05-13T13:49:53.039744Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-bezpieczenstwo-i-zdrowie-bhp-pip-pis",
+      "fields": {
+        "description": {
+          "stringValue": "Nauka RKO, karta ratownicza i porady zdrowotne — wiedza, która może uratować życie."
+        },
+        "latitude": {
+          "doubleValue": 52.163017
+        },
+        "name": {
+          "stringValue": "Bezpieczeństwo i Zdrowie (BHP / PIP / PIS)"
+        },
+        "longitude": {
+          "doubleValue": 21.047111
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-bezpieczenstwo-i-zdrowie-bhp-pip-pis"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "order": {
+          "integerValue": "20"
+        },
+        "iconName": {
+          "stringValue": "health_and_safety"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-13T16:54:11.733134Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-biblioteka-g-owna-sggw",
+      "fields": {
+        "order": {
+          "integerValue": "18"
+        },
+        "iconName": {
+          "stringValue": "local_library"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-biblioteka-g-owna-sggw"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "longitude": {
+          "doubleValue": 21.0446759
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "name": {
+          "stringValue": "Budynek 48 - Biblioteka Główna SGGW"
+        },
+        "description": {
+          "stringValue": "Biblioteka Główna SGGW w budynku 48 to przestrzeń książek, debat, warsztatów i literackich łamigłówek."
+        },
+        "latitude": {
+          "doubleValue": 52.1641361
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-13T15:22:46.446091Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-biblioteka-sggw-stoisko",
+      "fields": {
+        "iconName": {
+          "stringValue": "local_library"
+        },
+        "order": {
+          "integerValue": "183"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-biblioteka-sggw-stoisko"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.047933333333336
+        },
+        "name": {
+          "stringValue": "Stoisko Biblioteki SGGW"
+        },
+        "latitude": {
+          "doubleValue": 52.16381527777777
+        },
+        "description": {
+          "stringValue": "Stoisko Biblioteki SGGW podczas Dni SGGW."
+        }
+      },
+      "createTime": "2026-05-14T13:43:22.140692Z",
+      "updateTime": "2026-05-14T13:43:22.140692Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-biuro-projektow-krajowych-sggw",
+      "fields": {
+        "iconName": {
+          "stringValue": "account_balance"
+        },
+        "order": {
+          "integerValue": "22"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.047111
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/point_images/point-biuro-projektow-krajowych-sggw.png"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-biuro-projektow-krajowych-sggw"
+        },
+        "description": {
+          "stringValue": "Jak nauka zmienia rzeczywistość — projekty badawcze, które już działają w terenie."
+        },
+        "latitude": {
+          "doubleValue": 52.163017
+        },
+        "name": {
+          "stringValue": "Biuro Projektów Krajowych SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-13T16:54:11.846335Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-biuro-wspo-pracy-miedzynarodowej",
+      "fields": {
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-biuro-wspo-pracy-miedzynarodowej"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.047111
+        },
+        "iconName": {
+          "stringValue": "travel_explore"
+        },
+        "order": {
+          "integerValue": "21"
+        },
+        "name": {
+          "stringValue": "Biuro Współpracy Międzynarodowej"
+        },
+        "description": {
+          "stringValue": "Wyrusz w Świat"
+        },
+        "latitude": {
+          "doubleValue": 52.163017
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-13T16:54:11.786293Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-2-wydawnictwo-sggw",
+      "fields": {
+        "order": {
+          "integerValue": "102"
+        },
+        "iconName": {
+          "stringValue": "import_contacts"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-2-wydawnictwo-sggw"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "longitude": {
+          "doubleValue": 21.0465323
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "name": {
+          "stringValue": "Budynek 2 - Wydawnictwo SGGW"
+        },
+        "latitude": {
+          "doubleValue": 52.1647234
+        },
+        "description": {
+          "stringValue": "Budynek przy ul. Nowoursynowskiej 166, w którym działa Wydawnictwo SGGW i jednostki wspierające badania."
+        }
+      },
+      "createTime": "2026-05-12T19:11:57.484725Z",
+      "updateTime": "2026-05-12T19:11:57.484725Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-21-wip",
+      "fields": {
+        "name": {
+          "stringValue": "Budynek 21 - Wydział Inżynierii Produkcji"
+        },
+        "latitude": {
+          "doubleValue": 52.1601202
+        },
+        "description": {
+          "stringValue": "Siedziba Wydziału Inżynierii Produkcji przy ul. Nowoursynowskiej 164."
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-21-wip"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "longitude": {
+          "doubleValue": 21.0517831
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "order": {
+          "integerValue": "121"
+        },
+        "iconName": {
+          "stringValue": "precision_manufacturing"
+        }
+      },
+      "createTime": "2026-05-12T19:11:57.914608Z",
+      "updateTime": "2026-05-12T19:11:57.914608Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-23-ciszewskiego-8",
+      "fields": {
+        "name": {
+          "stringValue": "Budynek 23 - Ciszewskiego 8"
+        },
+        "description": {
+          "stringValue": "Budynek przy ul. Ciszewskiego 8, w którym odbywają się pokazy zwierząt egzotycznych, kotów rasowych i świnek morskich."
+        },
+        "latitude": {
+          "doubleValue": 52.1583412
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-23-ciszewskiego-8"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.0473046
+        },
+        "iconName": {
+          "stringValue": "domain"
+        },
+        "order": {
+          "integerValue": "123"
+        }
+      },
+      "createTime": "2026-05-12T19:11:57.971685Z",
+      "updateTime": "2026-05-12T19:11:57.971685Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-24-wmw",
+      "fields": {
+        "longitude": {
+          "doubleValue": 21.0466207
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-24-wmw"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "order": {
+          "integerValue": "124"
+        },
+        "iconName": {
+          "stringValue": "pets"
+        },
+        "latitude": {
+          "doubleValue": 52.1592352
+        },
+        "description": {
+          "stringValue": "Budynek Wydziału Medycyny Weterynaryjnej na kampusie SGGW przy ul. Nowoursynowskiej 159."
+        },
+        "name": {
+          "stringValue": "Budynek 24 - Wydział Medycyny Weterynaryjnej"
+        }
+      },
+      "createTime": "2026-05-12T19:11:58.018061Z",
+      "updateTime": "2026-05-14T13:43:16.196282Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-32-wtz-wzc",
+      "fields": {
+        "description": {
+          "stringValue": "Budynek przy ul. Nowoursynowskiej 159c, związany z Wydziałem Technologii Żywności i Wydziałem Żywienia Człowieka."
+        },
+        "latitude": {
+          "doubleValue": 52.1600688
+        },
+        "name": {
+          "stringValue": "Budynek 32 - żywność i żywienie"
+        },
+        "longitude": {
+          "doubleValue": 21.0447243
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-32-wtz-wzc"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "order": {
+          "integerValue": "132"
+        },
+        "iconName": {
+          "stringValue": "science"
+        }
+      },
+      "createTime": "2026-05-12T19:11:58.075221Z",
+      "updateTime": "2026-05-14T13:43:16.440691Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-33-wbis",
+      "fields": {
+        "description": {
+          "stringValue": "Siedziba Wydziału Budownictwa i Inżynierii Środowiska przy ul. Nowoursynowskiej 159."
+        },
+        "latitude": {
+          "doubleValue": 52.1609162
+        },
+        "name": {
+          "stringValue": "Budynek 33 - Wydział Budownictwa i Inżynierii Środowiska"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.0466314
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-33-wbis"
+        },
+        "iconName": {
+          "stringValue": "water_drop"
+        },
+        "order": {
+          "integerValue": "133"
+        }
+      },
+      "createTime": "2026-05-12T19:11:58.130018Z",
+      "updateTime": "2026-05-14T13:43:16.609823Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-34-wzim-lesny-technologii-drewna",
+      "fields": {
+        "latitude": {
+          "doubleValue": 52.162
+        },
+        "description": {
+          "stringValue": "Budynek przy ul. Nowoursynowskiej 159, w którym mieszczą się m.in. WZIM, Wydział Leśny i Wydział Technologii Drewna."
+        },
+        "name": {
+          "stringValue": "Budynek 34 - WZIM, Leśny i Technologii Drewna"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.04632
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-34-wzim-lesny-technologii-drewna"
+        },
+        "iconName": {
+          "stringValue": "domain"
+        },
+        "order": {
+          "integerValue": "134"
+        }
+      },
+      "createTime": "2026-05-12T19:11:58.180416Z",
+      "updateTime": "2026-05-12T19:11:58.180416Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-35-ogrodniczy",
+      "fields": {
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.042568
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-35-ogrodniczy"
+        },
+        "iconName": {
+          "stringValue": "local_florist"
+        },
+        "order": {
+          "integerValue": "135"
+        },
+        "description": {
+          "stringValue": "Budynek Wydziału Ogrodniczego przy ul. Nowoursynowskiej 159."
+        },
+        "latitude": {
+          "doubleValue": 52.1603008
+        },
+        "name": {
+          "stringValue": "Budynek 35 - Wydział Ogrodniczy"
+        }
+      },
+      "createTime": "2026-05-12T19:11:58.233612Z",
+      "updateTime": "2026-05-12T19:11:58.233612Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-37-wbib-rolnictwo",
+      "fields": {
+        "name": {
+          "stringValue": "Budynek 37 - WBiB i Rolnictwo"
+        },
+        "latitude": {
+          "doubleValue": 52.1618808
+        },
+        "description": {
+          "stringValue": "Budynek przy ul. Nowoursynowskiej 159, związany z Wydziałem Biologii i Biotechnologii oraz Wydziałem Rolnictwa i Ekologii."
+        },
+        "iconName": {
+          "stringValue": "biotech"
+        },
+        "order": {
+          "integerValue": "137"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-37-wbib-rolnictwo"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.0429281
+        }
+      },
+      "createTime": "2026-05-12T19:11:58.289838Z",
+      "updateTime": "2026-05-14T13:43:16.770821Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-4-wsip",
+      "fields": {
+        "latitude": {
+          "doubleValue": 52.1653772
+        },
+        "description": {
+          "stringValue": "Siedziba Wydziału Socjologii i Pedagogiki przy ul. Nowoursynowskiej 166."
+        },
+        "name": {
+          "stringValue": "Budynek 4 - Wydział Socjologii i Pedagogiki"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.0477725
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-4-wsip"
+        },
+        "iconName": {
+          "stringValue": "groups"
+        },
+        "order": {
+          "integerValue": "104"
+        }
+      },
+      "createTime": "2026-05-12T19:11:57.604329Z",
+      "updateTime": "2026-05-12T19:11:57.604329Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-6-sala-d22",
+      "fields": {
+        "name": {
+          "stringValue": "Budynek 6 - sala D-22"
+        },
+        "description": {
+          "stringValue": "Budynek ekonomiczny przy ul. Nowoursynowskiej 166, wskazany jako miejsce wydarzeń Akademii Przedsiębiorczości."
+        },
+        "latitude": {
+          "doubleValue": 52.1645983
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-6-sala-d22"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.0477183
+        },
+        "iconName": {
+          "stringValue": "meeting_room"
+        },
+        "order": {
+          "integerValue": "106"
+        }
+      },
+      "createTime": "2026-05-12T19:11:57.688278Z",
+      "updateTime": "2026-05-12T19:11:57.688278Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-7-wydzial-ekonomiczny",
+      "fields": {
+        "longitude": {
+          "doubleValue": 21.0490559
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-7-wydzial-ekonomiczny"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "order": {
+          "integerValue": "107"
+        },
+        "iconName": {
+          "stringValue": "trending_up"
+        },
+        "latitude": {
+          "doubleValue": 52.1646437
+        },
+        "description": {
+          "stringValue": "Główna siedziba Wydziału Ekonomicznego przy ul. Nowoursynowskiej 166."
+        },
+        "name": {
+          "stringValue": "Budynek 7 - Wydział Ekonomiczny"
+        }
+      },
+      "createTime": "2026-05-12T19:11:57.774563Z",
+      "updateTime": "2026-05-12T19:11:57.774563Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-budynek-8-biura-sggw",
+      "fields": {
+        "iconName": {
+          "stringValue": "business_center"
+        },
+        "order": {
+          "integerValue": "108"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-budynek-8-biura-sggw"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.0497258
+        },
+        "name": {
+          "stringValue": "Budynek 8 - biura SGGW"
+        },
+        "latitude": {
+          "doubleValue": 52.1639503
+        },
+        "description": {
+          "stringValue": "Budynek przy ul. Nowoursynowskiej 166, w którym mieszczą się m.in. Biuro Współpracy Międzynarodowej i jednostki obsługi uczelni."
+        }
+      },
+      "createTime": "2026-05-12T19:11:57.857703Z",
+      "updateTime": "2026-05-12T19:11:57.857703Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-dab-jozef-przy-budynku-8",
+      "fields": {
+        "latitude": {
+          "doubleValue": 52.1639503
+        },
+        "description": {
+          "stringValue": "Pomnikowy dąb imienia dra Józefa Rokoszy, wspominany w materiałach Wydziału Ogrodniczego."
+        },
+        "name": {
+          "stringValue": "Dąb Józef przy Budynku 8"
+        },
+        "longitude": {
+          "doubleValue": 21.0497258
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-dab-jozef-przy-budynku-8"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "order": {
+          "integerValue": "182"
+        },
+        "iconName": {
+          "stringValue": "park"
+        }
+      },
+      "createTime": "2026-05-12T19:11:58.430215Z",
+      "updateTime": "2026-05-12T19:11:58.430215Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-erasmus-student-network-sggw",
+      "fields": {
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-erasmus-student-network-sggw.jpg"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-erasmus-student-network-sggw"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.04895
+        },
+        "iconName": {
+          "stringValue": "public"
+        },
+        "order": {
+          "integerValue": "184"
+        },
+        "name": {
+          "stringValue": "Erasmus Student Network SGGW"
+        },
+        "latitude": {
+          "doubleValue": 52.16384166666666
+        },
+        "description": {
+          "stringValue": "Największa studencka organizacja non-profit w Europie; sekcja SGGW od 20 lat organizuje wydarzenia dla studentów przyjezdnych i wspiera wymiany zagraniczne."
+        }
+      },
+      "createTime": "2026-05-14T13:43:22.366560Z",
+      "updateTime": "2026-05-14T14:22:21.552758Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-kolekcja-roslin-uprawnych",
+      "fields": {
+        "latitude": {
+          "doubleValue": 52.1612094
+        },
+        "description": {
+          "stringValue": "Poletka doświadczalne Katedry Agronomii, odwiedzane podczas wycieczki terenowej z pokazem Robotti i drona Farmdrone."
+        },
+        "name": {
+          "stringValue": "Kolekcja Roślin Uprawnych SGGW"
+        },
+        "longitude": {
+          "doubleValue": 21.0534596
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-kolekcja-roslin-uprawnych"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "order": {
+          "integerValue": "181"
+        },
+        "iconName": {
+          "stringValue": "grass"
+        }
+      },
+      "createTime": "2026-05-12T19:11:58.384288Z",
+      "updateTime": "2026-05-12T19:11:58.384288Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-kolo-naukowe-zwierzat-doswiadczalnych-i-laboratoryjnych",
+      "fields": {
+        "iconName": {
+          "stringValue": "science"
+        },
+        "order": {
+          "integerValue": "188"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.049997222222224
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-kolo-naukowe-zwierzat-doswiadczalnych-i-laboratoryjnych"
+        },
+        "description": {
+          "stringValue": "Stoisko KNZDiL: diagnostyka molekularna, genetyka populacyjna i warsztaty izolacji DNA."
+        },
+        "latitude": {
+          "doubleValue": 52.16445833333333
+        },
+        "name": {
+          "stringValue": "Koło Naukowe Zwierząt Doświadczalnych i Laboratoryjnych (KNZDiL)"
+        }
+      },
+      "createTime": "2026-05-14T14:22:22.068888Z",
+      "updateTime": "2026-05-14T14:22:22.068888Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-muzeum-sggw",
+      "fields": {
+        "description": {
+          "stringValue": "Ponad 200 lat historii w jednym miejscu — poznaj korzenie, które sięgają Marymontu."
+        },
+        "latitude": {
+          "doubleValue": 52.163017
+        },
+        "name": {
+          "stringValue": "Muzeum SGGW"
+        },
+        "longitude": {
+          "doubleValue": 21.047111
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-muzeum-sggw"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "order": {
+          "integerValue": "18"
+        },
+        "iconName": {
+          "stringValue": "museum"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-13T16:54:11.632614Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-obiekty-sportowe-sggw",
+      "fields": {
+        "longitude": {
+          "doubleValue": 21.048063
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-obiekty-sportowe-sggw"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/point_images/point-obiekty-sportowe-sggw.jpg"
+        },
+        "order": {
+          "integerValue": "16"
+        },
+        "iconName": {
+          "stringValue": "sports"
+        },
+        "latitude": {
+          "doubleValue": 52.163808
+        },
+        "description": {
+          "stringValue": "Obiekty Sportowe SGGW – sport, relaks i energia w najlepszym wydaniu!"
+        },
+        "name": {
+          "stringValue": "Obiekty Sportowe SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T21:57:57.370668Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-scena-przed-palacem-rektorskim",
+      "fields": {
+        "latitude": {
+          "doubleValue": 52.164582
+        },
+        "description": {
+          "stringValue": "Plenerowa scena główna przed Pałacem Rektorskim, na której odbywają się koncerty i pokazy taneczne Dni SGGW."
+        },
+        "name": {
+          "stringValue": "Scena przed Pałacem Rektorskim"
+        },
+        "iconName": {
+          "stringValue": "theater_comedy"
+        },
+        "order": {
+          "integerValue": "0"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.050172
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-scena-przed-palacem-rektorskim"
+        }
+      },
+      "createTime": "2026-05-13T13:43:22.385975Z",
+      "updateTime": "2026-05-14T21:46:30.341743Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-stary-kampus-sggw-rakowiecka",
+      "fields": {
+        "order": {
+          "integerValue": "180"
+        },
+        "iconName": {
+          "stringValue": "account_balance"
+        },
+        "longitude": {
+          "doubleValue": 21.0066405
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-stary-kampus-sggw-rakowiecka"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "latitude": {
+          "doubleValue": 52.20765
+        },
+        "description": {
+          "stringValue": "Historyczny kompleks SGGW przy ul. Rakowieckiej, wskazany jako miejsce II Regionalnych Zawodów Drwali RDLP w Warszawie."
+        },
+        "name": {
+          "stringValue": "Stary Kampus SGGW - Rakowiecka"
+        }
+      },
+      "createTime": "2026-05-12T19:11:58.339070Z",
+      "updateTime": "2026-05-12T19:11:58.339070Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-stowarzyszenie-milosnikow-zubrow",
+      "fields": {
+        "longitude": {
+          "doubleValue": 21.049997222222224
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-stowarzyszenie-milosnikow-zubrow"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-stowarzyszenie-milosnikow-zubrow.jpg"
+        },
+        "order": {
+          "integerValue": "187"
+        },
+        "iconName": {
+          "stringValue": "forest"
+        },
+        "description": {
+          "stringValue": "Stoisko poświęcone ochronie żubra i działaniom Stowarzyszenia Miłośników Żubrów."
+        },
+        "latitude": {
+          "doubleValue": 52.16445833333333
+        },
+        "name": {
+          "stringValue": "Stowarzyszenie Miłośników Żubrów"
+        }
+      },
+      "createTime": "2026-05-14T14:22:21.853592Z",
+      "updateTime": "2026-05-14T14:22:21.853592Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-stowarzyszenie-wychowankow-sggw",
+      "fields": {
+        "latitude": {
+          "doubleValue": 52.163666
+        },
+        "description": {
+          "stringValue": "Stoisko Stowarzyszenia Wychowanków SGGW podczas Dni SGGW."
+        },
+        "name": {
+          "stringValue": "Stowarzyszenie Wychowanków SGGW"
+        },
+        "iconName": {
+          "stringValue": "groups"
+        },
+        "order": {
+          "integerValue": "185"
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "longitude": {
+          "doubleValue": 21.049203
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-stowarzyszenie-wychowankow-sggw"
+        }
+      },
+      "createTime": "2026-05-14T13:43:22.606342Z",
+      "updateTime": "2026-05-14T22:10:51.573682Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-studium-jezykow-obcych-spnjo",
+      "fields": {
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-studium-jezykow-obcych-spnjo"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.048119444444445
+        },
+        "iconName": {
+          "stringValue": "translate"
+        },
+        "order": {
+          "integerValue": "15"
+        },
+        "name": {
+          "stringValue": "Studium Języków Obcych (SPNJO)"
+        },
+        "latitude": {
+          "doubleValue": 52.16363888888889
+        },
+        "description": {
+          "stringValue": "Wszystkie Drogi Prowadzą do SPNJO"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:42:57.937719Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-szko-a-doktorska-sggw",
+      "fields": {
+        "order": {
+          "integerValue": "14"
+        },
+        "iconName": {
+          "stringValue": "school"
+        },
+        "longitude": {
+          "doubleValue": 21.048911111111114
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-szko-a-doktorska-sggw"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/point_images/point-szkola-doktorska-sggw.jpg"
+        },
+        "latitude": {
+          "doubleValue": 52.163891666666665
+        },
+        "description": {
+          "stringValue": "Dołącz do nas na Dniach SGGW i odkryj świat nauki widziany oczami młodych naukowców!"
+        },
+        "name": {
+          "stringValue": "Szkoła Doktorska SGGW"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:42:58.208106Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-uniwersytet-otwarty-sggw",
+      "fields": {
+        "name": {
+          "stringValue": "Uniwersytet Otwarty SGGW"
+        },
+        "description": {
+          "stringValue": "To przestrzeń dla wszystkich, którzy chcą rozwijać swoje pasje, zdobywać nowe kompetencje i poszerzać wiedzę w przyjaznej atmosferze."
+        },
+        "latitude": {
+          "doubleValue": 52.16369722222222
+        },
+        "order": {
+          "integerValue": "19"
+        },
+        "iconName": {
+          "stringValue": "menu_book"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-uniwersytet-otwarty-sggw"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "longitude": {
+          "doubleValue": 21.047775
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:42:56.954726Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-ursynowski-uniwersytet-trzeciego-wieku-przy-sggw",
+      "fields": {
+        "longitude": {
+          "doubleValue": 21.047961111111114
+        },
+        "type": {
+          "stringValue": "pointOfInterest"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-ursynowski-uniwersytet-trzeciego-wieku-przy-sggw"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "order": {
+          "integerValue": "186"
+        },
+        "iconName": {
+          "stringValue": "school"
+        },
+        "latitude": {
+          "doubleValue": 52.163713888888886
+        },
+        "description": {
+          "stringValue": "Stoisko Ursynowskiego Uniwersytetu Trzeciego Wieku przy SGGW podczas Dni SGGW."
+        },
+        "name": {
+          "stringValue": "Ursynowski Uniwersytet Trzeciego Wieku przy SGGW"
+        }
+      },
+      "createTime": "2026-05-14T13:43:22.801963Z",
+      "updateTime": "2026-05-14T13:43:22.801963Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydawnictwo-sggw",
+      "fields": {
+        "latitude": {
+          "doubleValue": 52.163719444444446
+        },
+        "description": {
+          "stringValue": "Podręczniki, monografie i konkurs językowy — nauka zamknięta w każdej stronie."
+        },
+        "name": {
+          "stringValue": "Wydawnictwo SGGW"
+        },
+        "order": {
+          "integerValue": "17"
+        },
+        "iconName": {
+          "stringValue": "import_contacts"
+        },
+        "longitude": {
+          "doubleValue": 21.04908055555556
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydawnictwo-sggw"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/point_images/point-wydawnictwo-sggw.jpg"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:42:58.436900Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-biologii-i-biotechnologii",
+      "fields": {
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.04810277777778
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/point_images/point-wydzial-biologii-i-biotechnologii.jpg"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-biologii-i-biotechnologii"
+        },
+        "iconName": {
+          "stringValue": "biotech"
+        },
+        "order": {
+          "integerValue": "13"
+        },
+        "latitude": {
+          "doubleValue": 52.163691666666665
+        },
+        "description": {
+          "stringValue": "Rośliny owadożerne, bransoletki z kwiatów i komórki pod mikroskopem — biologia zaskakuje."
+        },
+        "name": {
+          "stringValue": "Wydział Biologii i Biotechnologii"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:42:58.603039Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-budownictwa-i-inzynierii-srodowiska",
+      "fields": {
+        "iconName": {
+          "stringValue": "water_drop"
+        },
+        "order": {
+          "integerValue": "5"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-budownictwa-i-inzynierii-srodowiska"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.050055555555556
+        },
+        "name": {
+          "stringValue": "Wydział Budownictwa i Inżynierii Środowiska"
+        },
+        "latitude": {
+          "doubleValue": 52.16460555555555
+        },
+        "description": {
+          "stringValue": "Każda kropla wody i każdy metr miejskiej przestrzeni kryje w sobie inżynierię."
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:43:04.550800Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-ekonomiczny",
+      "fields": {
+        "iconName": {
+          "stringValue": "trending_up"
+        },
+        "order": {
+          "integerValue": "8"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.048712
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-ekonomiczny"
+        },
+        "latitude": {
+          "doubleValue": 52.164196
+        },
+        "description": {
+          "stringValue": "Gra giełdowa, quizy i koło fortuny — sprawdź, czy masz instynkt biznesmena."
+        },
+        "name": {
+          "stringValue": "Wydział Ekonomiczny"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T21:58:59.764730Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-hodowli-bioinzynierii-i-ochrony-zwierzat",
+      "fields": {
+        "name": {
+          "stringValue": "Wydział Hodowli, Bioinżynierii i Ochrony Zwierząt"
+        },
+        "latitude": {
+          "doubleValue": 52.16445833333333
+        },
+        "description": {
+          "stringValue": "DZIKA STREFA ATRAKCJI"
+        },
+        "order": {
+          "integerValue": "7"
+        },
+        "iconName": {
+          "stringValue": "cruelty_free"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-hodowli-bioinzynierii-i-ochrony-zwierzat"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "longitude": {
+          "doubleValue": 21.049997222222224
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:43:04.388483Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-inzynierii-produkcji",
+      "fields": {
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-inzynierii-produkcji"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.048572222222223
+        },
+        "iconName": {
+          "stringValue": "precision_manufacturing"
+        },
+        "order": {
+          "integerValue": "11"
+        },
+        "name": {
+          "stringValue": "Wydział Inżynierii Produkcji"
+        },
+        "latitude": {
+          "doubleValue": 52.16389722222222
+        },
+        "description": {
+          "stringValue": "Robot uczący się na żywo, maszyny rolnicze i energia słoneczna — inżynieria w akcji."
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:42:58.952356Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-lesny",
+      "fields": {
+        "iconName": {
+          "stringValue": "forest"
+        },
+        "order": {
+          "integerValue": "4"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-lesny"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.048558
+        },
+        "name": {
+          "stringValue": "Wydział Leśny"
+        },
+        "latitude": {
+          "doubleValue": 52.164093
+        },
+        "description": {
+          "stringValue": "Stoisko pod hasłem „Życie lasu”"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T21:56:09.983058Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-medycyny-weterynaryjnej",
+      "fields": {
+        "iconName": {
+          "stringValue": "pets"
+        },
+        "order": {
+          "integerValue": "2"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-medycyny-weterynaryjnej"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.048291
+        },
+        "name": {
+          "stringValue": "Wydział Medycyny Weterynaryjnej"
+        },
+        "latitude": {
+          "doubleValue": 52.164014
+        },
+        "description": {
+          "stringValue": "Szpital dla pluszaków, anatomiczne zagadki i test: czy naprawdę znasz swoje zwierzę?"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T21:58:13.740534Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-ogrodniczy",
+      "fields": {
+        "description": {
+          "stringValue": "Kiermasz Kolory i Smaki Natury"
+        },
+        "latitude": {
+          "doubleValue": 52.164299
+        },
+        "name": {
+          "stringValue": "Wydział Ogrodniczy"
+        },
+        "iconName": {
+          "stringValue": "local_florist"
+        },
+        "order": {
+          "integerValue": "3"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.049067
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-ogrodniczy"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T21:59:59.456637Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-rolnictwa-i-ekologii",
+      "fields": {
+        "name": {
+          "stringValue": "Wydział Rolnictwa i Ekologii"
+        },
+        "latitude": {
+          "doubleValue": 52.163941666666666
+        },
+        "description": {
+          "stringValue": "Nauka w praktyce, natura w centrum uwagi!"
+        },
+        "iconName": {
+          "stringValue": "agriculture"
+        },
+        "order": {
+          "integerValue": "1"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-rolnictwa-i-ekologii"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.048183333333334
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:43:10.857512Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-socjologii-i-pedagogiki",
+      "fields": {
+        "order": {
+          "integerValue": "12"
+        },
+        "iconName": {
+          "stringValue": "groups"
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-socjologii-i-pedagogiki"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/point_images/point-wydzia-socjologii-i-pedagogiki.jpg"
+        },
+        "longitude": {
+          "doubleValue": 21.04831666666667
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "name": {
+          "stringValue": "Wydział Socjologii i Pedagogiki"
+        },
+        "description": {
+          "stringValue": "Naszą pasją są ludzie!"
+        },
+        "latitude": {
+          "doubleValue": 52.16380833333333
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:42:58.764969Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-technologii-drewna",
+      "fields": {
+        "name": {
+          "stringValue": "Wydział Technologii Drewna"
+        },
+        "latitude": {
+          "doubleValue": 52.16444444444444
+        },
+        "description": {
+          "stringValue": "Tu natura spotyka technologię, a kreatywność łączy się z inżynierią drewna i projektowaniem."
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-technologii-drewna"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/point_images/point-wydzial-technologii-drewna.png"
+        },
+        "longitude": {
+          "doubleValue": 21.04961666666667
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "order": {
+          "integerValue": "6"
+        },
+        "iconName": {
+          "stringValue": "carpenter"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:43:04.689931Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-technologii-zywnosci",
+      "fields": {
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-technologii-zywnosci"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/point_images/point-wydzial-technologii-zywnosci.jpg"
+        },
+        "longitude": {
+          "doubleValue": 21.04907777777778
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "order": {
+          "integerValue": "9"
+        },
+        "iconName": {
+          "stringValue": "science"
+        },
+        "name": {
+          "stringValue": "Wydział Technologii Żywności"
+        },
+        "latitude": {
+          "doubleValue": 52.164116666666665
+        },
+        "description": {
+          "stringValue": "Wydział Technologii Żywności świętuje 65-lecie i pokazuje, jak nauka spotyka się z każdym posiłkiem."
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:43:04.856784Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-zastosowan-informatyki-i-matematyki",
+      "fields": {
+        "name": {
+          "stringValue": "Wydział Zastosowań Informatyki i Matematyki"
+        },
+        "latitude": {
+          "doubleValue": 52.16437222222222
+        },
+        "description": {
+          "stringValue": "Zagraj w autorskie gry, zmierz się z szachowym botem AI i odkryj aplikację tej gry terenowej."
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-zastosowan-informatyki-i-matematyki"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "longitude": {
+          "doubleValue": 21.049377777777778
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "order": {
+          "integerValue": "0"
+        },
+        "iconName": {
+          "stringValue": "computer"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:43:10.046850Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/treasure_points/point-wydzia-zywienia-cz-owieka",
+      "fields": {
+        "iconName": {
+          "stringValue": "nutrition"
+        },
+        "order": {
+          "integerValue": "10"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "qrCode": {
+          "stringValue": "https://sggw-days.web.app/scan/point-wydzia-zywienia-cz-owieka"
+        },
+        "type": {
+          "stringValue": "treasurePoint"
+        },
+        "longitude": {
+          "doubleValue": 21.048947222222225
+        },
+        "name": {
+          "stringValue": "Wydział Żywienia Człowieka"
+        },
+        "latitude": {
+          "doubleValue": 52.16406388888889
+        },
+        "description": {
+          "stringValue": "Witaj w miejscu, gdzie od 1977 roku odkrywamy tajemnice tego, jak jedzenie wpływa na nasze życie."
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.253998Z",
+      "updateTime": "2026-05-14T13:43:04.196728Z"
+    }
+  ]
+}

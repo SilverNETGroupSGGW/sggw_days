@@ -1,0 +1,1132 @@
+{
+  "documents": [
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-akademicka-liga-debat-oksfordzkich-2026-05-15",
+      "fields": {
+        "location": {
+          "stringValue": "Biblioteka Główna SGGW"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T16:00:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-biblioteka-g-owna-sggw"
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Harmonogram: W trakcie godzin otwarcia (10:00–16:00)\n\nCzas trwania: Jednotematyczne rundy po ~30 minut\n\nKoło Naukowe Debat Oksfordzkich SGGW organizuje kolejny etap Akademickiej Ligi Debat Oksfordzkich w przestrzeniach Biblioteki Głównej. Format oksfordzki: jedna teza, dwie drużyny, ściśle limitowany czas — i publiczność jako sędzia. Wejdź i posłuchaj, jak studenci bronią i obalają argumenty. Publiczność może głosować!"
+        },
+        "iconName": {
+          "stringValue": "record_voice_over"
+        },
+        "title": {
+          "stringValue": "Akademicka Liga Debat Oksfordzkich"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T10:00:00.000"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:11:59.683887Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-akademicka-liga-debat-oksfordzkich-2026-05-16",
+      "fields": {
+        "endTime": {
+          "stringValue": "2026-05-16T16:00:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-biblioteka-g-owna-sggw"
+              }
+            ]
+          }
+        },
+        "location": {
+          "stringValue": "Biblioteka Główna SGGW"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Harmonogram: W trakcie godzin otwarcia (10:00–16:00)\n\nCzas trwania: Jednotematyczne rundy po ~30 minut\n\nKoło Naukowe Debat Oksfordzkich SGGW organizuje kolejny etap Akademickiej Ligi Debat Oksfordzkich w przestrzeniach Biblioteki Głównej. Format oksfordzki: jedna teza, dwie drużyny, ściśle limitowany czas — i publiczność jako sędzia. Wejdź i posłuchaj, jak studenci bronią i obalają argumenty. Publiczność może głosować!"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T10:00:00.000"
+        },
+        "iconName": {
+          "stringValue": "record_voice_over"
+        },
+        "title": {
+          "stringValue": "Akademicka Liga Debat Oksfordzkich"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:11:59.727598Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-ii-regionalne-zawody-drwali-rdlp-w-warszawie-2026-05-16",
+      "fields": {
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-lesny"
+              },
+              {
+                "stringValue": "point-stary-kampus-sggw-rakowiecka"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T16:00:00.000"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Stary Kampus SGGW"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T10:00:00.000"
+        },
+        "iconName": {
+          "stringValue": "forest"
+        },
+        "title": {
+          "stringValue": "II Regionalne Zawody Drwali RDLP w Warszawie"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Czas trwania: ~6 godzin (cały dzień)\n\nMistrzowie leśnego rzemiosła w akcji! Profesjonalni operatorzy pilarek walczą w czterech widowiskowych dyscyplinach:\n\n• Wymiana piły łańcuchowej\n• Przerzynka kombinowana\n• Przerzynka na dokładność\n• Okrzesywanie\n\nWidowisko pełne napięcia, precyzji i szacunku dla drewna i zawodu leśnika. Nie przegap!"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:11:59.771914Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-koncert-orkiestry-reprezentacyjnej-sggw-z-patrycja-ciborowska-2026-05-15",
+      "fields": {
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Scena przed Pałacem Rektorskim"
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T14:15:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-scena-przed-palacem-rektorskim"
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Godzina: 13:00 | Scena przed Pałacem Rektorskim\n\nMiłośników muzyki serdecznie zapraszamy na koncert Orkiestry Reprezentacyjnej SGGW, która wystąpi wraz z solistką Patrycją Ciborowską, prezentując przeboje muzyki rozrywkowej i muzykę filmową."
+        },
+        "iconName": {
+          "stringValue": "music_note_2"
+        },
+        "title": {
+          "stringValue": "Koncert Orkiestry Reprezentacyjnej SGGW z Patrycją Ciborowską"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T13:00:00.000"
+        }
+      },
+      "createTime": "2026-05-13T13:43:22.634614Z",
+      "updateTime": "2026-05-13T16:42:55.976391Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-koncert-promnych-i-sqer-dance-2026-05-15",
+      "fields": {
+        "iconName": {
+          "stringValue": "music_note_2"
+        },
+        "title": {
+          "stringValue": "Koncert PROMNYCH i SQER Dance"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T14:45:00.000"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Godzina: 14:45 | Scena przed Pałacem Rektorskim\n\nZapraszamy na koncert PROMNYCH i SQER Dance na scenie plenerowej przed Pałacem Rektorskim."
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Scena przed Pałacem Rektorskim"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-scena-przed-palacem-rektorskim"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T16:00:00.000"
+        }
+      },
+      "createTime": "2026-05-13T13:43:22.883171Z",
+      "updateTime": "2026-05-13T16:42:56.055655Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-koncert-zespo-u-sygnalistow-mysliwskich-akteon-2026-05-15",
+      "fields": {
+        "endTime": {
+          "stringValue": "2026-05-15T16:00:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-lesny"
+              },
+              {
+                "stringValue": "point-budynek-34-wzim-lesny-technologii-drewna"
+              }
+            ]
+          }
+        },
+        "location": {
+          "stringValue": "Wydział Leśny"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Harmonogram: 2–3 razy dziennie (harmonogram przy stoisku)\n\nCzas trwania: 15–30 minut\n\nSygnaliści myśliwscy „Akteon\" to muzycy, którzy grają na myśliwskich rogach i trąbkach — instrumentach z wielowiekową tradycją leśną. Ich muzyka to hejnały, fanfary i sygnały myśliwskie, które niegdyś rozbrzmiewały w lasach całej Europy. Magiczne brzmienie w pięknym otoczeniu kampusu SGGW."
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T10:00:00.000"
+        },
+        "title": {
+          "stringValue": "Koncert Zespołu Sygnalistów Myśliwskich „Akteon\""
+        },
+        "iconName": {
+          "stringValue": "music_note"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:11:59.817749Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-koncert-zespo-u-sygnalistow-mysliwskich-akteon-2026-05-16",
+      "fields": {
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Wydział Leśny"
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T16:00:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-lesny"
+              },
+              {
+                "stringValue": "point-budynek-34-wzim-lesny-technologii-drewna"
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Harmonogram: 2–3 razy dziennie (harmonogram przy stoisku)\n\nCzas trwania: 15–30 minut\n\nSygnaliści myśliwscy „Akteon\" to muzycy, którzy grają na myśliwskich rogach i trąbkach — instrumentach z wielowiekową tradycją leśną. Ich muzyka to hejnały, fanfary i sygnały myśliwskie, które niegdyś rozbrzmiewały w lasach całej Europy. Magiczne brzmienie w pięknym otoczeniu kampusu SGGW."
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T10:00:00.000"
+        },
+        "title": {
+          "stringValue": "Koncert Zespołu Sygnalistów Myśliwskich „Akteon\""
+        },
+        "iconName": {
+          "stringValue": "music_note"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:11:59.862065Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-konferencja-dla-dzieci-pod-parasolem-zubra-2026-05-16",
+      "fields": {
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Budynek 34, ul. Nowoursynowska 159"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-hodowli-bioinzynierii-i-ochrony-zwierzat"
+              },
+              {
+                "stringValue": "point-budynek-34-wzim-lesny-technologii-drewna"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T13:00:00.000"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T09:00:00.000"
+        },
+        "iconName": {
+          "stringValue": "child_care"
+        },
+        "title": {
+          "stringValue": "Konferencja dla dzieci „Pod parasolem żubra\""
+        },
+        "description": {
+          "stringValue": "Czas trwania: ~4 godziny\n\nSpecjalna konferencja edukacyjna dla dzieci realizowana w ramach projektu naukowego „Pod parasolem żubra\". Fascynujące spotkanie z nauką o zwierzętach, ochronie gatunków i roli żubra w polskiej przyrodzie — podane w formie dostępnej dla najmłodszych."
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:11:59.906195Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-konkurs-z-zakresu-przedsiebiorczosci-akademia-przedsiebiorczosci-2026-05-15",
+      "fields": {
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "sala komputerowa, kampus SGGW"
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T11:00:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-ekonomiczny"
+              },
+              {
+                "stringValue": "point-budynek-7-wydzial-ekonomiczny"
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Czas trwania: ~60 minut\n\nFinałowy konkurs wiedzy z zakresu przedsiębiorczości dla uczestników Akademii Przedsiębiorczości Wydziału Ekonomicznego SGGW. Sprawdzian wiedzy, zdobytej przez uczniów szkół ponadpodstawowych w ramach całorocznego programu edukacyjnego."
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T10:00:00.000"
+        },
+        "title": {
+          "stringValue": "Konkurs z zakresu przedsiębiorczości — Akademia Przedsiębiorczości"
+        },
+        "iconName": {
+          "stringValue": "emoji_events"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:11:59.950Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-otwarcie-festiwalu-par-tanecznych-sggw-2026-05-15",
+      "fields": {
+        "title": {
+          "stringValue": "Otwarcie Festiwalu Par Tanecznych SGGW"
+        },
+        "iconName": {
+          "stringValue": "partner_exchange"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T14:15:00.000"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Godzina: 14:15 | Scena przed Pałacem Rektorskim\n\nSerdecznie zapraszamy na otwarcie Festiwalu Par Tanecznych SGGW oraz prezentacje uczestników."
+        },
+        "location": {
+          "stringValue": "Scena przed Pałacem Rektorskim"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-scena-przed-palacem-rektorskim"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T14:45:00.000"
+        }
+      },
+      "createTime": "2026-05-13T13:43:22.768432Z",
+      "updateTime": "2026-05-13T16:42:56.106013Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-pokaz-arborystyczny-wydzial-ogrodniczy-2026-05-16",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Czas trwania: około 45 minut\n\nEfektowny pokaz arborystyczny przygotowany przez Wydział Ogrodniczy. To okazja, żeby zobaczyć, jak profesjonaliści dbają o drzewa i jak praktyczna wiedza dendrologiczna wygląda poza salą wykładową."
+        },
+        "iconName": {
+          "stringValue": "park"
+        },
+        "title": {
+          "stringValue": "Pokaz arborystyczny Wydziału Ogrodniczego"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T12:00:00.000"
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T12:45:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-ogrodniczy"
+              },
+              {
+                "stringValue": "point-budynek-35-ogrodniczy"
+              }
+            ]
+          }
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Stoisko Wydziału Ogrodniczego, Budynek 35"
+        }
+      },
+      "createTime": "2026-05-12T19:12:00.489558Z",
+      "updateTime": "2026-05-12T19:12:00.489558Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-pokaz-kotow-rasowych-2026-05-16",
+      "fields": {
+        "location": {
+          "stringValue": "Budynek 23, ul. Ciszewskiego 8"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T15:00:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-hodowli-bioinzynierii-i-ochrony-zwierzat"
+              },
+              {
+                "stringValue": "point-budynek-23-ciszewskiego-8"
+              }
+            ]
+          }
+        },
+        "description": {
+          "stringValue": "Wydarzenie odbędzie się w sobotę 16.05 w budynku 23. Planowane godziny dla zwiedzających: 10:00–15:00."
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "iconName": {
+          "stringValue": "pets"
+        },
+        "title": {
+          "stringValue": "II Pokaz Kotów Rasowych"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T10:00:00.000"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-14T14:22:22.255180Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-pokaz-robotti-i-drona-opryskujacego-farmdrone-wycieczka-terenowa-2026-05-15",
+      "fields": {
+        "endTime": {
+          "stringValue": "2026-05-15T16:00:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-rolnictwa-i-ekologii"
+              },
+              {
+                "stringValue": "point-kolekcja-roslin-uprawnych"
+              }
+            ]
+          }
+        },
+        "location": {
+          "stringValue": "start ze stoiska, wyjście na Kolekcję Roślin Uprawnych"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Harmonogram: Określone godziny — zapytaj przy stoisku\n\nCzas trwania: ~30–45 minut\n\nWyprawa ze stoiska WRiE na Kolekcję Roślin Uprawnych — prawdziwe poletka doświadczalne. Tam zobaczysz:\n\n• Robotti — autonomiczny robot ogrodniczy do pielęgnacji upraw warzywniczych\n• Dron opryskujący Farmdrone — precyzyjne traktowanie roślin z powietrza\n\nWróć na stoisko z bukietem kłosów zbóż!"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T10:00:00.000"
+        },
+        "iconName": {
+          "stringValue": "agriculture"
+        },
+        "title": {
+          "stringValue": "Pokaz Robotti i drona opryskującego Farmdrone — Wycieczka terenowa"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:12:00.036843Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-pokaz-robotti-i-drona-opryskujacego-farmdrone-wycieczka-terenowa-2026-05-16",
+      "fields": {
+        "title": {
+          "stringValue": "Pokaz Robotti i drona opryskującego Farmdrone — Wycieczka terenowa"
+        },
+        "iconName": {
+          "stringValue": "agriculture"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T10:00:00.000"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Harmonogram: Określone godziny — zapytaj przy stoisku\n\nCzas trwania: ~30–45 minut\n\nWyprawa ze stoiska WRiE na Kolekcję Roślin Uprawnych — prawdziwe poletka doświadczalne. Tam zobaczysz:\n\n• Robotti — autonomiczny robot ogrodniczy do pielęgnacji upraw warzywniczych\n• Dron opryskujący Farmdrone — precyzyjne traktowanie roślin z powietrza\n\nWróć na stoisko z bukietem kłosów zbóż!"
+        },
+        "location": {
+          "stringValue": "start ze stoiska, wyjście na Kolekcję Roślin Uprawnych"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-rolnictwa-i-ekologii"
+              },
+              {
+                "stringValue": "point-kolekcja-roslin-uprawnych"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T16:00:00.000"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:12:00.082290Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-sekretne-laboratorium-ursyna-pokaz-chemii-zywnosci-2026-05-15",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Czas trwania: ~150 minut (wejście ciągłe)\n\nKatedra Chemii WTŻ SGGW zaprasza do Sekretnego Laboratorium Ursyna! Efektowne, ciekawe i bezpieczne doświadczenia z żywnością i jej komponentami — wykonywane na oczach zwiedzających, z ich pomocą. Czy wiesz, że ziemniaczana skrobia może zachowywać się jak ciało stałe i ciecz jednocześnie? Przekonaj się sam!"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T10:00:00.000"
+        },
+        "iconName": {
+          "stringValue": "science"
+        },
+        "title": {
+          "stringValue": "Sekretne Laboratorium Ursyna — pokaz chemii żywności"
+        },
+        "location": {
+          "stringValue": "Wydział Technologii Żywności"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-wydzial-technologii-zywnosci-i-instytut-nauk-o-zywnosci-sggw.jpg"
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T12:30:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-technologii-zywnosci"
+              },
+              {
+                "stringValue": "point-budynek-32-wtz-wzc"
+              }
+            ]
+          }
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:12:00.125821Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-swojskie-i-egzotyczne-owoce-i-orzechy-2026-05-16",
+      "fields": {
+        "endTime": {
+          "stringValue": "2026-05-16T13:00:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-technologii-zywnosci"
+              },
+              {
+                "stringValue": "point-budynek-32-wtz-wzc"
+              }
+            ]
+          }
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-wydzial-technologii-zywnosci-i-instytut-nauk-o-zywnosci-sggw.jpg"
+        },
+        "location": {
+          "stringValue": "Wydział Technologii Żywności, Budynek 32"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Czas trwania: 3 godziny\n\nSwojskie i egzotyczne owoce oraz orzechy jako źródło olejów o właściwościach prozdrowotnych. Na stoisku Wydziału Technologii Żywności poznasz fakty i mity na temat tłuszczów oraz weźmiesz udział w quizach i testach przygotowanych dla dzieci i dorosłych."
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T10:00:00.000"
+        },
+        "title": {
+          "stringValue": "Swojskie i egzotyczne owoce i orzechy"
+        },
+        "iconName": {
+          "stringValue": "nutrition"
+        }
+      },
+      "createTime": "2026-05-12T19:12:00.395247Z",
+      "updateTime": "2026-05-12T19:12:00.395247Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-w-swiecie-kawy-2026-05-16",
+      "fields": {
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-technologii-zywnosci"
+              },
+              {
+                "stringValue": "point-budynek-32-wtz-wzc"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T16:00:00.000"
+        },
+        "location": {
+          "stringValue": "Wydział Technologii Żywności, Budynek 32"
+        },
+        "imageUrl": {
+          "stringValue": "https://storage.googleapis.com/sggw-days-content-583939995714/wiki_images/wiki-wydzial-technologii-zywnosci-i-instytut-nauk-o-zywnosci-sggw.jpg"
+        },
+        "title": {
+          "stringValue": "W świecie kawy"
+        },
+        "iconName": {
+          "stringValue": "local_cafe"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T13:00:00.000"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Czas trwania: 3 godziny\n\nPokaz różnych rodzajów ziaren kawy, sposobów parzenia i sprzętu do przygotowywania naparu. To spokojniejsza, sensoryczna część programu Wydziału Technologii Żywności z ciekawostkami o kawie i rozmową o tym, co wpływa na smak filiżanki."
+        }
+      },
+      "createTime": "2026-05-12T19:12:00.444611Z",
+      "updateTime": "2026-05-12T19:12:00.444611Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-warsztaty-izolacji-dna-knzdil-2026-05-15-1100",
+      "fields": {
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Stoisko warsztatowe Samorządu"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-kolo-naukowe-zwierzat-doswiadczalnych-i-laboratoryjnych"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T12:00:00.000"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T11:00:00.000"
+        },
+        "iconName": {
+          "stringValue": "biotech"
+        },
+        "title": {
+          "stringValue": "Warsztaty izolacji DNA z KNZDiL"
+        },
+        "description": {
+          "stringValue": "Warsztaty, podczas których wyizolujemy DNA, prowadzone przez Koło Naukowe Zwierząt Doświadczalnych i Laboratoryjnych. Czas trwania: 1 godzina."
+        },
+        "tags": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-05-14T14:22:22.448840Z",
+      "updateTime": "2026-05-14T14:22:22.448840Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-warsztaty-izolacji-dna-knzdil-2026-05-15-1400",
+      "fields": {
+        "title": {
+          "stringValue": "Warsztaty izolacji DNA z KNZDiL"
+        },
+        "iconName": {
+          "stringValue": "biotech"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T14:00:00.000"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Warsztaty, podczas których wyizolujemy DNA, prowadzone przez Koło Naukowe Zwierząt Doświadczalnych i Laboratoryjnych. Czas trwania: 1 godzina."
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-kolo-naukowe-zwierzat-doswiadczalnych-i-laboratoryjnych"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T15:00:00.000"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Stoisko warsztatowe Samorządu"
+        }
+      },
+      "createTime": "2026-05-14T14:22:22.641777Z",
+      "updateTime": "2026-05-14T14:22:22.641777Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-warsztaty-izolacji-dna-knzdil-2026-05-16-1100",
+      "fields": {
+        "iconName": {
+          "stringValue": "biotech"
+        },
+        "title": {
+          "stringValue": "Warsztaty izolacji DNA z KNZDiL"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T11:00:00.000"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Warsztaty, podczas których wyizolujemy DNA, prowadzone przez Koło Naukowe Zwierząt Doświadczalnych i Laboratoryjnych. Czas trwania: 1 godzina."
+        },
+        "location": {
+          "stringValue": "Stoisko warsztatowe Samorządu"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-kolo-naukowe-zwierzat-doswiadczalnych-i-laboratoryjnych"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T12:00:00.000"
+        }
+      },
+      "createTime": "2026-05-14T14:22:22.819426Z",
+      "updateTime": "2026-05-14T14:22:22.819426Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-warsztaty-izolacji-dna-knzdil-2026-05-16-1400",
+      "fields": {
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-kolo-naukowe-zwierzat-doswiadczalnych-i-laboratoryjnych"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T15:00:00.000"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Stoisko warsztatowe Samorządu"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T14:00:00.000"
+        },
+        "iconName": {
+          "stringValue": "biotech"
+        },
+        "title": {
+          "stringValue": "Warsztaty izolacji DNA z KNZDiL"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Warsztaty, podczas których wyizolujemy DNA, prowadzone przez Koło Naukowe Zwierząt Doświadczalnych i Laboratoryjnych. Czas trwania: 1 godzina."
+        }
+      },
+      "createTime": "2026-05-14T14:22:28.059275Z",
+      "updateTime": "2026-05-14T14:22:28.059275Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-wystawa-swinek-morskich-2026-05-16",
+      "fields": {
+        "startTime": {
+          "stringValue": "2026-05-16T09:00:00.000"
+        },
+        "iconName": {
+          "stringValue": "cruelty_free"
+        },
+        "title": {
+          "stringValue": "Wystawa świnek morskich"
+        },
+        "description": {
+          "stringValue": "Czas trwania: ~6 godzin\n\nCavies Club of Poland – Polski Klub Rasowych Świnek Morskich we współpracy z Instytutem Nauk o Zwierzętach SGGW. Różne rasy, umaszczenia i temperamenty — świat świnek morskich zaskakuje różnorodnością bardziej niż myślisz!"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-hodowli-bioinzynierii-i-ochrony-zwierzat"
+              },
+              {
+                "stringValue": "point-budynek-23-ciszewskiego-8"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T15:00:00.000"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Budynek 23, ul. Ciszewskiego 8"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:12:00.168512Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-wystepy-lza-promni-oraz-miedzynarodowych-par-tanecznych-2026-05-16",
+      "fields": {
+        "iconName": {
+          "stringValue": "groups"
+        },
+        "title": {
+          "stringValue": "Występy LZA PROMNI oraz Międzynarodowych Par Tanecznych"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T13:00:00.000"
+        },
+        "description": {
+          "stringValue": "Godzina: 13:00 | Scena przed Pałacem Rektorskim\n\nZapraszamy na występy LZA PROMNI oraz Międzynarodowych Par Tanecznych."
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "location": {
+          "stringValue": "Scena przed Pałacem Rektorskim"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-scena-przed-palacem-rektorskim"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T14:30:00.000"
+        }
+      },
+      "createTime": "2026-05-13T13:43:22.980587Z",
+      "updateTime": "2026-05-13T16:42:56.160300Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-zakonczenie-akademii-przedsiebiorczosci-we-sggw-2026-05-15",
+      "fields": {
+        "title": {
+          "stringValue": "Zakończenie Akademii Przedsiębiorczości WE SGGW"
+        },
+        "iconName": {
+          "stringValue": "school"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T13:00:00.000"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Czas trwania: ~90 minut\n\nUroczyste zakończenie Akademii Przedsiębiorczości Wydziału Ekonomicznego SGGW — wręczenie dyplomów, ogłoszenie wyników i świętowanie z uczestnikami rocznego programu. Publiczność mile widziana!"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-ekonomiczny"
+              },
+              {
+                "stringValue": "point-budynek-6-sala-d22"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T14:30:00.000"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "sala D-22, budynek 6"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:12:00.213832Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-zwierzeta-egzotyczne-terraria-2026-05-15",
+      "fields": {
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Czas trwania: ~6 godzin\n\nKoło Naukowe Zoologów i Koło Atlas prezentują mieszkańców swoich terrariów: owady, płazy, gady, pająki i inne bezkręgowce. Zdjęcia z wężem? Oczywiście!"
+        },
+        "startTime": {
+          "stringValue": "2026-05-15T09:00:00.000"
+        },
+        "iconName": {
+          "stringValue": "bug_report"
+        },
+        "title": {
+          "stringValue": "Zwierzęta egzotyczne — terraria"
+        },
+        "endTime": {
+          "stringValue": "2026-05-15T15:00:00.000"
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-hodowli-bioinzynierii-i-ochrony-zwierzat"
+              },
+              {
+                "stringValue": "point-budynek-23-ciszewskiego-8"
+              }
+            ]
+          }
+        },
+        "location": {
+          "stringValue": "Budynek 23, ul. Ciszewskiego 8"
+        },
+        "imageUrl": {
+          "nullValue": null
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:12:00.262696Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/event-zwierzeta-egzotyczne-terraria-2026-05-16",
+      "fields": {
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-wydzia-hodowli-bioinzynierii-i-ochrony-zwierzat"
+              },
+              {
+                "stringValue": "point-budynek-23-ciszewskiego-8"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T15:00:00.000"
+        },
+        "imageUrl": {
+          "nullValue": null
+        },
+        "location": {
+          "stringValue": "Budynek 23, ul. Ciszewskiego 8"
+        },
+        "title": {
+          "stringValue": "Zwierzęta egzotyczne — terraria"
+        },
+        "iconName": {
+          "stringValue": "bug_report"
+        },
+        "startTime": {
+          "stringValue": "2026-05-16T09:00:00.000"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Czas trwania: ~6 godzin\n\nKoło Naukowe Zoologów i Koło Atlas prezentują mieszkańców swoich terrariów: owady, płazy, gady, pająki i inne bezkręgowce. Zdjęcia z wężem? Oczywiście!"
+        }
+      },
+      "createTime": "2026-05-10T21:36:28.662287Z",
+      "updateTime": "2026-05-12T19:12:00.309166Z"
+    },
+    {
+      "name": "projects/sggw-days/databases/(default)/documents/timetable_events/qFNaDLxT7fLmmOErwsmx",
+      "fields": {
+        "startTime": {
+          "stringValue": "2026-05-16T11:00:00.000"
+        },
+        "title": {
+          "stringValue": "Koncert Orkiestry Reprezentacyjnej SGGW, Chóru SGGW i Schola Cantorum Aristotele Pacini"
+        },
+        "iconName": {
+          "stringValue": "music_note_2"
+        },
+        "tags": {
+          "arrayValue": {}
+        },
+        "description": {
+          "stringValue": "Godzina: 11:00 | Scena przed Pałacem Rektorskim\n\nMiłośników muzyki serdecznie zapraszamy na koncert Orkiestry Reprezentacyjnej SGGW, która wystąpi wraz z solistami, a także z Chórem SGGW i Schola Cantorum Aristotele Pacini z Włoch. Muzycy wykonają utwory o tematyce warszawskiej z programu artystycznego „Jest Warszawa”, a także przeboje muzyki rozrywkowej i muzykę filmową."
+        },
+        "treasurePointIds": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "point-scena-przed-palacem-rektorskim"
+              }
+            ]
+          }
+        },
+        "endTime": {
+          "stringValue": "2026-05-16T12:30:00.000"
+        },
+        "location": {
+          "stringValue": "Scena przed Pałacem Rektorskim"
+        },
+        "imageUrl": {
+          "nullValue": null
+        }
+      },
+      "createTime": "2026-05-11T13:32:14.778190Z",
+      "updateTime": "2026-05-13T13:43:22.524980Z"
+    }
+  ]
+}

@@ -25,7 +25,7 @@ BASE_URL = (
     "https://firestore.googleapis.com/v1/projects/sggw-days/"
     "databases/(default)/documents"
 )
-BOOTH_CATEGORIES = ("Wydziały", "Jednostki SGGW")
+BOOTH_CATEGORIES = ("Wydziały", "Jednostki SGGW", "Koła i organizacje")
 A4_SCREEN_SIZE = (794, 1123)
 DEVICE_SCALE_FACTOR = 3
 DEFAULT_POINT_NAME = "Punkt Kontrolny"
@@ -39,6 +39,7 @@ class PosterEntry:
     point_id: str
     point_name: str
     qr_code: str
+    point_order: int
 
     @property
     def slug(self) -> str:
@@ -134,11 +135,13 @@ def build_entries() -> list[PosterEntry]:
                 point_name=point.get("name", ""),
                 qr_code=point.get("qrCode")
                 or f"https://sggw-days.web.app/scan/{point['id']}",
+                point_order=int(point.get("order", 9999)),
             ),
         )
 
     entries.sort(
         key=lambda entry: (
+            entry.point_order,
             BOOTH_CATEGORIES.index(entry.category),
             entry.article_title.casefold(),
         ),
@@ -166,13 +169,7 @@ def slugify(value: str) -> str:
 
 
 def load_promo_html_from_git() -> str:
-    try:
-        return subprocess.check_output(
-            ["git", "-C", str(ROOT), "show", "HEAD:docs/promo.html"],
-            text=True,
-        )
-    except subprocess.CalledProcessError:
-        return (ROOT / "docs" / "promo.html").read_text(encoding="utf-8")
+    return (ROOT / "docs" / "promo.html").read_text(encoding="utf-8")
 
 
 def extract_style_block(html: str) -> str:
@@ -327,6 +324,7 @@ def write_manifest(entries: list[PosterEntry]) -> None:
             "articleTitle": entry.article_title,
             "pointId": entry.point_id,
             "pointName": entry.point_name,
+            "pointOrder": entry.point_order,
             "qrCode": entry.qr_code,
             "fileName": poster_filename(index, entry),
         }
