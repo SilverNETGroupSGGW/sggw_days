@@ -45,19 +45,35 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Android keystore and signing files (NEVER COMMIT)
+# Signing keys and certificates (NEVER COMMIT)
+/signing/
 *.jks
 *.keystore
-android/app/upload-keystore.jks
-keystore.properties
-keystore-base64.txt
 *.p12
 *.pfx
-
 *.key
 *.pem
 *.cer
 *.csr
 *.mobileprovision
+keystore.properties
+
+# Generated output directory
+/generated/
+
+# Store screenshots
+/store_screenshots/
+
+# Debug logs
+firestore-debug.log
+
+# DevTools user settings
+devtools_options.yaml
+
+# Duplicate Firebase configs in docs
+docs/data/google-services/
+
+# Location photos (removed from repo)
+docs/data/lokalizacje/
 
 node_modules/
