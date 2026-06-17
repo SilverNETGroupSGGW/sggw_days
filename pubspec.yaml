@@ -48,7 +48,7 @@ dependencies:
   hive_ce: ^2.19.3
   hive_ce_flutter: ^2.3.4
   flutter_map: ^8.2.2
-  latlong2: ^0.9.1
+  latlong2: ^0.10.0
   mobile_scanner: ^7.2.0
   flutter_markdown_plus: ^1.0.7
   intl: ^0.20.2
