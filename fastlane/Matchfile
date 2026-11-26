@@ -1,9 +1,0 @@
-git_url(ENV.fetch('MATCH_GIT_URL', 'https://github.com/SilverNETGroupSGGW/sggw_days.git'))
-git_branch(ENV.fetch('MATCH_GIT_BRANCH', 'match-signing'))
-storage_mode('git')
-shallow_clone(true)
-clone_branch_directly(false)
-
-git_basic_authorization(ENV['MATCH_GIT_BASIC_AUTHORIZATION']) if ENV['MATCH_GIT_BASIC_AUTHORIZATION'].to_s.strip != ''
-
-app_identifier([ENV.fetch('IOS_BUNDLE_IDENTIFIER', 'com.silver.sggw-days')])

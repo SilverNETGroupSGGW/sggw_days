@@ -1,0 +1,116 @@
+name: Firebase
+# Deploys a release's web build to Firebase Hosting, plus functions and rules
+# for a production release. Runs on main only: the Google sign-in accepts no
+# other ref (provider sggw-days-firebase in silvernet-infra).
+
+on:
+  # Only completed Release runs of releases on main, checked by the job's `if`;
+  # the job runs no code from the triggering run, only the release's tag.
+  workflow_run: # zizmor: ignore[dangerous-triggers]
+    workflows: [Release]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to deploy
+        required: true
+        type: string
+      target:
+        description: Hosting site; beta deploys hosting only, live also functions and rules
+        type: choice
+        options: [beta, live]
+
+permissions: {}
+
+concurrency:
+  group: firebase
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  deploy:
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch'
+      || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'release') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read # read the release and its tag
+      id-token: write # sign in to Google Cloud (Workload Identity Federation)
+    steps:
+      - name: Find the release's web build
+        id: release
+        env:
+          # A release run's head_branch is the release's tag.
+          TAG: ${{ inputs.tag || github.event.workflow_run.head_branch }}
+          TARGET: ${{ inputs.target }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! [[ "$TAG" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::$TAG is not a release tag (X.Y.Z or X.Y.Z-label.N)."
+            exit 1
+          fi
+          if ! release=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isPrerelease,assets); then
+            echo "::error::There is no release for $TAG."
+            exit 1
+          fi
+          if [ -z "$TARGET" ]; then
+            if [ "$(jq -r .isPrerelease <<< "$release")" = true ]; then
+              TARGET=beta
+            else
+              TARGET=live
+            fi
+          fi
+          zip=$(jq -r '[.assets[].name | select(endswith("-web.zip"))] | if length == 1 then .[0] else "" end' <<< "$release")
+          if [ -z "$zip" ]; then
+            # The "published" run of a release builds nothing; the run that
+            # builds the web app triggers this workflow again.
+            echo "::notice::$TAG has no web build yet; the release run that builds it deploys it."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          {
+            echo "tag=$TAG"
+            echo "target=$TARGET"
+            echo "zip=$zip"
+            echo "skip=false"
+          } >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: ${{ steps.release.outputs.skip != 'true' }}
+        with:
+          ref: refs/tags/${{ steps.release.outputs.tag }}
+          persist-credentials: false
+      - name: Download the web build
+        if: ${{ steps.release.outputs.skip != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release.outputs.tag }}
+          ZIP: ${{ steps.release.outputs.zip }}
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$ZIP" --dir "$RUNNER_TEMP"
+          rm -rf build/web && mkdir -p build/web
+          unzip -q "$RUNNER_TEMP/$ZIP" -d build/web
+      - uses: jdx/mise-action@7a4e45a543138629540c9a1616d08632b893e492 # v5.0.1
+        if: ${{ steps.release.outputs.skip != 'true' }}
+        with:
+          install_args: node npm:firebase-tools
+          cache: false
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        if: ${{ steps.release.outputs.skip != 'true' }}
+        with:
+          workload_identity_provider: projects/389882651708/locations/global/workloadIdentityPools/github/providers/sggw-days-firebase
+          service_account: github-action-1132232110@sggw-days.iam.gserviceaccount.com
+      - name: Install the functions' dependencies
+        if: ${{ steps.release.outputs.skip != 'true' && steps.release.outputs.target == 'live' }}
+        run: npm ci --prefix functions
+      - name: Deploy
+        if: ${{ steps.release.outputs.skip != 'true' }}
+        env:
+          TARGET: ${{ steps.release.outputs.target }}
+        run: |
+          if [ "$TARGET" = live ]; then
+            only=hosting:live,functions,firestore:rules,storage:main
+          else
+            only=hosting:beta
+          fi
+          firebase deploy --project sggw-days --only "$only" --non-interactive

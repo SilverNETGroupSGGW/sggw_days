@@ -4,7 +4,7 @@
 
 Flutter web application for "Dni SGGW" (SGGW Days) university event with treasure hunt, knowledge wiki, and event timetable features.
 
-**Stack**: Flutter 3.38.6 | Dart 3.10.7 | Material 3 | BLoC pattern | Freezed models | Hive storage
+**Stack**: Flutter 3.47.6 | Dart 3.13.5 | Material 3 | BLoC pattern | Freezed models | Hive storage
 
 ## Architecture
 
@@ -124,6 +124,13 @@ dart format lib/ test/    # Format code
 flutter run -d chrome                    # Web development
 flutter build web --release              # Production build
 ```
+
+### Releases and Deploys
+
+- Release builds are the mise tasks in `mise.toml` (`build:apk`, `build:appbundle`, `build:web`). Infra's shared `flutter-release.yml` runs them; change build flags in `mise.toml`, not in a workflow.
+- `.github/workflows/release.yml` calls `flutter-release.yml` when a GitHub release is published; `.github/workflows/firebase.yml` then deploys that release's web build to Firebase. `README.md` ("Releases") has the flow.
+- Keep the workflow name `Release`: `firebase.yml` triggers on it.
+- Android signing reads `android/app/key.jks` and `KEY_ALIAS`, `KEY_PASSWORD`, `STORE_PASSWORD`; without them release builds use the debug key.
 
 ### Permissions
 

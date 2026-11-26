@@ -2,29 +2,30 @@
 
 A new Flutter project.
 
-## GitHub Actions Deployment
+## Releases
 
-The repository deploys Firebase and store releases through one top-level GitHub Actions workflow:
+Releases go through Infra's shared release workflow ([docs/releases.md](https://github.com/SilverNETGroupSGGW/Infra/blob/main/docs/releases.md)), called from [release.yml](.github/workflows/release.yml). Pushing a tag no longer publishes anything; publishing a GitHub release does.
 
-- Pull requests and branch pushes run [store-release.yml](.github/workflows/store-release.yml) in validation mode only.
-- Semver tags such as `v1.2.3` run [store-release.yml](.github/workflows/store-release.yml), which validates the repo, builds Android, web, and iOS artifacts in parallel, stores them as Actions artifacts, deploys web to the beta Hosting site, uploads Android to the configured Google Play testing track, and uploads iOS to TestFlight.
-- Published GitHub Releases from semver tags run [store-release.yml](.github/workflows/store-release.yml), which validates the repo, rebuilds Android, web, and iOS artifacts in parallel, attaches `.apk`, web `.zip`, and `.ipa` assets to the GitHub Release, deploys the live Hosting site together with Cloud Functions and Firestore and Storage rules, promotes Android to the configured production track, and submits the iOS build for App Store review.
-- Manual runs of [store-release.yml](.github/workflows/store-release.yml) from the GitHub Actions UI build only the web artifact and deploy Firebase. Choose `firebase_target=beta` to deploy Hosting to `beta-sggw-days`, or `firebase_target=prod` to deploy `hosting:live,functions,firestore:rules,storage:main`. Manual Firebase runs do not build or publish Android or iOS artifacts.
-- Manual runs of [android-store.yml](.github/workflows/android-store.yml) and [ios-store.yml](.github/workflows/ios-store.yml) from the GitHub Actions UI deploy Google Play and App Store/TestFlight selectively without touching Firebase. Use `Android Store Release` with `target=testing` or `production`, and `iOS Store Release` with `target=testflight` or `app_store`.
+- **Beta:** publish a GitHub release for a tag such as `1.2.4-beta.1` with "Set as a pre-release" ticked. The builds (per-ABI APKs, App Bundle, web zip) are attached to the release, Google Play gets the bundle on open testing, TestFlight gets the iOS build, and [firebase.yml](.github/workflows/firebase.yml) deploys the web build to the beta Hosting site.
+- **Production:** untick "Set as a pre-release" on a tested pre-release, or publish a release without it. The same builds go to Google Play production and App Review, and `firebase.yml` deploys the web build to the live Hosting site together with Cloud Functions and the Firestore and Storage rules from the release's tag.
+- **Versions:** the next release is 1.2.4 or higher, since 1.2.3 was the last one on the old workflows. The tag sets the version; `pubspec.yaml`'s version is only used by local builds.
+- **Publishing again:** run `Release` by hand from the release's tag to send its store builds to a track again without rebuilding.
+- **Signing:** the upload key stays in the `KEYSTORE_BASE64`, `KEYSTORE_ALIAS`, `KEYSTORE_PASSWORD` and `KEYSTORE_ALIAS_PASSWORD` secrets; `release.yml` passes them to the shared workflow under its own names. Local release builds without the key fall back to the debug key.
+- **Store IDs:** `com.silvernet.sggw_days` and `com.silver.sggw-days` are set in this app's entry in Infra's `apps.yaml`.
 
-Required repository secret:
+The build commands are mise tasks in [mise.toml](mise.toml), the same ones the release runs: `mise run build:apk`, `mise run build:appbundle` and `mise run build:web`.
 
-- `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS`: JSON for a Firebase service account with permission to deploy Firebase Hosting, Cloud Functions, and Firestore and Storage rules in the `sggw-days` Firebase project. The automated workflow deploys the beta Hosting site for semver tag builds and the live Hosting site for published GitHub Releases.
+### Firebase deploys
 
-To run a manual Firebase deployment, open the `Delivery` workflow in GitHub Actions, choose the branch to deploy from, then set `firebase_target` to `beta` or `prod` before starting the run.
+[firebase.yml](.github/workflows/firebase.yml) runs after every successful `Release` run of a published release and deploys that release's web build. It signs in to Google Cloud without a key, through Workload Identity Federation (provider `sggw-days-firebase`), which only accepts this workflow on `main`. To redeploy a release by hand, run `Firebase` from `main` with the release's tag and the target: `beta` deploys only `hosting:beta`, `live` deploys `hosting:live,functions,firestore:rules,storage:main`.
 
-To run manual app deployments, open either the `Android Store Release` or `iOS Store Release` workflow in GitHub Actions, choose the branch to deploy from, then select the store target you want for that platform.
+Hosting deploys only after the whole `Release` run succeeds, store jobs included, so a failed store job also stops the Hosting deploy; run `Firebase` by hand then.
 
 The Firebase Hosting configuration in [firebase.json](firebase.json) now uses explicit deploy targets: `hosting:beta` maps to `beta-sggw-days`, and `hosting:live` maps to `sggw-days`. This keeps workflow names and deploy commands aligned with the actual site roles.
 
-The beta Hosting site is not a separate Firebase environment. It shares the same Firebase project resources as the live site, so only Hosting content is deployed to beta automatically; Functions and rules still change only during live production deploys.
+The beta Hosting site is not a separate Firebase environment. It shares the same Firebase project resources as the live site, so a pre-release deploys only Hosting content to beta; Functions and rules change only with a production release.
 
-The Firebase service account also needs permission to deploy Cloud Functions for the admin broadcast notification sender. Broadcast requests are created from the admin panel, then `functions/index.js` sends them to registered client tokens with the Firebase Admin SDK.
+The live deploy includes Cloud Functions for the admin broadcast notification sender. Broadcast requests are created from the admin panel, then `functions/index.js` sends them to registered client tokens with the Firebase Admin SDK.
 
 The web push VAPID public key is baked into [lib/features/notifications/data/notification_repository.dart](lib/features/notifications/data/notification_repository.dart), so Hosting builds do not need a separate GitHub secret or variable for it. It can still be overridden with the `FIREBASE_WEB_PUSH_VAPID_KEY` Dart define if the Firebase web push key pair changes in the future.
 
@@ -72,14 +73,14 @@ adb shell pm get-app-links com.silvernet.sggw_days
 adb shell pm verify-app-links --re-verify com.silvernet.sggw_days
 ```
 
-The `prepare_web_deploy.dart` step copies `web/.well-known` into `build/web/.well-known`; Flutter does not copy dot-directories there by default. The Firebase Hosting workflows run this step automatically after web builds.
+The `prepare_web_deploy.dart` step copies `web/.well-known` into `build/web/.well-known`; Flutter does not copy dot-directories there by default. `mise run build:web` runs it after the web build, so the release's web zip already contains these files.
 
 iOS verifies the same domain with an Apple App Site Association file served from both `https://sggw-days.web.app/apple-app-site-association` and `https://sggw-days.web.app/.well-known/apple-app-site-association`.
 
-`tool/prepare_web_deploy.dart` now generates those files automatically during Hosting builds from:
+`tool/prepare_web_deploy.dart` generates those files during web builds from:
 
-- `APPLE_TEAM_ID`
-- `IOS_BUNDLE_IDENTIFIER` (falls back to `com.silver.sggw-days` when the repo variable is not set)
+- `APPLE_TEAM_ID`, read from [ios/Flutter/AppConfig.xcconfig](ios/Flutter/AppConfig.xcconfig) unless the environment sets it
+- `IOS_BUNDLE_IDENTIFIER` or `APP_BUNDLE_IDENTIFIER` from the environment, else `APP_BUNDLE_IDENTIFIER` from the same file, else `com.silver.sggw-days`
 
 The generated association currently claims only the in-app scan route:
 
@@ -97,45 +98,11 @@ The generated association currently claims only the in-app scan route:
 }
 ```
 
-Additional secrets required by the Google Play workflow:
-
-- `KEYSTORE_BASE64`: Base64-encoded Android upload keystore.
-- `KEYSTORE_ALIAS`: Upload key alias.
-- `KEYSTORE_PASSWORD`: Keystore password.
-- `KEYSTORE_ALIAS_PASSWORD`: Upload key password.
-
-Additional configuration required by the Google Play workflow:
-
-- `GOOGLE_PLAY_PACKAGE_NAME`: Android application id used for Play uploads. Set this to `com.silvernet.sggw_days` for the current app.
-- `GOOGLE_PLAY_TESTING_TRACK`: Testing track used by [android-store.yml](.github/workflows/android-store.yml) when `target=testing`. The default is `beta`, which maps to Google Play open testing.
-- `GOOGLE_PLAY_TESTING_STATUS`: Release status used for testing uploads. The default is `completed`.
-- `GOOGLE_PLAY_PRODUCTION_TRACK`: Production track used by [android-store.yml](.github/workflows/android-store.yml) when `target=production`. The default is `production`.
-- `GOOGLE_PLAY_PRODUCTION_STATUS`: Release status used when promoting the testing release into production. The default is `completed`.
-- `GOOGLE_PLAY_BUILD_NUMBER_OFFSET`: Manual builds without a semver release version still fall back to a unique Android `versionCode` based on the GitHub Actions run number and this offset.
-- Store tags must be strict semver (`v1.2.3` or `1.2.3`). The workflows derive deterministic testing and production build numbers from that version.
-- Manual Android runs use [android-store.yml](.github/workflows/android-store.yml) with `target=testing` or `production`, and can optionally override `release_version`, `play_track`, `release_status`, `build_number`, `commit_range`, `release_body`, `deploy_to_store`, and `artifact_name`.
-- Google Play production promotions require `release_version`. If the testing build you are promoting used a custom `build_number`, pass the same `build_number` again on the manual production run.
-- Production Play release notes are taken from the GitHub Release body. Testing release notes are generated automatically from commit subjects since the previous tag. Both paths normalize and truncate the final `en-US` note to Google Play's 500-character limit before upload.
-
-Additional configuration required by the iOS store workflows:
-
-- `APPSTORE_API_PRIVATE_KEY` is always required for App Store Connect API access.
-- `APPLE_TEAM_ID` is also reused by the Hosting deploy to generate the Apple App Site Association file for universal links.
-- `MATCH_PASSWORD` enables the preferred fastlane `match` signing path, using the private repo as encrypted signing storage on the `match-signing` branch by default.
-- When [ios-store.yml](.github/workflows/ios-store.yml) runs with `target=testflight`, it falls back to the existing direct-signing secrets if `MATCH_PASSWORD` is not present yet: `APPSTORE_CERTIFICATES_FILE_BASE64`, `APPSTORE_CERTIFICATES_PASSWORD`, and `IOS_APPSTORE_PROFILE_BASE64`.
-- When [ios-store.yml](.github/workflows/ios-store.yml) runs with `target=app_store`, it does not rebuild the app. It submits the exact build number that was already uploaded from the matching tag.
-- Manual iOS runs use [ios-store.yml](.github/workflows/ios-store.yml) with `target=testflight` or `app_store`, and can optionally override `release_version`, `release_tag`, `build_number`, `commit_range`, `wait_for_processing`, `automatic_release`, `release_body`, `deploy_to_store`, and `artifact_name`.
-- App Store submissions require `release_version` and submit an existing uploaded build. If the TestFlight build used a custom `build_number`, pass the same `build_number` again on the manual `app_store` run.
-
-Flutter-specific versioning note:
-
-- Flutter maps `pubspec.yaml` version metadata to Android `versionName` and `versionCode`, and iOS `CFBundleShortVersionString` and `CFBundleVersion`. The store workflows pass `--build-name` and `--build-number` so tags such as `v1.2.3` produce the correct store version without editing `pubspec.yaml` for every release.
-
 Google Play upload prerequisite:
 
-- The Android release bundle includes `android.permission.CAMERA` for QR scanning. Before [android-store.yml](.github/workflows/android-store.yml) can upload successfully in `target=testing`, the app's Play Console listing must have a public privacy policy URL configured in App content. Use `https://sggw-days.web.app/privacy-policy`. Without that, Google Play rejects the upload with an error like `The apk has permissions that require a privacy policy set for the app`.
+- The Android release bundle includes `android.permission.CAMERA` for QR scanning, so the app's Play Console listing must have a public privacy policy URL configured in App content: `https://sggw-days.web.app/privacy-policy`. Without it, Google Play rejects the upload with an error like `The apk has permissions that require a privacy policy set for the app`.
 
-Storage rules are deployed through the explicit Firebase Storage target `main`, mapped in [.firebaserc](.firebaserc) to the bucket `sggw-days.firebasestorage.app`. The service account behind `FIREBASE_SERVICE_ACCOUNT_SGGW_DAYS` also needs Firebase Security Rules permissions including `firebaserules.rulesets.test` for the Firebase CLI deploy path.
+Storage rules are deployed through the explicit Firebase Storage target `main`, mapped in [.firebaserc](.firebaserc) to the bucket `sggw-days.firebasestorage.app`. The service account `firebase.yml` signs in as (`github-action-1132232110@sggw-days.iam.gserviceaccount.com`) needs permission to deploy Hosting, Cloud Functions and the Firestore and Storage rules, including `firebaserules.rulesets.test` for the Firebase CLI deploy path.
 
 ## App Icon Validation
 

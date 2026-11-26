@@ -1,16 +1,28 @@
 name: Flutter Validate
 
 on:
-  workflow_call:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - name: Setup project tooling
-        uses: ./.github/actions/setup-project
+      - uses: jdx/mise-action@7a4e45a543138629540c9a1616d08632b893e492 # v5.0.1
+        with:
+          install_args: flutter
+          cache_save: ${{ github.ref_name == github.event.repository.default_branch }} # Flutter is large; PRs reuse main's entry
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
 
       - name: Verify generated files are up to date
         run: |
@@ -41,11 +53,11 @@ jobs:
 
       - name: Check formatting
         run: |
-          paths="lib tool"
+          paths=(lib tool)
           if [ -d test ]; then
-            paths="$paths test"
+            paths+=(test)
           fi
-          dart format --output=none --set-exit-if-changed $paths
+          dart format --output=none --set-exit-if-changed "${paths[@]}"
 
       - name: Analyze project
         run: flutter analyze
