@@ -12,7 +12,7 @@ const _androidForegroundOutputPath =
     'assets/icon/android_dynamic_foreground.png';
 const _androidMonochromeOutputPath =
     'assets/icon/android_dynamic_monochrome.png';
-const _analysisOutputPath = 'doc/icon_generation.md';
+const _analysisOutputPath = 'docs/guides/icon_generation.md';
 
 const _analysisRasterSize = 4096;
 const _outputSize = 1024;
