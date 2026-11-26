@@ -1,0 +1,54 @@
+name: Release
+run-name: >-
+  ${{ github.event_name == 'workflow_dispatch'
+  && format('Publish {0} to {1} ({2})', github.ref_name, inputs.track, inputs.platforms)
+  || format('Release {0} ({1})', github.ref_name, github.event.action) }}
+
+on:
+  release:
+    # published: build a pre-release; released: build a release, or promote a
+    # pre-release that was turned into one.
+    types: [published, released]
+  # Publishes a release's store builds again without building; run it from the
+  # release's tag.
+  workflow_dispatch:
+    inputs:
+      track:
+        description: Store track; beta is open testing
+        type: choice
+        options: [beta, production]
+      platforms:
+        type: choice
+        options: [all, android, ios]
+
+permissions: {}
+
+# Nothing from the Actions cache reaches a signed build.
+cache-mode: none
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+  # Wait in line instead of replacing a waiting run (e.g. a promotion).
+  queue: max
+
+jobs:
+  release:
+    # Required even without Pages or Google Play: GitHub checks what the called
+    # jobs ask for when the run starts. Each job gets no more than it needs.
+    permissions:
+      contents: write # attach the builds to the release
+      id-token: write # Google Play (Workload Identity Federation) and Pages
+      pages: write # publish the web app
+    uses: SilverNETGroupSGGW/Infra/.github/workflows/flutter-release.yml@3b35a9015317b135fca144bf4f5432f9b0cb960d # v2.0.0
+    # Store IDs come from apps.yaml in Infra
+    with:
+      artifact-prefix: sggw-days
+      publish-track: ${{ inputs.track }}
+      publish-platforms: ${{ inputs.platforms }}
+    secrets:
+      # The upload key under its original names.
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      ANDROID_KEY_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.KEYSTORE_ALIAS_PASSWORD }}
+      ANDROID_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}

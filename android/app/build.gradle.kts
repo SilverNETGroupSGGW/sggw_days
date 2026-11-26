@@ -27,26 +27,25 @@ android {
         versionName = flutter.versionName
     }
 
+    val keystoreFile = file("key.jks")
+    val hasUploadKey = keystoreFile.exists() && System.getenv("KEY_ALIAS") != null
+
     signingConfigs {
-        create("release") {
-            keyAlias = System.getenv("KEYSTORE_ALIAS")
-            keyPassword = System.getenv("KEYSTORE_ALIAS_PASSWORD")
-            val keystorePath = System.getenv("KEYSTORE_PATH")
-            storeFile = if (keystorePath != null) {
-                file(keystorePath)
-            } else {
-                null
+        if (hasUploadKey) {
+            create("release") {
+                storeFile = keystoreFile
+                storePassword = System.getenv("STORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
             }
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
         }
     }
 
     buildTypes {
         release {
-            // Use the release keystore when provided via environment variables
-            // (CI/Play Store uploads); fall back to the debug signing config so
-            // local release builds work out of the box.
-            signingConfig = if (System.getenv("KEYSTORE_PATH") != null) {
+            // The upload key when the release build installs it (Infra's
+            // flutter-release.yml); otherwise the debug key, for local builds.
+            signingConfig = if (hasUploadKey) {
                 signingConfigs.getByName("release")
             } else {
                 signingConfigs.getByName("debug")

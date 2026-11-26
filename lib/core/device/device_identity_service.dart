@@ -57,7 +57,7 @@ class DeviceIdentityService {
     try {
       if (kIsWeb) return null;
 
-      return switch (defaultTargetPlatform) {
+      return await switch (defaultTargetPlatform) {
         TargetPlatform.android => _androidDeviceId(),
         TargetPlatform.iOS => _iosId(),
         TargetPlatform.macOS => _macOsId(),

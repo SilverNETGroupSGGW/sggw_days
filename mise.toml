@@ -1,0 +1,22 @@
+[tools]
+# 3.38 ignores force-version-code-ignoring-abi (build:apk); the old store workflows built on latest stable
+flutter = "3.47.6"
+java = "temurin-21" # android/app/build.gradle.kts targets Java 21
+node = "24" # firebase.yml
+"npm:firebase-tools" = "15.37.0"
+
+[tasks."build:apk"]
+description = "Build the release APKs, one per ABI"
+run = "flutter build apk --release --split-per-abi --no-tree-shake-icons --android-project-arg=force-version-code-ignoring-abi=true"
+
+[tasks."build:appbundle"]
+description = "Build the release App Bundle"
+run = "flutter build appbundle --release --no-tree-shake-icons"
+
+[tasks."build:web"]
+description = "Build the web app with its .well-known and poster files"
+usage = 'flag "--channel <channel>" default="prod"' # no BETA badge in this app
+run = [
+  "flutter build web --wasm --release --no-tree-shake-icons --base-href /",
+  "dart run tool/prepare_web_deploy.dart",
+]

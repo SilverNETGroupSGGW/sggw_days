@@ -98,9 +98,9 @@ class NotificationRepository {
     try {
       if (kIsWeb) {
         if (_webVapidKey.isEmpty) return null;
-        return _messaging.getToken(vapidKey: _webVapidKey);
+        return await _messaging.getToken(vapidKey: _webVapidKey);
       }
-      return _messaging.getToken();
+      return await _messaging.getToken();
     } catch (error) {
       if (silent) return null;
       rethrow;
